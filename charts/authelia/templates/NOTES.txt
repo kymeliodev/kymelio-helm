@@ -1,0 +1,24 @@
+Authelia has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "authelia.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "authelia.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then check the health endpoint at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/api/health
+
+The default configuration uses a file authentication backend at
+/config/users_database.yml and a local SQLite storage backend. Provide a user
+database and review the session cookie domain before exposing this release.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
