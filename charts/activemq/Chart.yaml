@@ -1,0 +1,14 @@
+apiVersion: v2
+name: activemq
+description: Apache ActiveMQ Classic message broker deployed as a single node StatefulSet
+type: application
+version: 0.1.0
+appVersion: "6.1.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - activemq
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
