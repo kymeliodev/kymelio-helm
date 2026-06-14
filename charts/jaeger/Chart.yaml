@@ -1,0 +1,19 @@
+apiVersion: v2
+name: jaeger
+description: All in one distributed tracing backend with in memory span storage
+type: application
+version: 0.1.0
+appVersion: "1.60"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://www.jaegertracing.io
+keywords:
+  - jaeger
+  - tracing
+  - observability
+  - opentelemetry
+  - distributed-tracing
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
