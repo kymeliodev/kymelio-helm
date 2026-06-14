@@ -1,0 +1,28 @@
+Qdrant has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  HTTP REST API: {{ include "qdrant.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+  gRPC API:      {{ include "qdrant.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.grpc.port }}
+
+To port forward the HTTP API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "qdrant.fullname" . }} {{ .Values.service.http.port }}:{{ .Values.service.http.port }}
+{{- if .Values.auth.enabled }}
+
+API key authentication is enabled. Send the key with the api-key header.
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the API key with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "qdrant.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.apiKeyKey }}}" | base64 -d
+{{- end }}
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
