@@ -1,0 +1,14 @@
+apiVersion: v2
+name: scylladb
+description: A Helm chart for scylladb
+type: application
+version: 0.1.0
+appVersion: "6.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - scylladb
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
