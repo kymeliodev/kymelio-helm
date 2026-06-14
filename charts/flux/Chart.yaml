@@ -1,0 +1,19 @@
+apiVersion: v2
+name: flux
+description: Flux source-controller for GitOps artifact acquisition on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "v1.3.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/fluxcd/source-controller
+keywords:
+  - flux
+  - fluxcd
+  - gitops
+  - source-controller
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

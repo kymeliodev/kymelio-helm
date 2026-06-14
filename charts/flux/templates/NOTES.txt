@@ -1,0 +1,21 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "flux.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ (first .Values.service.ports).port }}
+
+To port forward the artifact API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "flux.fullname" . }} {{ (first .Values.service.ports).port }}:{{ (first .Values.service.ports).port }}
+
+This chart deploys only the Flux source-controller. A complete Flux
+installation also requires the other Flux controllers (kustomize-controller,
+helm-controller, notification-controller) and the Flux Custom Resource
+Definitions, which are installed separately. This chart does not ship CRDs.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
