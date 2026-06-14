@@ -1,0 +1,20 @@
+Solr has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "solr.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Open the Solr admin UI by port forwarding to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "solr.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then browse to:
+
+  http://127.0.0.1:{{ .Values.service.port }}/solr/
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

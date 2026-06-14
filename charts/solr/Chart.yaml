@@ -1,0 +1,18 @@
+apiVersion: v2
+name: solr
+description: Apache Solr enterprise search platform
+type: application
+version: 0.1.0
+appVersion: "9.6"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - solr
+  - search
+  - lucene
+  - full-text
+  - indexing
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
