@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vikunja.fullname" . }}-headless
+  labels:
+    {{- include "vikunja.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.portName }}
+      protocol: TCP
+      name: {{ .Values.service.portName }}
+  selector:
+    {{- include "vikunja.selectorLabels" . | nindent 4 }}

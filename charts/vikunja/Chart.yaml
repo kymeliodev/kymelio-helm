@@ -1,0 +1,19 @@
+apiVersion: v2
+name: vikunja
+description: Self hosted to-do and project management application with SQLite by default
+type: application
+version: 0.1.0
+appVersion: "0.24.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://kolaente.dev/vikunja/vikunja
+keywords:
+  - vikunja
+  - todo
+  - tasks
+  - project-management
+  - productivity
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
