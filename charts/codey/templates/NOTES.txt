@@ -1,0 +1,17 @@
+Codey has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+This chart runs Codey on the official Gitea base image.
+
+Web UI inside the cluster:
+
+  http://{{ include "codey.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward the web UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "codey.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Complete the initial setup through the web UI on first visit. The default
+configuration uses the embedded SQLite database stored under /data.
