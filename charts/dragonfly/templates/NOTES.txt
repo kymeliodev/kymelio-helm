@@ -1,0 +1,31 @@
+Dragonfly has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "dragonfly.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.auth.enabled }}
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "dragonfly.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Connect with any Redis compatible client and authenticate with the password above.
+{{- else }}
+
+Connect with any Redis compatible client. Authentication is disabled.
+{{- end }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dragonfly.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

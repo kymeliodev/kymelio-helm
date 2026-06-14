@@ -1,0 +1,19 @@
+apiVersion: v2
+name: dragonfly
+description: Dragonfly in-memory data store compatible with Redis
+type: application
+version: 0.1.0
+appVersion: "v1.23"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://www.dragonflydb.io
+keywords:
+  - dragonfly
+  - redis
+  - cache
+  - key-value
+  - database
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
