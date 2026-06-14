@@ -1,4 +1,4 @@
-{{ .Chart.Name }} has been installed.
+ZITADEL has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
@@ -7,9 +7,21 @@ Reach the service from inside the cluster at:
 
   {{ include "zitadel.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
-To port forward to your workstation:
+Port forward to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "zitadel.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then check the health endpoint at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/debug/healthz
+
+This release expects an external PostgreSQL database:
+
+  PostgreSQL: {{ .Values.externalDatabase.host }}:{{ .Values.externalDatabase.port }}
+
+Make sure the database password is provided through extraEnv as
+ZITADEL_DATABASE_POSTGRES_USER_PASSWORD before the server can start. TLS is
+disabled in the pod, so place ZITADEL behind a TLS terminating ingress.
 
 Run the bundled connection test with:
 
