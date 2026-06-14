@@ -1,0 +1,22 @@
+Cluster API Operator has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The Cluster API Operator is now running. It manages the lifecycle of Cluster API
+providers and installs their components.
+
+NOTE: this chart does not install the Cluster API custom resource definitions.
+Install the Cluster API CRDs separately before creating any provider resources.
+
+Check the operator is ready with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "cluster-api-operator.fullname" . }}
+
+Scrape operator metrics from inside the cluster at:
+
+  {{ include "cluster-api-operator.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
