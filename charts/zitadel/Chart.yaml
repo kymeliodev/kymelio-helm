@@ -1,0 +1,19 @@
+apiVersion: v2
+name: zitadel
+description: Cloud native identity and access management platform
+type: application
+version: 0.1.0
+appVersion: "v2.59.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://zitadel.com
+keywords:
+  - zitadel
+  - identity
+  - oidc
+  - oauth2
+  - sso
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
