@@ -1,0 +1,20 @@
+VerneMQ MQTT broker has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+MQTT endpoint inside the cluster:
+
+  {{ include "vernemq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.mqtt.port }}
+
+Anonymous access is enabled and the EULA is accepted through the
+DOCKER_VERNEMQ_ALLOW_ANONYMOUS and DOCKER_VERNEMQ_ACCEPT_EULA environment
+variables. Configure authentication before exposing the broker.
+
+To port forward the MQTT listener to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "vernemq.fullname" . }} {{ .Values.service.mqtt.port }}:{{ .Values.service.mqtt.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

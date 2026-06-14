@@ -1,0 +1,14 @@
+apiVersion: v2
+name: vernemq
+description: VerneMQ MQTT broker deployed as a StatefulSet with persistent storage
+type: application
+version: 0.1.0
+appVersion: "2.0.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - vernemq
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
