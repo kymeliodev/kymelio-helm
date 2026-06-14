@@ -1,0 +1,137 @@
+# Number of replicas. This chart deploys a single instance.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/library/mariadb
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Database authentication and bootstrap settings.
+auth:
+  # Application user created on first start.
+  username: mariadb
+  # Database created on first start.
+  database: mariadb
+  # Root password. A random password is generated when left empty.
+  rootPassword: ""
+  # Application user password. A random password is generated when left empty.
+  password: ""
+  # Use an existing Secret instead of managing credentials in this chart.
+  existingSecret: ""
+  secretKeys:
+    # Key inside the Secret that holds the root password.
+    rootPasswordKey: mariadb-root-password
+    # Key inside the Secret that holds the application user password.
+    passwordKey: mariadb-password
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context. Matches the mariadb user shipped in the image.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  runAsGroup: 999
+  fsGroup: 999
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container level security context.
+securityContext:
+  allowPrivilegeEscalation: false
+  # Set to true for images that tolerate an immutable root filesystem.
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service exposing MariaDB.
+service:
+  type: ClusterIP
+  port: 3306
+  portName: mysql
+
+# Ingress is not applicable to a TCP database and stays disabled.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+# Autoscaling is not supported for a single instance and stays disabled.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+metrics:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container.
+extraEnv: []
+
+# Free form configuration rendered into a ConfigMap when not empty.
+config: {}
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Persistent storage for the database directory.
+persistence:
+  enabled: true
+  # Leave empty to use the cluster default StorageClass.
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  mountPath: /var/lib/mysql
+
+# Image used by the helm test connection check. Defaults to the server image.
+tests:
+  image: docker.io/library/mariadb:11.4
