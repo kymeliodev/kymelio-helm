@@ -1,0 +1,29 @@
+Meilisearch has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "meilisearch.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Operating mode: {{ .Values.meiliEnv }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the master key with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "meilisearch.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.masterKeyKey }}}" | base64 -d
+{{- end }}
+
+Query the API from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run meilisearch-client --rm -it --restart=Never \
+    --image curlimages/curl -- \
+    curl -H "Authorization: Bearer <master-key>" \
+    http://{{ include "meilisearch.fullname" . }}:{{ .Values.service.port }}/health
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

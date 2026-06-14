@@ -1,0 +1,17 @@
+apiVersion: v2
+name: meilisearch
+description: Meilisearch fast and relevant full text search engine
+type: application
+version: 0.1.0
+appVersion: "v1.10"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - meilisearch
+  - search
+  - full-text
+  - instant-search
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
