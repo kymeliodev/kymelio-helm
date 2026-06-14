@@ -1,0 +1,16 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "longhorn.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "longhorn.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
