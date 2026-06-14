@@ -1,0 +1,5 @@
+postgresql
+redis
+minio
+keycloak
+rabbitmq

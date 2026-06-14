@@ -6,6 +6,7 @@ on:
       - charts/**
       - .github/workflows/lint-test.yaml
       - .github/ct.yaml
+      - .github/install-allowlist.txt
 
 permissions:
   contents: read
@@ -50,4 +51,17 @@ jobs:
 
       - name: Run chart-testing install
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --config .github/ct.yaml
+        run: |
+          # Lint covers every chart. Install only validates charts on the
+          # allowlist, since operators and clustered systems cannot come up
+          # standalone in an ephemeral kind cluster.
+          excluded=""
+          while IFS= read -r dir; do
+            name="$(basename "$dir")"
+            if ! grep -qxF "$name" .github/install-allowlist.txt; then
+              excluded="${excluded}${excluded:+,}${name}"
+            fi
+          done < <(find charts -mindepth 1 -maxdepth 1 -type d | sort)
+          cp .github/ct.yaml ct-install.yaml
+          echo "excluded-charts: [${excluded}]" >> ct-install.yaml
+          ct install --config ct-install.yaml
