@@ -1,6 +1,13 @@
 # tempo
 
-A Helm chart for tempo.
+Tempo distributed tracing backend. This chart runs Tempo as a single binary StatefulSet with a local storage backend and an OTLP gRPC receiver. The configuration is rendered from a ConfigMap and mounted at `/etc/tempo/tempo.yaml`, with trace data kept on a persistent volume.
+
+## Ports
+
+| Name | Port | Purpose |
+|------|------|---------|
+| http | 3200 | Tempo HTTP API and query endpoint |
+| otlp-grpc | 4317 | OTLP gRPC trace ingestion |
 
 ## Install
 
@@ -24,29 +31,28 @@ helm install my-tempo oci://ghcr.io/kymeliodev/kymelio-helm/tempo --version 0.1.
 helm uninstall my-tempo
 ```
 
-## Upgrading
+## Configuration
 
-Review the chart version change and your overridden values before upgrading:
-
-```sh
-helm upgrade my-tempo kymelio/tempo --reuse-values
-```
+The Tempo configuration is provided through `config` as a YAML string and mounted at `/etc/tempo/tempo.yaml`. The default enables an OTLP gRPC receiver and a local filesystem storage backend. Additional Service and container ports are listed under `service.extraPorts`. A change to `config` updates a checksum annotation on the pod so it is rolled automatically.
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | replicaCount | int | `1` | Number of replicas when autoscaling is disabled |
-| image.repository | string | `""` | Container image repository |
-| image.pullPolicy | string | `IfNotPresent` | Image pull policy |
+| image.repository | string | `docker.io/grafana/tempo` | Container image repository |
 | image.tag | string | `""` | Image tag, defaults to the chart appVersion |
+| args | list | config.file | Command line arguments passed to Tempo |
+| config | string | local storage with OTLP | Tempo configuration mounted as tempo.yaml |
 | service.type | string | `ClusterIP` | Kubernetes Service type |
-| service.port | int | `8080` | Service port |
+| service.port | int | `3200` | Primary HTTP service port |
+| service.extraPorts | list | otlp-grpc 4317 | Additional Service and container ports |
+| persistence.enabled | bool | `true` | Enable a persistent volume for /var/tempo |
+| persistence.size | string | `8Gi` | Persistent volume size |
+| persistence.mountPath | string | `/var/tempo` | Data directory mount path |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
-| podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
-| networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
-| podSecurityContext | object | runAsNonRoot | Pod security context |
+| podSecurityContext | object | runAsUser 10001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

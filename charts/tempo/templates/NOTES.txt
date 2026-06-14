@@ -1,15 +1,21 @@
-{{ .Chart.Name }} has been installed.
+Tempo has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
 
-Reach the service from inside the cluster at:
+Reach the Tempo HTTP API from inside the cluster at:
 
   {{ include "tempo.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
-To port forward to your workstation:
+Send OTLP gRPC traces to:
+
+  {{ include "tempo.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:4317
+
+To port forward the HTTP API to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "tempo.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+The configuration is mounted from a ConfigMap at /etc/tempo/tempo.yaml.
 
 Run the bundled connection test with:
 
