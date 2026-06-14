@@ -1,0 +1,19 @@
+apiVersion: v2
+name: loki
+description: Loki horizontally scalable log aggregation system for storing logs
+type: application
+version: 0.1.0
+appVersion: "3.1.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://grafana.com/oss/loki
+keywords:
+  - loki
+  - logging
+  - logs
+  - observability
+  - aggregation
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

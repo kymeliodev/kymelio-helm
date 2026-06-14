@@ -1,0 +1,153 @@
+# Number of replicas. Ignored when autoscaling is enabled.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/grafana/loki
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container level security context.
+securityContext:
+  allowPrivilegeEscalation: false
+  # Set to true for images that tolerate an immutable root filesystem.
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service exposing the workload.
+service:
+  type: ClusterIP
+  port: 3100
+  portName: http
+
+# Ingress configuration. Disabled by default.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Horizontal pod autoscaler. Disabled by default.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+metrics:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container.
+extraEnv: []
+
+# Command line arguments passed to Loki.
+args:
+  - "-config.file=/etc/loki/loki.yaml"
+
+# Loki configuration rendered into a ConfigMap and mounted at
+# /etc/loki/loki.yaml. A minimal single binary setup using the filesystem for
+# both chunks and the index.
+config: |
+  auth_enabled: false
+  server:
+    http_listen_port: 3100
+    grpc_listen_port: 9095
+  common:
+    instance_addr: 127.0.0.1
+    path_prefix: /loki
+    storage:
+      filesystem:
+        chunks_directory: /loki/chunks
+        rules_directory: /loki/rules
+    replication_factor: 1
+    ring:
+      kvstore:
+        store: inmemory
+  schema_config:
+    configs:
+      - from: 2020-10-24
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Image used by the helm test connection check.
+tests:
+  image: busybox:1.36
+
+# Persistent storage for the StatefulSet.
+persistence:
+  enabled: true
+  # Leave empty to use the cluster default StorageClass.
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  mountPath: /data

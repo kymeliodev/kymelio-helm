@@ -1,0 +1,20 @@
+Loki has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the Loki HTTP API from inside the cluster at:
+
+  {{ include "loki.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "loki.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Point Grafana or a log shipper at http://127.0.0.1:{{ .Values.service.port }}
+
+The configuration is mounted from a ConfigMap at /etc/loki/loki.yaml.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
