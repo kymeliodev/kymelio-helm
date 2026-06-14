@@ -1,0 +1,19 @@
+apiVersion: v2
+name: redis
+description: In-memory data structure store used as database, cache and message broker
+type: application
+version: 0.1.0
+appVersion: "7.4"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://redis.io
+keywords:
+  - redis
+  - cache
+  - key-value
+  - database
+  - nosql
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
