@@ -1,0 +1,30 @@
+InfluxDB has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "influxdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Organization: {{ .Values.auth.org }}
+Bucket:       {{ .Values.auth.bucket }}
+User:         {{ .Values.auth.username }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "influxdb.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Port forward the HTTP API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "influxdb.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open http://127.0.0.1:{{ .Values.service.port }} in your browser.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
