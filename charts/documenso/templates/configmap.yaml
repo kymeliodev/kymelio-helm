@@ -1,0 +1,10 @@
+{{- if .Values.config -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "documenso.fullname" . }}
+  labels:
+    {{- include "documenso.labels" . | nindent 4 }}
+data:
+  {{- toYaml .Values.config | nindent 2 }}
+{{- end }}
