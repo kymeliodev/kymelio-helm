@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cassandra
-description: A Helm chart for cassandra
+description: Apache Cassandra wide column distributed database
 type: application
 version: 0.1.0
 appVersion: "5.0"
@@ -9,6 +9,10 @@ sources:
   - https://github.com/kymeliodev/kymelio-helm
 keywords:
   - cassandra
+  - database
+  - nosql
+  - wide-column
+  - distributed
 maintainers:
   - name: Kymelio
     email: simon.meier@kymelio.com
