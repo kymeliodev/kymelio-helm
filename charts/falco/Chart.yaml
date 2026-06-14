@@ -1,0 +1,18 @@
+apiVersion: v2
+name: falco
+description: Falco runtime security and threat detection engine
+type: application
+version: 0.1.0
+appVersion: "0.38.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - falco
+  - security
+  - runtime-security
+  - threat-detection
+  - observability
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

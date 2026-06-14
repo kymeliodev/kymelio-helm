@@ -1,0 +1,106 @@
+# Number of replicas. Ignored when autoscaling is enabled.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/falcosecurity/falco
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context. Falco runs as root for host visibility.
+podSecurityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+# Container level security context. Falco requires privileged access to the
+# host kernel and is therefore an intentional exception to the hardened defaults.
+securityContext:
+  privileged: true
+  runAsNonRoot: false
+  runAsUser: 0
+
+# Service exposing the workload.
+service:
+  type: ClusterIP
+  port: 8765
+  portName: falco
+
+# Ingress configuration. Disabled by default.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Horizontal pod autoscaler. Disabled by default.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+metrics:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container.
+extraEnv: []
+
+# Free form configuration rendered into a ConfigMap when not empty.
+config: {}
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Image used by the helm test connection check.
+tests:
+  image: busybox:1.36
