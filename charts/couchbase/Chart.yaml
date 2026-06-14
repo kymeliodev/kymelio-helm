@@ -1,0 +1,14 @@
+apiVersion: v2
+name: couchbase
+description: A Helm chart for couchbase
+type: application
+version: 0.1.0
+appVersion: "7.6.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - couchbase
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
