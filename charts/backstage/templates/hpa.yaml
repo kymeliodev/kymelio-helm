@@ -8,7 +8,7 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: {{ if .Values.persistence }}StatefulSet{{ else }}Deployment{{ end }}
+    kind: Deployment
     name: {{ include "backstage.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}

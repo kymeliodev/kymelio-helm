@@ -29,6 +29,16 @@
         "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
       }
     },
+    "postgresql": {
+      "type": "object",
+      "required": ["host", "port", "user"],
+      "properties": {
+        "host": { "type": "string", "minLength": 1 },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "user": { "type": "string", "minLength": 1 },
+        "password": { "type": "string" }
+      }
+    },
     "resources": { "type": "object" },
     "autoscaling": {
       "type": "object",

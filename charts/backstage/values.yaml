@@ -16,6 +16,31 @@ nameOverride: ""
 # Override the fully qualified resource name.
 fullnameOverride: ""
 
+# External PostgreSQL connection. Backstage requires a PostgreSQL database for
+# its catalog and plugin data. This chart does not provision a database, point
+# these values at an existing PostgreSQL instance.
+postgresql:
+  host: postgresql
+  port: 5432
+  user: backstage
+  # Database password. A random value is generated when left empty and stored in
+  # the chart managed Secret.
+  password: ""
+
+# Backend authentication secret used to sign service to service tokens. A random
+# value is generated when left empty.
+backend:
+  secret: ""
+
+# Use an existing Secret instead of managing credentials in this chart. The
+# Secret must provide the keys named below.
+existingSecret: ""
+secretKeys:
+  # Key holding the PostgreSQL password.
+  postgresPasswordKey: postgres-password
+  # Key holding the backend signing secret, exposed as BACKEND_SECRET.
+  backendSecretKey: backend-secret
+
 # Service account used by the workload.
 serviceAccount:
   create: true
@@ -44,11 +69,11 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the workload.
+# Service exposing the Backstage backend.
 service:
   type: ClusterIP
   port: 7007
-  portName: backstage
+  portName: http
 
 # Ingress configuration. Disabled by default.
 ingress:

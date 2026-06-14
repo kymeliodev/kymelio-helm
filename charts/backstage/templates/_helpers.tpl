@@ -59,3 +59,47 @@ Service account name.
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Name of the Secret holding the database password and backend secret.
+*/}}
+{{- define "backstage.secretName" -}}
+{{- if .Values.existingSecret }}
+{{- .Values.existingSecret }}
+{{- else }}
+{{- include "backstage.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Resolve the PostgreSQL password. Reuse an existing value on upgrade so a
+generated password stays stable across releases.
+*/}}
+{{- define "backstage.postgresPassword" -}}
+{{- if .Values.postgresql.password }}
+{{- .Values.postgresql.password }}
+{{- else }}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace (include "backstage.fullname" .) }}
+{{- if and $existing (index $existing.data .Values.secretKeys.postgresPasswordKey) }}
+{{- index $existing.data .Values.secretKeys.postgresPasswordKey | b64dec }}
+{{- else }}
+{{- randAlphaNum 24 }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Resolve the backend signing secret. Reuse an existing value on upgrade.
+*/}}
+{{- define "backstage.backendSecret" -}}
+{{- if .Values.backend.secret }}
+{{- .Values.backend.secret }}
+{{- else }}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace (include "backstage.fullname" .) }}
+{{- if and $existing (index $existing.data .Values.secretKeys.backendSecretKey) }}
+{{- index $existing.data .Values.secretKeys.backendSecretKey | b64dec }}
+{{- else }}
+{{- randAlphaNum 32 }}
+{{- end }}
+{{- end }}
+{{- end }}

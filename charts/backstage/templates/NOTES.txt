@@ -1,4 +1,4 @@
-{{ .Chart.Name }} has been installed.
+Backstage has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
@@ -7,9 +7,28 @@ Reach the service from inside the cluster at:
 
   {{ include "backstage.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
-To port forward to your workstation:
+Port forward to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "backstage.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the portal at:
+
+  http://127.0.0.1:{{ .Values.service.port }}
+
+Backstage connects to the external PostgreSQL database at:
+
+  {{ .Values.postgresql.host }}:{{ .Values.postgresql.port }} (user {{ .Values.postgresql.user }})
+
+This chart does not provision PostgreSQL. Point postgresql.host and the related
+values at a running database before installing.
+
+{{- if not .Values.existingSecret }}
+
+Retrieve the generated database password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "backstage.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.secretKeys.postgresPasswordKey }}}" | base64 -d
+{{- end }}
 
 Run the bundled connection test with:
 

@@ -23,9 +23,10 @@ spec:
         capabilities:
           drop:
             - ALL
-      command: ["sh", "-c"]
-      args:
-        - nc -z -w5 {{ include "backstage.fullname" . }} {{ .Values.service.port }}
+      command:
+        - sh
+        - -c
+        - exec wget --spider -T 10 http://{{ include "backstage.fullname" . }}:{{ .Values.service.port }}/healthcheck
       resources:
         requests:
           cpu: 10m
