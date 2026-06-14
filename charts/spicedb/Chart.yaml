@@ -1,0 +1,14 @@
+apiVersion: v2
+name: spicedb
+description: A Helm chart for spicedb
+type: application
+version: 0.1.0
+appVersion: "v1.35.3"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - spicedb
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
