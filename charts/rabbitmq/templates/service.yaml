@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rabbitmq.fullname" . }}
+  labels:
+    {{- include "rabbitmq.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.amqp.port }}
+      targetPort: {{ .Values.service.amqp.portName }}
+      protocol: TCP
+      name: {{ .Values.service.amqp.portName }}
+    - port: {{ .Values.service.management.port }}
+      targetPort: {{ .Values.service.management.portName }}
+      protocol: TCP
+      name: {{ .Values.service.management.portName }}
+  selector:
+    {{- include "rabbitmq.selectorLabels" . | nindent 4 }}
