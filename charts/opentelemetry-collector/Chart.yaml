@@ -1,0 +1,20 @@
+apiVersion: v2
+name: opentelemetry-collector
+description: Vendor neutral collector for receiving and exporting telemetry data
+type: application
+version: 0.1.0
+appVersion: "0.106.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://opentelemetry.io/docs/collector
+keywords:
+  - opentelemetry
+  - otel
+  - collector
+  - telemetry
+  - observability
+  - otlp
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

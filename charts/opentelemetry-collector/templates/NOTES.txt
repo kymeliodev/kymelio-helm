@@ -1,0 +1,23 @@
+OpenTelemetry Collector has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Endpoints inside the cluster ({{ include "opentelemetry-collector.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local):
+
+  OTLP gRPC receiver   port 4317
+  OTLP HTTP receiver   port 4318
+  Health check         port 13133
+
+Point your applications at the OTLP endpoints using the in cluster service name
+above. To reach the OTLP gRPC receiver from your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "opentelemetry-collector.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Received telemetry is written to the collector log by the debug exporter:
+
+  kubectl --namespace {{ .Release.Namespace }} logs deploy/{{ include "opentelemetry-collector.fullname" . }} -f
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
