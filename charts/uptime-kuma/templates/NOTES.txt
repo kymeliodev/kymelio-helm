@@ -1,0 +1,21 @@
+Uptime Kuma has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The web user interface is reachable inside the cluster at:
+
+  {{ include "uptime-kuma.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To open the user interface, port forward it to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "uptime-kuma.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.port }} and create the
+administrator account on first visit.
+
+Monitors and history are stored on the data volume mounted at {{ .Values.persistence.mountPath }}.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
