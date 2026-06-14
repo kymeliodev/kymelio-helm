@@ -1,0 +1,19 @@
+apiVersion: v2
+name: forgejo
+description: Self hosted lightweight software forge for Git hosting
+type: application
+version: 0.1.0
+appVersion: "8.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://forgejo.org
+keywords:
+  - forgejo
+  - git
+  - forge
+  - scm
+  - devops
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
