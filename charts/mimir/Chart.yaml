@@ -1,0 +1,19 @@
+apiVersion: v2
+name: mimir
+description: Mimir horizontally scalable long term storage for Prometheus metrics
+type: application
+version: 0.1.0
+appVersion: "2.13.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://grafana.com/oss/mimir
+keywords:
+  - mimir
+  - metrics
+  - prometheus
+  - tsdb
+  - monitoring
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
