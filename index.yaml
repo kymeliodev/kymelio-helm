@@ -1,2 +1,124 @@
 apiVersion: v1
-entries: {}
+entries:
+  keycloak:
+  - apiVersion: v2
+    appVersion: "25.0"
+    created: "2026-06-14T20:32:00.198813458Z"
+    description: Open source identity and access management
+    digest: f4d59da392b932ace5c4cff29adb0dc9e0a0a94dfc1d1b8822b64f5b6621ff5d
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - keycloak
+    - iam
+    - identity
+    - oidc
+    - saml
+    - sso
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: keycloak
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.keycloak.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/keycloak-0.1.1/keycloak-0.1.1.tgz
+    version: 0.1.1
+  minio:
+  - apiVersion: v2
+    appVersion: RELEASE.2024-08-17T01-24-54Z
+    created: "2026-06-14T20:32:00.36435917Z"
+    description: High performance S3 compatible object storage
+    digest: a222739bba763b927ee3a4ae671281f9646ef1d31c8923acd059d664dc3debc9
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - minio
+    - object-storage
+    - s3
+    - storage
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: minio
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://min.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/minio-0.1.1/minio-0.1.1.tgz
+    version: 0.1.1
+  postgresql:
+  - apiVersion: v2
+    appVersion: "16.4"
+    created: "2026-06-14T20:32:00.533145604Z"
+    description: PostgreSQL object-relational database server
+    digest: 3f2d0dc306578dcd54eb622de0a9adfd86afb626217a388a6f655bfe8e43af09
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: postgresql
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.postgresql.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/postgresql-0.1.1/postgresql-0.1.1.tgz
+    version: 0.1.1
+  rabbitmq:
+  - apiVersion: v2
+    appVersion: "3.13"
+    created: "2026-06-14T20:32:00.706833902Z"
+    description: Multi protocol message broker implementing AMQP
+    digest: bebfa921fe0b8e265fe796093339275f793e2ab47696a120271b1c70ef05a7dd
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - rabbitmq
+    - amqp
+    - message-broker
+    - queue
+    - messaging
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: rabbitmq
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.rabbitmq.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/rabbitmq-0.1.1/rabbitmq-0.1.1.tgz
+    version: 0.1.1
+  redis:
+  - apiVersion: v2
+    appVersion: "7.4"
+    created: "2026-06-14T20:32:00.872833151Z"
+    description: In-memory data structure store used as database, cache and message
+      broker
+    digest: 1e70e4e275846ac2a7f7a1189511502396bf3c9fd6b04b47920687fbb40d34c3
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - redis
+    - cache
+    - key-value
+    - database
+    - nosql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: redis
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://redis.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/redis-0.1.1/redis-0.1.1.tgz
+    version: 0.1.1
+generated: "2026-06-14T20:32:00.87283948Z"
