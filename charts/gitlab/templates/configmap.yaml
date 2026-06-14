@@ -1,0 +1,10 @@
+{{- if .Values.config -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitlab.fullname" . }}
+  labels:
+    {{- include "gitlab.labels" . | nindent 4 }}
+data:
+  {{- toYaml .Values.config | nindent 2 }}
+{{- end }}
