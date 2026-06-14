@@ -16,7 +16,7 @@ helm install my-minio kymelio/minio
 ### OCI registry
 
 ```sh
-helm install my-minio oci://ghcr.io/kymeliodev/kymelio-helm/minio --version 0.1.0
+helm install my-minio oci://ghcr.io/kymeliodev/kymelio-helm/minio --version 0.1.1
 ```
 
 ## Uninstall
