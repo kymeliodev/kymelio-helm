@@ -1,0 +1,25 @@
+Milvus has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The vector database is reachable inside the cluster over gRPC at:
+
+  {{ include "milvus.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.grpc.port }}
+
+The HTTP health and metrics endpoint is served on port {{ .Values.service.http.port }}:
+
+  http://{{ include "milvus.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}/healthz
+
+To port forward the gRPC API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "milvus.fullname" . }} {{ .Values.service.grpc.port }}:{{ .Values.service.grpc.port }}
+
+Then connect with the pymilvus client:
+
+  from pymilvus import connections
+  connections.connect(host="127.0.0.1", port="{{ .Values.service.grpc.port }}")
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
