@@ -99,8 +99,17 @@ metrics:
 # Extra environment variables passed to the container.
 extraEnv: []
 
-# Free form configuration rendered into a ConfigMap when not empty.
-config: {}
+# zot server configuration. Rendered as config.json into a ConfigMap and
+# mounted at /etc/zot/config.json. The HTTP address and storage rootDirectory
+# match the service port and the persistent volume mount path.
+config:
+  http:
+    address: 0.0.0.0
+    port: 5000
+  storage:
+    rootDirectory: /var/lib/registry
+  log:
+    level: info
 
 # Node scheduling controls.
 nodeSelector: {}
@@ -119,4 +128,4 @@ persistence:
   accessModes:
     - ReadWriteOnce
   size: 8Gi
-  mountPath: /data
+  mountPath: /var/lib/registry

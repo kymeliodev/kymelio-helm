@@ -1,4 +1,3 @@
-{{- if .Values.config -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,5 +5,5 @@ metadata:
   labels:
     {{- include "zot.labels" . | nindent 4 }}
 data:
-  {{- toYaml .Values.config | nindent 2 }}
-{{- end }}
+  config.json: |
+    {{- toJson .Values.config | nindent 4 }}
