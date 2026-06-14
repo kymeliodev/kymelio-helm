@@ -1,0 +1,22 @@
+SeaweedFS has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The combined server runs as a StatefulSet and publishes these ports:
+
+  master  {{ .Values.service.port }}
+  volume  8080
+  filer   8888
+
+Reach the master inside the cluster at:
+
+  {{ include "seaweedfs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward the master and filer to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "seaweedfs.fullname" . }} 9333:9333 8888:8888
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
