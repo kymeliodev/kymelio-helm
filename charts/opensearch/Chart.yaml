@@ -1,0 +1,14 @@
+apiVersion: v2
+name: opensearch
+description: OpenSearch single node search and analytics engine
+type: application
+version: 0.1.0
+appVersion: "2.16.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - opensearch
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
