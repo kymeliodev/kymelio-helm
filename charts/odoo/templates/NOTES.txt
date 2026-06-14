@@ -1,0 +1,32 @@
+Odoo has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "odoo.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "odoo.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open Odoo at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+Odoo requires an external PostgreSQL database. Confirm the instance at
+{{ .Values.externalDatabase.host | default "the configured host" }} is reachable
+and that the user can create databases.
+
+{{- if not .Values.externalDatabase.existingSecret }}
+
+Retrieve the database password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "odoo.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.externalDatabase.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
