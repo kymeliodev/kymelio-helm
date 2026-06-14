@@ -1,0 +1,21 @@
+The Velero server has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The server runs as a Deployment exposing metrics on port {{ .Values.service.port }} ({{ .Values.service.portName }}).
+
+Before Velero can run backups and restores you must:
+
+  1. Install the Velero Custom Resource Definitions (installed separately).
+  2. Provide an object storage backend and its credentials.
+  3. Add the provider plugins that match your environment.
+  4. Configure a BackupStorageLocation and a VolumeSnapshotLocation.
+
+Check the server rollout with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "velero.fullname" . }}
+
+Scrape metrics inside the cluster at:
+
+  {{ include "velero.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
