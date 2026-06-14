@@ -1,0 +1,28 @@
+authentik has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "authentik.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "authentik.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the setup flow at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/if/flow/initial-setup/
+
+This release expects an external PostgreSQL database and Redis instance:
+
+  PostgreSQL: {{ .Values.externalDatabase.host }}:{{ .Values.externalDatabase.port }}
+  Redis:      {{ .Values.externalRedis.host }}:{{ .Values.externalRedis.port }}
+
+Make sure the database password is provided through extraEnv as
+AUTHENTIK_POSTGRESQL__PASSWORD before the server can start.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
