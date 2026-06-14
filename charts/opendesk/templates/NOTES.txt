@@ -1,4 +1,4 @@
-{{ .Chart.Name }} has been installed.
+openDesk portal placeholder has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
@@ -7,9 +7,16 @@ Reach the service from inside the cluster at:
 
   {{ include "opendesk.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
-To port forward to your workstation:
+Port forward to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "opendesk.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the portal at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+NOTE: openDesk (Sovereign Workplace) is an umbrella suite composed of many
+services. This release deploys only a representative nginx portal placeholder.
 
 Run the bundled connection test with:
 
