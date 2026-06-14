@@ -1,0 +1,20 @@
+Prometheus has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the Prometheus UI from inside the cluster at:
+
+  {{ include "prometheus.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "prometheus.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.port }}
+
+The scrape configuration is mounted from a ConfigMap at /etc/prometheus/prometheus.yml.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
