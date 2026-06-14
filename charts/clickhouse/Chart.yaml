@@ -1,0 +1,14 @@
+apiVersion: v2
+name: clickhouse
+description: A Helm chart for clickhouse
+type: application
+version: 0.1.0
+appVersion: "24.8"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - clickhouse
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
