@@ -1,0 +1,14 @@
+apiVersion: v2
+name: neo4j
+description: A Helm chart for neo4j
+type: application
+version: 0.1.0
+appVersion: "5.23"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - neo4j
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

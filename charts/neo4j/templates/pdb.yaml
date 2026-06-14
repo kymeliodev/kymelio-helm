@@ -1,0 +1,15 @@
+{{- if .Values.podDisruptionBudget.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "neo4j.fullname" . }}
+  labels:
+    {{- include "neo4j.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ . }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "neo4j.selectorLabels" . | nindent 6 }}
+{{- end }}

@@ -1,0 +1,25 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach Neo4j from inside the cluster at:
+
+  Bolt: {{ include "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.bolt.port }}
+  HTTP: {{ include "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.http.port }}
+
+To port forward the Bolt and HTTP browser ports to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "neo4j.fullname" . }} {{ .Values.service.ports.bolt.port }}:{{ .Values.service.ports.bolt.port }} {{ .Values.service.ports.http.port }}:{{ .Values.service.ports.http.port }}
+
+Then open the browser at http://127.0.0.1:{{ .Values.service.ports.http.port }}
+
+Username: {{ .Values.auth.username }}
+
+Retrieve the password. The Secret stores it as "{{ .Values.auth.username }}/<password>":
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "neo4j.secretName" . }} -o jsonpath="{.data.{{ .Values.auth.secretKeys.authKey }}}" | base64 -d
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
