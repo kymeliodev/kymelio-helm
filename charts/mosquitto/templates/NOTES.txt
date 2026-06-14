@@ -1,0 +1,21 @@
+Eclipse Mosquitto MQTT broker has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+MQTT endpoint inside the cluster:
+
+  {{ include "mosquitto.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+The bundled configuration enables anonymous access. Configure authentication
+before exposing the broker outside a trusted network.
+
+Open the MQTT listener on your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "mosquitto.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then connect a client to 127.0.0.1:{{ .Values.service.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
