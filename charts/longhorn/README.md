@@ -1,6 +1,22 @@
 # longhorn
 
-A Helm chart for longhorn.
+Deploys the Longhorn manager, the control plane component of the Longhorn cloud
+native distributed block storage system for Kubernetes.
+
+This chart installs the manager as a Deployment together with its ServiceAccount
+and cluster scoped RBAC. It does not install the Longhorn Custom Resource
+Definitions, the per node engine and instance manager components, the CSI driver
+or the UI. Those node level components are installed separately, typically from
+the upstream Longhorn deployment manifests or the official Longhorn chart, and
+must be present for the manager to operate.
+
+## Host access exception
+
+The Longhorn manager requires privileged host access to manage node disks,
+mount points and the iSCSI stack. For this reason the pod runs as root (UID 0)
+with `privileged: true` and `runAsNonRoot: false`. This is an intentional and
+documented deviation from the hardened, non root baseline applied to the other
+charts in this repository.
 
 ## Install
 
@@ -36,17 +52,17 @@ helm upgrade my-longhorn kymelio/longhorn --reuse-values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| replicaCount | int | `1` | Number of replicas when autoscaling is disabled |
-| image.repository | string | `""` | Container image repository |
+| replicaCount | int | `1` | Number of manager replicas |
+| image.repository | string | `docker.io/longhornio/longhorn-manager` | Container image repository |
 | image.pullPolicy | string | `IfNotPresent` | Image pull policy |
 | image.tag | string | `""` | Image tag, defaults to the chart appVersion |
+| command | list | `["longhorn-manager"]` | Container entrypoint |
+| args | list | manager daemon args | Arguments passed to the manager |
+| serviceAccount.create | bool | `true` | Create a ServiceAccount for the manager |
+| rbac.create | bool | `true` | Create the ClusterRole and ClusterRoleBinding |
 | service.type | string | `ClusterIP` | Kubernetes Service type |
-| service.port | int | `8080` | Service port |
-| ingress.enabled | bool | `false` | Enable an Ingress resource |
-| autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
-| podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
+| service.port | int | `9500` | Manager API port, named http |
+| podSecurityContext | object | runAsUser 0 | Pod security context, host access exception |
+| securityContext | object | privileged | Container security context, host access exception |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
-| resources | object | requests and limits | Container resource requests and limits |
-| podSecurityContext | object | runAsNonRoot | Pod security context |
-| securityContext | object | drop ALL | Container security context |

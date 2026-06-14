@@ -1,16 +1,19 @@
-{{ .Chart.Name }} has been installed.
+The Longhorn manager has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
 
-Reach the service from inside the cluster at:
+The manager runs as a Deployment exposing its API on port {{ .Values.service.port }} ({{ .Values.service.portName }}).
+
+Important: this chart installs the manager control plane only. The Longhorn
+Custom Resource Definitions, the per node engine and instance manager
+components, the CSI driver and the UI are installed separately and must be
+present for the manager to operate.
+
+Check the manager rollout with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "longhorn.fullname" . }}
+
+The manager API is reachable inside the cluster at:
 
   {{ include "longhorn.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
-
-To port forward to your workstation:
-
-  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "longhorn.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
-
-Run the bundled connection test with:
-
-  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
