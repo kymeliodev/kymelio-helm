@@ -133,4 +133,4 @@ persistence:
   accessModes:
     - ReadWriteOnce
   size: 8Gi
-  mountPath: /data
+  mountPath: /var/lib/grafana

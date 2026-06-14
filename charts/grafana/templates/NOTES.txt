@@ -1,15 +1,26 @@
-{{ .Chart.Name }} has been installed.
+Grafana has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
 
-Reach the service from inside the cluster at:
+Open the Grafana UI from inside the cluster at:
 
   {{ include "grafana.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
 To port forward to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "grafana.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.port }}
+
+Administrator user: {{ .Values.auth.adminUser }}
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the administrator password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "grafana.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
 
 Run the bundled connection test with:
 
