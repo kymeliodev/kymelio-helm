@@ -1,0 +1,20 @@
+Apache Cassandra has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+Cluster name: {{ .Values.cassandra.clusterName }}
+
+The CQL endpoint is reachable from inside the cluster at:
+
+  {{ include "cassandra.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Connect with cqlsh from a temporary client pod:
+
+  kubectl run cqlsh-client --rm -it --restart=Never \
+    --namespace {{ .Release.Namespace }} \
+    --image {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }} \
+    -- cqlsh {{ include "cassandra.fullname" . }} {{ .Values.service.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

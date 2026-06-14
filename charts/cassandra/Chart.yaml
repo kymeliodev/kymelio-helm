@@ -1,0 +1,14 @@
+apiVersion: v2
+name: cassandra
+description: A Helm chart for cassandra
+type: application
+version: 0.1.0
+appVersion: "5.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - cassandra
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
