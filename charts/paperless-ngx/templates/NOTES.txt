@@ -1,0 +1,41 @@
+Paperless-ngx has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "paperless-ngx.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "paperless-ngx.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the web interface at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+Paperless-ngx requires an external Redis service for its task queue. This
+release is configured to use:
+
+  Redis: {{ .Values.externalRedis.url }}
+
+The document database runs on SQLite stored on the persistent volume at
+{{ .Values.persistence.mountPath }}.
+
+Create the initial superuser once the pod is running:
+
+  kubectl --namespace {{ .Release.Namespace }} exec -it {{ include "paperless-ngx.fullname" . }}-0 -- \
+    python3 manage.py createsuperuser
+
+{{- if not .Values.auth.existingSecret }}
+
+The secret key is stored in the release Secret. Retrieve it with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "paperless-ngx.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.secretKeyKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
