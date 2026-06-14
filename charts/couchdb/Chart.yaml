@@ -1,0 +1,18 @@
+apiVersion: v2
+name: couchdb
+description: Apache CouchDB document database
+type: application
+version: 0.1.0
+appVersion: "3.3"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://couchdb.apache.org
+keywords:
+  - couchdb
+  - database
+  - nosql
+  - document
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
