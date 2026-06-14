@@ -18,7 +18,7 @@ helm install my-keycloak kymelio/keycloak
 ### OCI registry
 
 ```sh
-helm install my-keycloak oci://ghcr.io/kymeliodev/kymelio-helm/keycloak --version 0.1.0
+helm install my-keycloak oci://ghcr.io/kymeliodev/kymelio-helm/keycloak --version 0.1.1
 ```
 
 ## Uninstall

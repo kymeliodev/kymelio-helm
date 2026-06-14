@@ -29,13 +29,13 @@ helm install my-postgresql kymelio/postgresql
 ### OCI registry
 
 ```sh
-helm install my-postgresql oci://ghcr.io/kymeliodev/kymelio-helm/postgresql --version 0.1.0
+helm install my-postgresql oci://ghcr.io/kymeliodev/kymelio-helm/postgresql --version 0.1.1
 ```
 
 You can pull or template charts directly from the registry as well:
 
 ```sh
-helm pull oci://ghcr.io/kymeliodev/kymelio-helm/postgresql --version 0.1.0
+helm pull oci://ghcr.io/kymeliodev/kymelio-helm/postgresql --version 0.1.1
 ```
 
 ## Catalog

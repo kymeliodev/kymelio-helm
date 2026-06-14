@@ -16,7 +16,7 @@ helm install my-redis kymelio/redis
 ### OCI registry
 
 ```sh
-helm install my-redis oci://ghcr.io/kymeliodev/kymelio-helm/redis --version 0.1.0
+helm install my-redis oci://ghcr.io/kymeliodev/kymelio-helm/redis --version 0.1.1
 ```
 
 ## Uninstall

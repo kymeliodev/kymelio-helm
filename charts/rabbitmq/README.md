@@ -16,7 +16,7 @@ helm install my-rabbitmq kymelio/rabbitmq
 ### OCI registry
 
 ```sh
-helm install my-rabbitmq oci://ghcr.io/kymeliodev/kymelio-helm/rabbitmq --version 0.1.0
+helm install my-rabbitmq oci://ghcr.io/kymeliodev/kymelio-helm/rabbitmq --version 0.1.1
 ```
 
 ## Uninstall
