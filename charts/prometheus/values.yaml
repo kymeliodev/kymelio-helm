@@ -135,4 +135,4 @@ persistence:
   accessModes:
     - ReadWriteOnce
   size: 8Gi
-  mountPath: /data
+  mountPath: /prometheus
