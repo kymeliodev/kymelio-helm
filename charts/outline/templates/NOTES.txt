@@ -1,0 +1,32 @@
+Outline has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "outline.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "outline.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Outline requires external PostgreSQL and Redis services. This release is
+configured to use:
+
+  Database: {{ .Values.externalDatabase.url }}
+  Redis:    {{ .Values.externalRedis.url }}
+
+Make sure both are reachable before the pod becomes ready.
+
+{{- if not .Values.auth.existingSecret }}
+
+SECRET_KEY and UTILS_SECRET are stored in the release Secret. Retrieve them with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "outline.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.secretKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

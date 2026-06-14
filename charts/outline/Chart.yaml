@@ -1,0 +1,19 @@
+apiVersion: v2
+name: outline
+description: Collaborative team knowledge base and wiki backed by PostgreSQL and Redis
+type: application
+version: 0.1.0
+appVersion: "0.79.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/outline/outline
+keywords:
+  - outline
+  - wiki
+  - knowledge-base
+  - documentation
+  - collaboration
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
