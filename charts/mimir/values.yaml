@@ -29,8 +29,9 @@ podAnnotations: {}
 # Pod level security context.
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 1000
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
   seccompProfile:
     type: RuntimeDefault
 
@@ -48,7 +49,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
-  portName: mimir
+  portName: http
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -99,8 +100,37 @@ metrics:
 # Extra environment variables passed to the container.
 extraEnv: []
 
-# Free form configuration rendered into a ConfigMap when not empty.
-config: {}
+# Command line arguments passed to Mimir.
+args:
+  - "-config.file=/etc/mimir/mimir.yaml"
+  - "-target=all"
+
+# Mimir configuration rendered into a ConfigMap and mounted at
+# /etc/mimir/mimir.yaml. A minimal monolithic setup using the filesystem
+# backend for blocks, ruler and alertmanager storage.
+config: |
+  multitenancy_enabled: false
+  server:
+    http_listen_port: 8080
+  common:
+    storage:
+      backend: filesystem
+      filesystem:
+        dir: /data/storage
+  blocks_storage:
+    backend: filesystem
+    filesystem:
+      dir: /data/blocks
+    bucket_store:
+      sync_dir: /data/tsdb-sync
+    tsdb:
+      dir: /data/tsdb
+  ingester:
+    ring:
+      replication_factor: 1
+  store_gateway:
+    sharding_ring:
+      replication_factor: 1
 
 # Node scheduling controls.
 nodeSelector: {}

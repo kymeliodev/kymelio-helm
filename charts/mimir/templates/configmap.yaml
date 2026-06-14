@@ -1,4 +1,3 @@
-{{- if .Values.config -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,5 +5,5 @@ metadata:
   labels:
     {{- include "mimir.labels" . | nindent 4 }}
 data:
-  {{- toYaml .Values.config | nindent 2 }}
-{{- end }}
+  mimir.yaml: |
+    {{- .Values.config | nindent 4 }}
