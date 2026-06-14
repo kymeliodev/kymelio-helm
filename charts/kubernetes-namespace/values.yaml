@@ -1,112 +1,42 @@
-# Number of replicas. Ignored when autoscaling is enabled.
-replicaCount: 1
-
-# Container image configuration.
-image:
-  repository: busybox
-  pullPolicy: IfNotPresent
-  # Defaults to the chart appVersion when empty. Never use a floating tag.
-  tag: ""
-
-# Image pull secrets for private registries.
-imagePullSecrets: []
-
 # Override the chart name used in resource names.
 nameOverride: ""
 # Override the fully qualified resource name.
 fullnameOverride: ""
 
-# Service account used by the workload.
-serviceAccount:
-  create: true
-  automount: true
+# Namespace to provision and govern.
+namespace:
+  # Name of the Namespace created by this chart. Required.
+  name: example
+  # Extra labels applied to the Namespace.
+  labels: {}
+  # Extra annotations applied to the Namespace.
   annotations: {}
-  name: ""
 
-# Annotations added to the pod.
-podAnnotations: {}
+# ResourceQuota limiting aggregate resource consumption in the namespace.
+resourceQuota:
+  enabled: true
+  # Hard limits enforced across all pods in the namespace.
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "50"
 
-# Pod level security context.
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 1000
-  seccompProfile:
-    type: RuntimeDefault
-
-# Container level security context.
-securityContext:
-  allowPrivilegeEscalation: false
-  # Set to true for images that tolerate an immutable root filesystem.
-  readOnlyRootFilesystem: false
-  runAsNonRoot: true
-  capabilities:
-    drop:
-      - ALL
-
-# Service exposing the workload.
-service:
-  type: ClusterIP
-  port: 8080
-  portName: kubernetes-namespace
-
-# Ingress configuration. Disabled by default.
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
-
-# Resource requests and limits.
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# LimitRange applying default requests and limits to containers that omit them.
+limitRange:
+  enabled: true
   limits:
-    cpu: 500m
-    memory: 512Mi
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
 
-# Horizontal pod autoscaler. Disabled by default.
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
-
-# Pod disruption budget. Disabled by default.
-podDisruptionBudget:
-  enabled: false
-  minAvailable: 1
-
-# Network policy. Disabled by default.
+# Default deny NetworkPolicy isolating the namespace. When enabled it denies all
+# ingress and egress for pods in the namespace until explicit allow policies are
+# added alongside it.
 networkPolicy:
-  enabled: false
-  ingress: []
-
-# Prometheus integration. Disabled by default.
-metrics:
-  serviceMonitor:
-    enabled: false
-    interval: 30s
-    scrapeTimeout: 10s
-    labels: {}
-
-# Extra environment variables passed to the container.
-extraEnv: []
-
-# Free form configuration rendered into a ConfigMap when not empty.
-config: {}
-
-# Node scheduling controls.
-nodeSelector: {}
-tolerations: []
-affinity: {}
-
-# Image used by the helm test connection check.
-tests:
-  image: busybox:1.36
+  enabled: true

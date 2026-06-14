@@ -1,16 +1,27 @@
-{{ .Chart.Name }} has been installed.
+The namespace "{{ .Values.namespace.name }}" has been provisioned.
 
 Release name: {{ .Release.Name }}
-Namespace:    {{ .Release.Namespace }}
 
-Reach the service from inside the cluster at:
+The following governance objects were applied:
 
-  {{ include "kubernetes-namespace.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+  Namespace:     {{ .Values.namespace.name }}
+{{- if .Values.resourceQuota.enabled }}
+  ResourceQuota: {{ .Values.namespace.name }}-quota
+{{- end }}
+{{- if .Values.limitRange.enabled }}
+  LimitRange:    {{ .Values.namespace.name }}-limits
+{{- end }}
+{{- if .Values.networkPolicy.enabled }}
+  NetworkPolicy: {{ .Values.namespace.name }}-default-deny (default deny ingress and egress)
+{{- end }}
 
-To port forward to your workstation:
+Inspect the namespace and its quota:
 
-  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "kubernetes-namespace.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+  kubectl get namespace {{ .Values.namespace.name }}
+  kubectl --namespace {{ .Values.namespace.name }} get resourcequota,limitrange,networkpolicy
 
-Run the bundled connection test with:
+{{- if .Values.networkPolicy.enabled }}
 
-  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+The default deny NetworkPolicy blocks all pod traffic in the namespace. Add
+explicit allow NetworkPolicies for the connections your workloads need.
+{{- end }}

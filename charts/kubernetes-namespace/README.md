@@ -1,6 +1,11 @@
 # kubernetes-namespace
 
-A Helm chart for kubernetes-namespace.
+Provision a Kubernetes namespace with quota, limits and isolation.
+
+This chart does not deploy any workload. It creates a Namespace and a set of
+governance objects scoped to it: a ResourceQuota, a LimitRange and a default
+deny NetworkPolicy. Use it to stamp out consistently governed namespaces for
+teams or environments.
 
 ## Install
 
@@ -9,44 +14,46 @@ A Helm chart for kubernetes-namespace.
 ```sh
 helm repo add kymelio https://kymeliodev.github.io/kymelio-helm
 helm repo update
-helm install my-kubernetes-namespace kymelio/kubernetes-namespace
+helm install team-a kymelio/kubernetes-namespace --set namespace.name=team-a
 ```
 
 ### OCI registry
 
 ```sh
-helm install my-kubernetes-namespace oci://ghcr.io/kymeliodev/kymelio-helm/kubernetes-namespace --version 0.1.0
+helm install team-a oci://ghcr.io/kymeliodev/kymelio-helm/kubernetes-namespace \
+  --version 0.1.0 --set namespace.name=team-a
 ```
 
 ## Uninstall
 
 ```sh
-helm uninstall my-kubernetes-namespace
+helm uninstall team-a
 ```
 
-## Upgrading
+Uninstalling removes the Namespace and everything inside it. Make sure the
+namespace holds nothing you need to keep before uninstalling.
 
-Review the chart version change and your overridden values before upgrading:
+## What it creates
 
-```sh
-helm upgrade my-kubernetes-namespace kymelio/kubernetes-namespace --reuse-values
-```
+| Object | Toggle | Description |
+|--------|--------|-------------|
+| Namespace | always | The namespace named by `namespace.name` |
+| ResourceQuota | `resourceQuota.enabled` | Caps aggregate CPU, memory and pod count |
+| LimitRange | `limitRange.enabled` | Applies default container requests and limits |
+| NetworkPolicy | `networkPolicy.enabled` | Default deny for ingress and egress |
+
+The default deny NetworkPolicy blocks all pod traffic in the namespace until you
+add explicit allow policies next to it.
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| replicaCount | int | `1` | Number of replicas when autoscaling is disabled |
-| image.repository | string | `""` | Container image repository |
-| image.pullPolicy | string | `IfNotPresent` | Image pull policy |
-| image.tag | string | `""` | Image tag, defaults to the chart appVersion |
-| service.type | string | `ClusterIP` | Kubernetes Service type |
-| service.port | int | `8080` | Service port |
-| ingress.enabled | bool | `false` | Enable an Ingress resource |
-| autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
-| podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
-| networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
-| resources | object | requests and limits | Container resource requests and limits |
-| podSecurityContext | object | runAsNonRoot | Pod security context |
-| securityContext | object | drop ALL | Container security context |
+| namespace.name | string | `example` | Name of the Namespace to create, required |
+| namespace.labels | object | `{}` | Extra labels applied to the Namespace |
+| namespace.annotations | object | `{}` | Extra annotations applied to the Namespace |
+| resourceQuota.enabled | bool | `true` | Create a ResourceQuota in the namespace |
+| resourceQuota.hard | object | cpu, memory, pods | Hard limits enforced by the quota |
+| limitRange.enabled | bool | `true` | Create a LimitRange in the namespace |
+| limitRange.limits | list | container defaults | Default and request limits per type |
+| networkPolicy.enabled | bool | `true` | Create a default deny NetworkPolicy |
