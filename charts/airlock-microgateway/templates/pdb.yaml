@@ -1,0 +1,15 @@
+{{- if .Values.podDisruptionBudget.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "airlock-microgateway.fullname" . }}
+  labels:
+    {{- include "airlock-microgateway.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ . }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "airlock-microgateway.selectorLabels" . | nindent 6 }}
+{{- end }}

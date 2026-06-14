@@ -1,0 +1,19 @@
+apiVersion: v2
+name: airlock-microgateway
+description: Airlock Microgateway operator and gateway that enforces API security and WAF policies for Kubernetes workloads
+type: application
+version: 0.1.0
+appVersion: "4.4"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - airlock
+  - microgateway
+  - waf
+  - api-security
+  - operator
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
