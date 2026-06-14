@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opentalk.fullname" . }}
+  labels:
+    {{- include "opentalk.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "opentalk.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "opentalk.labels" . | nindent 8 }}
+    spec:
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "opentalk.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.portName }}
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: OPENTALK_CTRL_HTTP_ADDR
+              value: "0.0.0.0:{{ .Values.service.port }}"
+            - name: OPENTALK_CTRL_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "opentalk.secretName" . }}
+                  key: {{ .Values.auth.secretKeys.serviceKey }}
+            - name: OPENTALK_CTRL_DATABASE_HOST
+              value: {{ .Values.externalDatabase.host | quote }}
+            - name: OPENTALK_CTRL_DATABASE_PORT
+              value: {{ .Values.externalDatabase.port | quote }}
+            - name: OPENTALK_CTRL_DATABASE_NAME
+              value: {{ .Values.externalDatabase.database | quote }}
+            - name: OPENTALK_CTRL_DATABASE_USER
+              value: {{ .Values.externalDatabase.user | quote }}
+            - name: OPENTALK_CTRL_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalDatabase.existingSecret | default (include "opentalk.fullname" .) }}
+                  key: {{ .Values.externalDatabase.existingSecretPasswordKey }}
+            - name: OPENTALK_CTRL_REDIS_HOST
+              value: {{ .Values.externalRedis.host | quote }}
+            - name: OPENTALK_CTRL_REDIS_PORT
+              value: {{ .Values.externalRedis.port | quote }}
+            - name: OPENTALK_CTRL_KEYCLOAK_BASE_URL
+              value: {{ .Values.externalKeycloak.issuerUrl | quote }}
+            - name: OPENTALK_CTRL_KEYCLOAK_CLIENT_ID
+              value: {{ .Values.externalKeycloak.clientId | quote }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.portName }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.portName }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
