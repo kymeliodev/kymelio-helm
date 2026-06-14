@@ -101,8 +101,14 @@ metrics:
     scrapeTimeout: 10s
     labels: {}
 
-# Extra environment variables passed to the container.
-extraEnv: []
+# Extra environment variables passed to the container. The defaults configure
+# the embedded SQLite database and the public root URL. Override the database
+# variables to use an external PostgreSQL or MySQL server.
+extraEnv:
+  - name: GITEA__database__DB_TYPE
+    value: sqlite3
+  - name: GITEA__server__ROOT_URL
+    value: http://gitea.example.com/
 
 # Free form configuration rendered into a ConfigMap when not empty.
 config: {}
