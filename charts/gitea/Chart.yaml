@@ -1,0 +1,19 @@
+apiVersion: v2
+name: gitea
+description: Self hosted lightweight Git service and code hosting
+type: application
+version: 0.1.0
+appVersion: "1.22"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://about.gitea.com
+keywords:
+  - gitea
+  - git
+  - forge
+  - scm
+  - devops
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
