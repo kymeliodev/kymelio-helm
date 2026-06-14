@@ -1,0 +1,22 @@
+Quickwit has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+REST and gRPC endpoints inside the cluster:
+
+  http: {{ include "quickwit.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+  grpc: {{ include "quickwit.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.grpc.port }}
+
+To port forward the REST API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "quickwit.fullname" . }} {{ .Values.service.http.port }}:{{ .Values.service.http.port }}
+
+Then open the UI and API at:
+
+  http://127.0.0.1:{{ .Values.service.http.port }}/ui
+  http://127.0.0.1:{{ .Values.service.http.port }}/health/livez
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

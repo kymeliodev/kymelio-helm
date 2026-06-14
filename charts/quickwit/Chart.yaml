@@ -1,0 +1,18 @@
+apiVersion: v2
+name: quickwit
+description: Quickwit search engine for logs and traces
+type: application
+version: 0.1.0
+appVersion: "v0.8.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - quickwit
+  - search
+  - logs
+  - observability
+  - full-text
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
