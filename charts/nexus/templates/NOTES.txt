@@ -1,0 +1,23 @@
+Sonatype Nexus Repository has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Nexus can take a few minutes to finish initializing on first start.
+
+Web UI inside the cluster:
+
+  http://{{ include "nexus.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward the web UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "nexus.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Check the status endpoint:
+
+  curl http://127.0.0.1:{{ .Values.service.port }}/service/rest/v1/status
+
+Retrieve the generated admin password from the data volume:
+
+  kubectl --namespace {{ .Release.Namespace }} exec -it sts/{{ include "nexus.fullname" . }} -- \
+    cat /nexus-data/admin.password
