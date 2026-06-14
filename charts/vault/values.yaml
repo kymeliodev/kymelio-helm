@@ -48,10 +48,11 @@ serviceAccount:
 # Annotations added to the pod.
 podAnnotations: {}
 
-# Pod level security context.
+# Pod level security context. Matches the uid shipped in the Vault image.
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1000
+  runAsUser: 100
+  runAsGroup: 1000
   fsGroup: 1000
   seccompProfile:
     type: RuntimeDefault
@@ -70,7 +71,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8200
-  portName: vault
+  portName: http
 
 # Ingress configuration. Disabled by default.
 ingress:

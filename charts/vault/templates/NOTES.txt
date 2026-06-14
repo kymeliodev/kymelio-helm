@@ -1,16 +1,35 @@
-{{ .Chart.Name }} has been installed.
+Vault has been installed.
 
 Release name: {{ .Release.Name }}
 Namespace:    {{ .Release.Namespace }}
 
-Reach the service from inside the cluster at:
+Reach the API from inside the cluster at:
 
   {{ include "vault.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
-To port forward to your workstation:
+Port forward to your workstation:
 
   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "vault.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then set the client address and check status:
+
+  export VAULT_ADDR=http://127.0.0.1:{{ .Values.service.port }}
+  vault status
+
+{{- if and .Values.devMode.enabled (not .Values.auth.existingSecret) }}
+
+Retrieve the development root token with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "vault.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.rootTokenKey }}}" | base64 -d
+{{- end }}
 
 Run the bundled connection test with:
 
   helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+{{- if .Values.devMode.enabled }}
+
+WARNING: this release runs in development mode. All data is held in memory and
+is lost on restart. Development mode is not suitable for production.
+{{- end }}

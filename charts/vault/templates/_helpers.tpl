@@ -59,3 +59,31 @@ Service account name.
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Name of the Secret holding the development root token.
+*/}}
+{{- define "vault.secretName" -}}
+{{- if .Values.auth.existingSecret }}
+{{- .Values.auth.existingSecret }}
+{{- else }}
+{{- include "vault.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Resolve the development root token. Reuse an existing value on upgrade so a
+generated token stays stable across releases.
+*/}}
+{{- define "vault.rootToken" -}}
+{{- if .Values.auth.rootToken }}
+{{- .Values.auth.rootToken }}
+{{- else }}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace (include "vault.fullname" .) }}
+{{- if and $existing (index $existing.data .Values.auth.secretKeys.rootTokenKey) }}
+{{- index $existing.data .Values.auth.secretKeys.rootTokenKey | b64dec }}
+{{- else }}
+{{- randAlphaNum 24 }}
+{{- end }}
+{{- end }}
+{{- end }}
