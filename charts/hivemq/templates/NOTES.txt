@@ -1,0 +1,23 @@
+HiveMQ Community Edition MQTT broker has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+MQTT endpoint inside the cluster:
+
+  {{ include "hivemq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.mqtt.port }}
+
+Control center / HTTP endpoint inside the cluster:
+
+  {{ include "hivemq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+
+No authentication is configured by default. Anyone able to reach the listener
+can connect. Add an authentication extension before exposing the broker.
+
+Forward the MQTT listener to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "hivemq.fullname" . }} {{ .Values.service.mqtt.port }}:{{ .Values.service.mqtt.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
