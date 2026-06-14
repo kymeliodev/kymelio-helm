@@ -1,0 +1,14 @@
+apiVersion: v2
+name: nats
+description: NATS server with JetStream, deployed as a StatefulSet with persistent storage
+type: application
+version: 0.1.0
+appVersion: "2.10"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - nats
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
