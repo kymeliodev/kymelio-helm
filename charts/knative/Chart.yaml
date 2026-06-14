@@ -1,0 +1,20 @@
+apiVersion: v2
+name: knative
+description: Knative Serving controller for serverless workloads on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "v1.15.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/knative/serving
+keywords:
+  - knative
+  - serving
+  - serverless
+  - controller
+  - autoscaling
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

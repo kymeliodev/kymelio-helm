@@ -1,0 +1,77 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "knative.fullname" . }}
+  labels:
+    {{- include "knative.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - serving.knative.dev
+      - autoscaling.internal.knative.dev
+      - networking.internal.knative.dev
+      - caching.internal.knative.dev
+    resources:
+      - "*"
+      - "*/status"
+      - "*/finalizers"
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - pods
+      - endpoints
+      - configmaps
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "knative.fullname" . }}
+  labels:
+    {{- include "knative.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "knative.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "knative.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
