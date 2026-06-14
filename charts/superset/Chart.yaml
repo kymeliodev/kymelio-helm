@@ -1,0 +1,18 @@
+apiVersion: v2
+name: superset
+description: Apache Superset data exploration and business intelligence platform
+type: application
+version: 0.1.0
+appVersion: "4.0.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - superset
+  - analytics
+  - dashboards
+  - visualization
+  - business-intelligence
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
