@@ -11,7 +11,7 @@ spec:
   restartPolicy: Never
   securityContext:
     runAsNonRoot: true
-    runAsUser: 65534
+    runAsUser: 70
     seccompProfile:
       type: RuntimeDefault
   containers:
@@ -23,13 +23,14 @@ spec:
         capabilities:
           drop:
             - ALL
-      command: ["sh", "-c"]
-      args:
-        - nc -z -w5 {{ include "timescaledb.fullname" . }} {{ .Values.service.port }}
+      command:
+        - sh
+        - -c
+        - exec pg_isready -h {{ include "timescaledb.fullname" . }} -p {{ .Values.service.port }} -U {{ .Values.auth.username | quote }}
       resources:
         requests:
           cpu: 10m
-          memory: 16Mi
-        limits:
-          cpu: 50m
           memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
