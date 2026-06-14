@@ -1,0 +1,14 @@
+apiVersion: v2
+name: pulsar
+description: Apache Pulsar messaging and streaming platform running in standalone mode
+type: application
+version: 0.1.0
+appVersion: "3.3.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - pulsar
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

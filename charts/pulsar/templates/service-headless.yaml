@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pulsar.fullname" . }}-headless
+  labels:
+    {{- include "pulsar.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.pulsar.port }}
+      targetPort: {{ .Values.service.pulsar.portName }}
+      protocol: TCP
+      name: {{ .Values.service.pulsar.portName }}
+    - port: {{ .Values.service.http.port }}
+      targetPort: {{ .Values.service.http.portName }}
+      protocol: TCP
+      name: {{ .Values.service.http.portName }}
+  selector:
+    {{- include "pulsar.selectorLabels" . | nindent 4 }}

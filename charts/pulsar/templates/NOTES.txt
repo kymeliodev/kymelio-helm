@@ -1,0 +1,30 @@
+Apache Pulsar has been installed in standalone mode.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+This release runs a single standalone broker that bundles the broker,
+bookie and ZooKeeper in one process. It is intended for development and
+testing, not for production clustering.
+
+Pulsar broker endpoint inside the cluster:
+
+  pulsar://{{ include "pulsar.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.pulsar.port }}
+
+HTTP admin and REST API endpoint inside the cluster:
+
+  http://{{ include "pulsar.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+
+Port forward the broker to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "pulsar.fullname" . }} {{ .Values.service.pulsar.port }}:{{ .Values.service.pulsar.port }}
+
+Port forward the HTTP admin API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "pulsar.fullname" . }} {{ .Values.service.http.port }}:{{ .Values.service.http.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.http.port }}/admin/v2/brokers/health
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
