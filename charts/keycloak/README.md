@@ -1,0 +1,83 @@
+# keycloak
+
+Open source identity and access management, deployed as a stateless Deployment.
+
+By default the chart starts Keycloak in development mode (`start-dev`) so it
+installs without an external database. This is not suitable for production.
+
+## Install
+
+### HTTP repository
+
+```sh
+helm repo add kymelio https://kymeliodev.github.io/kymelio-helm
+helm repo update
+helm install my-keycloak kymelio/keycloak
+```
+
+### OCI registry
+
+```sh
+helm install my-keycloak oci://ghcr.io/kymeliodev/kymelio-helm/keycloak --version 0.1.0
+```
+
+## Uninstall
+
+```sh
+helm uninstall my-keycloak
+```
+
+## Upgrading
+
+Review the chart version change and your overridden values before upgrading. A
+generated password is preserved across upgrades when you keep `auth.adminPassword`
+empty and reuse the release Secret.
+
+```sh
+helm upgrade my-keycloak kymelio/keycloak
+```
+
+## Production mode
+
+Set `production=true` to start Keycloak with `start`. Production mode requires an
+external database and a hostname, supplied through `extraEnv`, for example:
+
+```yaml
+production: true
+extraEnv:
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://postgresql:5432/keycloak
+  - name: KC_DB_USERNAME
+    value: keycloak
+  - name: KC_DB_PASSWORD
+    value: changeme
+  - name: KC_HOSTNAME
+    value: keycloak.example.com
+```
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| replicaCount | int | `1` | Number of replicas when autoscaling is disabled |
+| image.repository | string | `quay.io/keycloak/keycloak` | Container image repository |
+| image.pullPolicy | string | `IfNotPresent` | Image pull policy |
+| image.tag | string | `""` | Image tag, defaults to the chart appVersion |
+| auth.adminUser | string | `admin` | Initial admin user created on first start |
+| auth.adminPassword | string | `""` | Admin password, generated when empty |
+| auth.existingSecret | string | `""` | Use an existing Secret for credentials |
+| auth.secretKeys.passwordKey | string | `admin-password` | Secret key holding the password |
+| production | bool | `false` | Start in production mode, requires an external database |
+| service.type | string | `ClusterIP` | Kubernetes Service type |
+| service.port | int | `8080` | Service port |
+| ingress.enabled | bool | `false` | Enable an Ingress resource |
+| resources | object | requests and limits | Container resource requests and limits |
+| podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
+| securityContext | object | drop ALL | Container security context |
+| autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
+| podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
+| networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| extraEnv | list | `[]` | Extra environment variables, required for production mode |

@@ -1,0 +1,37 @@
+Keycloak has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "keycloak.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "keycloak.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the admin console at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/admin/
+
+Admin user: {{ .Values.auth.adminUser }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the admin password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "keycloak.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+{{- if not .Values.production }}
+
+WARNING: this release runs in development mode (start-dev). It is not suitable
+for production. Set production=true and supply an external database and hostname
+configuration through extraEnv before exposing it.
+{{- end }}
