@@ -1,0 +1,132 @@
+# Number of replicas. This chart deploys a single primary instance.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/library/postgres
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Database authentication and bootstrap settings.
+auth:
+  # Superuser name created on first start.
+  username: postgres
+  # Database created on first start.
+  database: postgres
+  # Superuser password. A random password is generated when left empty.
+  password: ""
+  # Use an existing Secret instead of managing credentials in this chart.
+  existingSecret: ""
+  secretKeys:
+    # Key inside the Secret that holds the password.
+    passwordKey: postgres-password
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context. Matches the postgres user shipped in the image.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  runAsGroup: 999
+  fsGroup: 999
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container level security context.
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service exposing PostgreSQL.
+service:
+  type: ClusterIP
+  port: 5432
+  portName: postgresql
+
+# Ingress is not applicable to a TCP database and stays disabled.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+# Autoscaling is not supported for a single primary and stays disabled.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+metrics:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container.
+extraEnv: []
+
+# Free form configuration rendered into a ConfigMap when not empty.
+config: {}
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Persistent storage for the database directory.
+persistence:
+  enabled: true
+  # Leave empty to use the cluster default StorageClass.
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  mountPath: /var/lib/postgresql/data
+
+# Image used by the helm test connection check. Defaults to the server image.
+tests:
+  image: docker.io/library/postgres:16.4

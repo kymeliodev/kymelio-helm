@@ -1,0 +1,32 @@
+RabbitMQ has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+AMQP endpoint inside the cluster:
+
+  {{ include "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.amqp.port }}
+
+Management UI endpoint inside the cluster:
+
+  {{ include "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.management.port }}
+
+User: {{ .Values.auth.username }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "rabbitmq.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Open the management UI on your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "rabbitmq.fullname" . }} {{ .Values.service.management.port }}:{{ .Values.service.management.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.management.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

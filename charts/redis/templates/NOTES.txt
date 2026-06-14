@@ -1,0 +1,36 @@
+Redis has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.auth.enabled }}
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "redis.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Connect with redis-cli from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run redis-client --rm -it --restart=Never \
+    --image {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }} \
+    --env REDIS_PASSWORD=<password> -- \
+    redis-cli -h {{ include "redis.fullname" . }} -p {{ .Values.service.port }} -a "$REDIS_PASSWORD"
+{{- else }}
+
+Connect with redis-cli from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run redis-client --rm -it --restart=Never \
+    --image {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }} -- \
+    redis-cli -h {{ include "redis.fullname" . }} -p {{ .Values.service.port }}
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

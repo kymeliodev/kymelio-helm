@@ -1,0 +1,35 @@
+MinIO has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+S3 API endpoint inside the cluster:
+
+  {{ include "minio.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.api.port }}
+
+Console endpoint inside the cluster:
+
+  {{ include "minio.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.console.port }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the root user with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "minio.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.rootUserKey }}}" | base64 -d
+
+Retrieve the root password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "minio.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.rootPasswordKey }}}" | base64 -d
+{{- end }}
+
+Port forward the console to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "minio.fullname" . }} {{ .Values.service.console.port }}:{{ .Values.service.console.port }}
+
+Then open http://127.0.0.1:{{ .Values.service.console.port }} in your browser.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
