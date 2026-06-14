@@ -1,0 +1,23 @@
+KEDA operator has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The KEDA operator is now running with leader election enabled. It watches
+ScaledObject and ScaledJob custom resources and autoscales the workloads they
+target based on event sources.
+
+NOTE: this chart does not install the KEDA custom resource definitions. Install
+the CRDs separately before creating any ScaledObject or ScaledJob resources.
+
+Check the operator is ready with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "keda.fullname" . }}
+
+Scrape operator metrics from inside the cluster at:
+
+  {{ include "keda.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
