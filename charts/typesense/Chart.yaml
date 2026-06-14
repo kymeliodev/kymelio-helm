@@ -1,0 +1,17 @@
+apiVersion: v2
+name: typesense
+description: Typesense fast typo tolerant search engine
+type: application
+version: 0.1.0
+appVersion: "27.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - typesense
+  - search
+  - full-text
+  - instant-search
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

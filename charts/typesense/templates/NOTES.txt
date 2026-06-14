@@ -1,0 +1,26 @@
+Typesense has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+API endpoint inside the cluster:
+
+  http://{{ include "typesense.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the API key with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "typesense.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.apiKeyKey }}}" | base64 -d
+{{- end }}
+
+Check the server health from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run typesense-client --rm -it --restart=Never \
+    --image curlimages/curl -- \
+    curl -s http://{{ include "typesense.fullname" . }}:{{ .Values.service.port }}/health
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
