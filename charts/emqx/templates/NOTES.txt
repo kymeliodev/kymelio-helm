@@ -1,0 +1,29 @@
+EMQX MQTT broker has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+MQTT endpoint inside the cluster:
+
+  {{ include "emqx.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.mqtt.port }}
+
+Dashboard endpoint inside the cluster:
+
+  {{ include "emqx.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.dashboard.port }}
+
+Default dashboard credentials:
+
+  username: admin
+  password: public
+
+Change the default password after the first login.
+
+Open the dashboard on your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "emqx.fullname" . }} {{ .Values.service.dashboard.port }}:{{ .Values.service.dashboard.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.dashboard.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
