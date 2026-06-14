@@ -1,0 +1,18 @@
+apiVersion: v2
+name: mattermost
+description: Mattermost self hosted team collaboration and messaging
+type: application
+version: 0.1.0
+appVersion: "9.10"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - mattermost
+  - chat
+  - collaboration
+  - messaging
+  - team
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com
