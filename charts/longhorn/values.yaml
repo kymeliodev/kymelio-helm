@@ -108,11 +108,18 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # The longhorn-manager exposes Prometheus metrics at /metrics on the manager
+  # port (9500). Enabling this points the ServiceMonitor at that path.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Extra manager flags applied as --key=value on startup.
+# Example: { upgrade-version-check: "false" }
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

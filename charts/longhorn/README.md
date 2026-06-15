@@ -48,6 +48,28 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-longhorn kymelio/longhorn --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+The longhorn-manager exposes Prometheus metrics at `/metrics` on the manager
+port (9500). Enable metrics and the ServiceMonitor to scrape that endpoint.
+
+```sh
+helm install my-longhorn kymelio/longhorn \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Manager flags
+
+Tune the manager with `parameters`, which are appended as `--key=value` flags.
+
+```yaml
+parameters:
+  upgrade-version-check: "false"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -65,4 +87,6 @@ helm upgrade my-longhorn kymelio/longhorn --reuse-values
 | podSecurityContext | object | runAsUser 0 | Pod security context, host access exception |
 | securityContext | object | privileged | Container security context, host access exception |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the manager /metrics endpoint via the ServiceMonitor |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Extra manager flags applied as --key=value |
