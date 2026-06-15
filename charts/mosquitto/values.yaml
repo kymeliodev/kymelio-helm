@@ -121,3 +121,25 @@ persistence:
     - ReadWriteOnce
   size: 8Gi
   mountPath: /mosquitto/data
+
+# Mosquitto broker configuration rendered into the mounted mosquitto.conf.
+mosquittoConf: |-
+  listener 1883
+  allow_anonymous true
+  persistence true
+  persistence_location /mosquitto/data/
+
+# Extra command line arguments appended to the container entrypoint.
+extraArgs: []
+# Extra environment variables sourced from ConfigMaps or Secrets (envFrom).
+extraEnvFrom: []
+# Additional volumes and mounts for the workload.
+extraVolumes: []
+extraVolumeMounts: []
+# Additional init containers and sidecar containers.
+initContainers: []
+sidecars: []
+# Extra labels added to the pod template.
+podLabels: {}
+# Pod priority class.
+priorityClassName: ""
