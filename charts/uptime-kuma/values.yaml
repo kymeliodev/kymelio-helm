@@ -91,6 +91,15 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port for the Uptime Kuma Prometheus
+  # endpoint, served at metrics.path on the http port (3001). The endpoint
+  # requires authentication, so the ServiceMonitor needs basic auth or an API
+  # key (see the chart README).
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 3001
+  # HTTP path where Uptime Kuma exposes Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
