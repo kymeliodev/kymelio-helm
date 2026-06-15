@@ -2,7 +2,7 @@ apiVersion: v2
 name: trivy
 description: Trivy vulnerability and misconfiguration scanner in server mode
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "0.54.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
