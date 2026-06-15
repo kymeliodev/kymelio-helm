@@ -113,11 +113,23 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Scrape the built-in telemetry endpoint. OpenBao serves Prometheus metrics at
+  # /v1/sys/metrics?format=prometheus on the API port (8200). The endpoint
+  # requires a telemetry stanza with prometheus_retention_time and, for
+  # unauthenticated scraping, unauthenticated_metrics_access. Supply these in a
+  # production server configuration through the configuration value.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path of the Prometheus metrics endpoint.
+    path: /v1/sys/metrics
+    # Query parameters added to the scrape request.
+    params:
+      format:
+        - prometheus
 
 # Extra environment variables passed to the container.
 extraEnv: []

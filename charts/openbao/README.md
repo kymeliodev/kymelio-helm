@@ -51,6 +51,81 @@ it in production. For a real deployment disable `devMode.enabled`, supply a
 production server configuration with persistent storage, and manage unsealing
 outside this chart.
 
+## Configuration
+
+### Metrics
+
+OpenBao exposes telemetry at `/v1/sys/metrics?format=prometheus` on the API port
+(8200). Set `metrics.enabled` to true and enable
+`metrics.serviceMonitor.enabled` to scrape it with the Prometheus Operator. The
+ServiceMonitor sets the path and the `format=prometheus` query parameter:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+```
+
+The endpoint only returns Prometheus output when a telemetry stanza is present.
+In a production configuration add it to the server config, together with
+unauthenticated scraping so Prometheus does not need a token:
+
+```yaml
+configuration: |
+  telemetry {
+    prometheus_retention_time = "24h"
+    disable_hostname = true
+  }
+  listener "tcp" {
+    address = "0.0.0.0:8200"
+    tls_disable = true
+    telemetry {
+      unauthenticated_metrics_access = true
+    }
+  }
+```
+
+### TLS
+
+OpenBao terminates TLS in its listener. Provide the certificate and key through
+a mounted Secret and reference them in the listener stanza of the server
+configuration:
+
+```yaml
+configuration: |
+  listener "tcp" {
+    address = "0.0.0.0:8200"
+    tls_cert_file = "/config/tls/tls.crt"
+    tls_key_file = "/config/tls/tls.key"
+  }
+extraVolumes:
+  - name: tls
+    secret:
+      secretName: openbao-tls
+extraVolumeMounts:
+  - name: tls
+    mountPath: /config/tls
+    readOnly: true
+```
+
+### Native configuration
+
+Disable development mode and supply a full HCL server configuration through
+`configuration`, which is mounted into the container. Add the path as an
+argument with `extraArgs`:
+
+```yaml
+devMode:
+  enabled: false
+configMountPath: /config
+configFileName: config.hcl
+extraArgs:
+  - server
+  - -config=/config/config.hcl
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -73,5 +148,7 @@ outside this chart.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the built-in /v1/sys/metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/v1/sys/metrics` | Metrics path scraped by the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
