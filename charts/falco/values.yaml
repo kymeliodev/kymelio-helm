@@ -93,6 +93,38 @@ metrics:
 # Extra environment variables passed to the container.
 extraEnv: []
 
+# Extra command line arguments appended to the container entrypoint.
+extraArgs: []
+
+# Extra environment variables sourced from ConfigMaps or Secrets (envFrom).
+extraEnvFrom: []
+
+# Inline application configuration. When set it is rendered into a ConfigMap and
+# mounted at configMountPath. Use this for native config files like an app.conf.
+configuration: ""
+# File name for the rendered configuration inside the mount path.
+configFileName: app.conf
+# Mount path for the configuration.
+configMountPath: /config
+# Mount the configuration as a single file using subPath. Leave empty to mount
+# the whole ConfigMap as a directory.
+configSubPath: ""
+# Use an existing ConfigMap for the configuration instead of rendering one.
+existingConfigMap: ""
+
+# Additional volumes and mounts for the workload.
+extraVolumes: []
+extraVolumeMounts: []
+
+# Additional init containers and sidecar containers.
+initContainers: []
+sidecars: []
+
+# Extra labels added to the pod template.
+podLabels: {}
+# Pod priority class.
+priorityClassName: ""
+
 # Free form configuration rendered into a ConfigMap when not empty.
 config: {}
 

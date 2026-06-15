@@ -172,11 +172,43 @@ metrics:
     scrapeTimeout: 10s
     labels: {}
 
+# Extra command line arguments appended to the container entrypoint.
+extraArgs: []
+
 # Extra environment variables passed to the container.
 extraEnv: []
 
+# Extra environment variables sourced from ConfigMaps or Secrets (envFrom).
+extraEnvFrom: []
+
+# Inline application configuration. When set it is rendered into a ConfigMap and
+# mounted at configMountPath. Use this for native config files like an app.conf.
+configuration: ""
+# File name for the rendered configuration inside the mount path.
+configFileName: app.conf
+# Mount path for the configuration.
+configMountPath: /config
+# Mount the configuration as a single file using subPath. Leave empty to mount
+# the whole ConfigMap as a directory.
+configSubPath: ""
+# Use an existing ConfigMap for the configuration instead of rendering one.
+existingConfigMap: ""
+
 # Free form configuration rendered into a ConfigMap when not empty.
 config: {}
+
+# Additional volumes and mounts for the workload.
+extraVolumes: []
+extraVolumeMounts: []
+
+# Additional init containers and sidecar containers.
+initContainers: []
+sidecars: []
+
+# Extra labels added to the pod template.
+podLabels: {}
+# Pod priority class.
+priorityClassName: ""
 
 # Node scheduling controls.
 nodeSelector: {}
@@ -317,14 +349,25 @@ read -r -d '' POD_SPEC <<'TPL' || true
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "__NAME__.serviceAccountName" . }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.extraArgs }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
@@ -345,6 +388,30 @@ read -r -d '' POD_SPEC <<'TPL' || true
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.persistence .Values.configuration .Values.existingConfigMap .Values.extraVolumeMounts }}
+          volumeMounts:
+            {{- if .Values.persistence }}
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
+            {{- if or .Values.configuration .Values.existingConfigMap }}
+            - name: config
+              mountPath: {{ .Values.configMountPath }}
+              {{- with .Values.configSubPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        {{- with .Values.sidecars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
 TPL
 
 if [ "$WORKLOAD" = "deployment" ]; then
@@ -364,12 +431,20 @@ spec:
       {{- include "__NAME__.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- if or .Values.configuration .Values.podAnnotations }}
       annotations:
+        {{- if .Values.configuration }}
+        checksum/config: {{ .Values.configuration | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       labels:
         {{- include "__NAME__.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
 ${POD_SPEC}
       {{- with .Values.nodeSelector }}
@@ -383,6 +458,17 @@ ${POD_SPEC}
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      volumes:
+        {{- if or .Values.configuration .Values.existingConfigMap }}
+        - name: config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "__NAME__.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
 TPL
 else
@@ -403,17 +489,22 @@ spec:
       {{- include "__NAME__.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- if or .Values.configuration .Values.podAnnotations }}
       annotations:
+        {{- if .Values.configuration }}
+        checksum/config: {{ .Values.configuration | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       labels:
         {{- include "__NAME__.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
 ${POD_SPEC}
-          volumeMounts:
-            - name: data
-              mountPath: {{ .Values.persistence.mountPath }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -426,10 +517,20 @@ ${POD_SPEC}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if not .Values.persistence.enabled }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
       volumes:
+        {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.configuration .Values.existingConfigMap }}
+        - name: config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "__NAME__.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
@@ -510,6 +611,20 @@ metadata:
     {{- include "__NAME__.labels" . | nindent 4 }}
 data:
   {{- toYaml .Values.config | nindent 2 }}
+{{- end }}
+TPL
+
+cat > "${CHART_DIR}/templates/config.yaml" <<'TPL'
+{{- if and .Values.configuration (not .Values.existingConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "__NAME__.fullname" . }}-config
+  labels:
+    {{- include "__NAME__.labels" . | nindent 4 }}
+data:
+  {{ .Values.configFileName }}: |
+    {{- .Values.configuration | nindent 4 }}
 {{- end }}
 TPL
 

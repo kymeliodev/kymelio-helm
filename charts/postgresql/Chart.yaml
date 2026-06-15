@@ -2,7 +2,7 @@ apiVersion: v2
 name: postgresql
 description: PostgreSQL object-relational database server
 type: application
-version: 0.1.1
+version: 0.2.0
 appVersion: "16.4"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

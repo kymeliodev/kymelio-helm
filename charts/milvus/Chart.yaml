@@ -2,7 +2,7 @@ apiVersion: v2
 name: milvus
 description: Milvus vector database for similarity search and AI applications
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v2.4.6"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

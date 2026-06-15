@@ -2,7 +2,7 @@ apiVersion: v2
 name: scylladb
 description: ScyllaDB high performance NoSQL database
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "6.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

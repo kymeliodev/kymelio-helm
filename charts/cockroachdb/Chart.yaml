@@ -2,7 +2,7 @@ apiVersion: v2
 name: cockroachdb
 description: CockroachDB distributed SQL database
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v24.2.4"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

@@ -2,7 +2,7 @@ apiVersion: v2
 name: velero
 description: Velero server for Kubernetes cluster backup, restore and disaster recovery.
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v1.14.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

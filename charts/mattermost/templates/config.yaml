@@ -1,0 +1,11 @@
+{{- if and .Values.configuration (not .Values.existingConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mattermost.fullname" . }}-config
+  labels:
+    {{- include "mattermost.labels" . | nindent 4 }}
+data:
+  {{ .Values.configFileName }}: |
+    {{- .Values.configuration | nindent 4 }}
+{{- end }}

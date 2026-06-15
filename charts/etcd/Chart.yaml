@@ -2,7 +2,7 @@ apiVersion: v2
 name: etcd
 description: etcd distributed reliable key value store
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v3.5.16"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
