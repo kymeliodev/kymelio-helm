@@ -101,7 +101,13 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Crossplane core serves controller-runtime Prometheus metrics on the metrics
+# port at /metrics by default with no extra flag. The metrics port is the
+# primary Service port. Enabling metrics scrapes that port at the path below.
 metrics:
+  enabled: false
+  # Path the metrics endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
