@@ -1,0 +1,25 @@
+{{- if or .Values.metrics.enabled .Values.tls.enabled .Values.rabbitmqConf -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rabbitmq.fullname" . }}-server-conf
+  labels:
+    {{- include "rabbitmq.labels" . | nindent 4 }}
+data:
+  {{- if .Values.metrics.enabled }}
+  enabled_plugins: |
+    [rabbitmq_management,rabbitmq_prometheus].
+  {{- end }}
+  rabbitmq.conf: |
+    {{- range $k, $v := .Values.rabbitmqConf }}
+    {{ $k }} = {{ $v }}
+    {{- end }}
+    {{- if .Values.tls.enabled }}
+    listeners.ssl.default = {{ .Values.tls.amqpsPort }}
+    ssl_options.cacertfile = {{ .Values.tls.mountPath }}/{{ .Values.tls.caFilename }}
+    ssl_options.certfile = {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+    ssl_options.keyfile = {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+    ssl_options.verify = {{ if .Values.tls.verifyPeer }}verify_peer{{ else }}verify_none{{ end }}
+    ssl_options.fail_if_no_peer_cert = {{ .Values.tls.verifyPeer }}
+    {{- end }}
+{{- end }}

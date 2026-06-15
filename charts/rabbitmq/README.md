@@ -65,4 +65,54 @@ helm upgrade my-rabbitmq kymelio/rabbitmq
 | podSecurityContext | object | runAsNonRoot 999 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the rabbitmq_prometheus plugin and publish the metrics port |
+| metrics.path | string | `/metrics` | Path the Prometheus plugin serves metrics on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| service.metrics.port | int | `15692` | Prometheus metrics service port |
+| service.metrics.portName | string | `metrics` | Prometheus metrics port name |
+| rabbitmqConf | object | `{}` | Native settings rendered into rabbitmq.conf |
+| tls.enabled | bool | `false` | Serve AMQPS using native ssl_options |
+| tls.existingSecret | string | `""` | Secret holding ca.crt, tls.crt and tls.key |
+| tls.amqpsPort | int | `5671` | AMQPS listener port published when TLS is enabled |
+| tls.verifyPeer | bool | `false` | Require and verify client certificates |
+
+## Configuration
+
+### Metrics
+
+RabbitMQ ships the `rabbitmq_prometheus` plugin, which exposes all broker
+metrics in Prometheus text format on a dedicated port (`15692`, path
+`/metrics`). Enabling metrics renders an `enabled_plugins` file that turns the
+plugin on alongside the management plugin, publishes the metrics port and wires
+the ServiceMonitor to it. No exporter sidecar is required.
+
+```sh
+helm install my-rabbitmq kymelio/rabbitmq \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Broker tuning
+
+Pass native broker settings through `rabbitmqConf`. Each key/value pair is
+rendered into `rabbitmq.conf` and mounted at `/etc/rabbitmq/rabbitmq.conf`:
+
+```yaml
+rabbitmqConf:
+  vm_memory_high_watermark.relative: "0.6"
+  channel_max: "2048"
+  default_vhost: "/"
+```
+
+### TLS
+
+RabbitMQ enables TLS through `ssl_options` in `rabbitmq.conf`. Provide a Secret
+with `ca.crt`, `tls.crt` and `tls.key`; the chart mounts it, appends the
+matching `ssl_options` and publishes the AMQPS listener on `tls.amqpsPort`:
+
+```sh
+helm install my-rabbitmq kymelio/rabbitmq \
+  --set tls.enabled=true \
+  --set tls.existingSecret=rabbitmq-tls \
+  --set tls.verifyPeer=true
+```

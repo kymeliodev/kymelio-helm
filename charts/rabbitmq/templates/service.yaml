@@ -11,9 +11,21 @@ spec:
       targetPort: {{ .Values.service.amqp.portName }}
       protocol: TCP
       name: {{ .Values.service.amqp.portName }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.tls.amqpsPort }}
+      targetPort: {{ .Values.tls.amqpsPortName }}
+      protocol: TCP
+      name: {{ .Values.tls.amqpsPortName }}
+    {{- end }}
     - port: {{ .Values.service.management.port }}
       targetPort: {{ .Values.service.management.portName }}
       protocol: TCP
       name: {{ .Values.service.management.portName }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.service.metrics.port }}
+      targetPort: {{ .Values.service.metrics.portName }}
+      protocol: TCP
+      name: {{ .Values.service.metrics.portName }}
+    {{- end }}
   selector:
     {{- include "rabbitmq.selectorLabels" . | nindent 4 }}
