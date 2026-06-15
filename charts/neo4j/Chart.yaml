@@ -2,7 +2,7 @@ apiVersion: v2
 name: neo4j
 description: Neo4j native graph database
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "5.23"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
