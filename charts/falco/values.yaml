@@ -84,6 +84,13 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port. Falco serves Prometheus metrics at
+  # /metrics on the embedded web server port (8765) when the web server and the
+  # metrics block are enabled in falco.yaml. See the README for the required
+  # configuration snippet.
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 8765
   serviceMonitor:
     enabled: false
     interval: 30s
