@@ -100,7 +100,18 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Typesense does not expose a native Prometheus endpoint. It serves operational
+# metrics as JSON at /metrics.json and /stats.json on the API port, both
+# requiring the x-typesense-api-key header. Enabling metrics annotates the pod
+# and points the ServiceMonitor at metrics.path on the API port. For true
+# Prometheus scraping, run a community exporter as a sidecar (see sidecars) that
+# polls /metrics.json and re-exports it, then set metrics.path accordingly.
 metrics:
+  # Add Prometheus scrape annotations and target metrics.path on the API port.
+  enabled: false
+  # Metrics path scraped on the API port. Typesense serves JSON at /metrics.json;
+  # set this to the path exposed by an exporter sidecar when one is in use.
+  path: /metrics.json
   serviceMonitor:
     enabled: false
     interval: 30s
