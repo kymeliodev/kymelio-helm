@@ -11,5 +11,17 @@ spec:
       targetPort: {{ .Values.service.portName }}
       protocol: TCP
       name: {{ .Values.service.portName }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.tls.port }}
+      targetPort: https
+      protocol: TCP
+      name: https
+    {{- end }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: management
+      protocol: TCP
+      name: management
+    {{- end }}
   selector:
     {{- include "keycloak.selectorLabels" . | nindent 4 }}

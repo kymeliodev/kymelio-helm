@@ -57,6 +57,53 @@ extraEnv:
     value: keycloak.example.com
 ```
 
+## Configuration
+
+### Metrics
+
+Keycloak exposes Micrometer metrics in Prometheus format at `/metrics` on the
+management interface (port 9000). The management interface is already active
+because the chart enables health checks. Set `metrics.enabled` to true to set
+`KC_METRICS_ENABLED` and expose port 9000 on the container and Service. Enable
+`metrics.serviceMonitor.enabled` to scrape it with the Prometheus Operator.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+```
+
+### TLS
+
+Keycloak terminates TLS itself. Provide a Secret holding a PEM certificate and
+key, and Keycloak reads them through `KC_HTTPS_CERTIFICATE_FILE` and
+`KC_HTTPS_CERTIFICATE_KEY_FILE`. The HTTPS port (8443) is added to the container
+and Service.
+
+```yaml
+tls:
+  enabled: true
+  existingSecret: keycloak-tls
+  certFilename: tls.crt
+  keyFilename: tls.key
+  port: 8443
+```
+
+### Native configuration
+
+Pass any Keycloak server option as an environment variable through `extraEnv`,
+for example to tune the cache or hostname:
+
+```yaml
+extraEnv:
+  - name: KC_CACHE
+    value: ispn
+  - name: KC_HOSTNAME_STRICT
+    value: "false"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -79,5 +126,11 @@ extraEnv:
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built-in /metrics endpoint on the management port |
+| metrics.port | int | `9000` | Management interface port serving /metrics and /health |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | Metrics path on the management port |
+| tls.enabled | bool | `false` | Terminate TLS in Keycloak using a mounted Secret |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+| tls.port | int | `8443` | HTTPS port served by Keycloak |
 | extraEnv | list | `[]` | Extra environment variables, required for production mode |
