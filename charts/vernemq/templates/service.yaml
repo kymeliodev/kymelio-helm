@@ -11,9 +11,21 @@ spec:
       targetPort: {{ .Values.service.mqtt.portName }}
       protocol: TCP
       name: {{ .Values.service.mqtt.portName }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.tls.mqttsPort }}
+      targetPort: {{ .Values.tls.mqttsPortName }}
+      protocol: TCP
+      name: {{ .Values.tls.mqttsPortName }}
+    {{- end }}
     - port: {{ .Values.service.epmd.port }}
       targetPort: {{ .Values.service.epmd.portName }}
       protocol: TCP
       name: {{ .Values.service.epmd.portName }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.service.metrics.port }}
+      targetPort: {{ .Values.service.metrics.portName }}
+      protocol: TCP
+      name: {{ .Values.service.metrics.portName }}
+    {{- end }}
   selector:
     {{- include "vernemq.selectorLabels" . | nindent 4 }}

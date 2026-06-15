@@ -45,7 +45,8 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the workload. The MQTT listener and EPMD are published.
+# Service exposing the workload. The MQTT listener and EPMD are published. When
+# metrics.enabled is set the HTTP status/metrics port is added.
 service:
   type: ClusterIP
   mqtt:
@@ -54,6 +55,9 @@ service:
   epmd:
     port: 4369
     portName: epmd
+  metrics:
+    port: 8888
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -94,12 +98,45 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# VerneMQ exposes a native Prometheus endpoint on its HTTP status listener
+# (port 8888, path /metrics), so no exporter sidecar is required. The HTTP
+# listener binds to localhost by default, so enabling metrics rebinds it to
+# 0.0.0.0 so Prometheus can reach it, publishes the port and wires the
+# ServiceMonitor to it.
 metrics:
+  enabled: false
+  # Path the native Prometheus endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the MQTT listener. VerneMQ configures the SSL listener
+# natively through DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT settings. When enabled
+# this chart mounts the certificate Secret, wires those settings and publishes
+# the SSL listener on tls.mqttsPort (8883).
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /vernemq/certs
+  # Require and verify client certificates (mutual TLS).
+  requireCertificate: false
+  # SSL MQTT listener port published when TLS is enabled.
+  mqttsPort: 8883
+  mqttsPortName: mqtts
+
+# Native VerneMQ settings applied as DOCKER_VERNEMQ_ environment variables. Keys
+# are the vernemq.conf option names, for example
+# { max_online_messages: "10000", "allow_register_during_netsplit": "on" }. Dots
+# become double underscores and the key is uppercased.
+vernemqConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
