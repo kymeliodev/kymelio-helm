@@ -84,5 +84,56 @@ helm upgrade my-plausible kymelio/plausible
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built in PromEx Prometheus endpoint (sets `PROMEX_DISABLED=false`) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels for the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
+
+## Configuration
+
+Plausible Community Edition is configured through environment variables. The
+chart wires `BASE_URL`, `SECRET_KEY_BASE`, `DATABASE_URL` and
+`CLICKHOUSE_DATABASE_URL`, and exposes `extraEnv` for the rest, including SMTP,
+registration and TOTP settings.
+
+```yaml
+plausible:
+  baseUrl: https://analytics.example.com
+extraEnv:
+  - name: DISABLE_REGISTRATION
+    value: "true"
+  - name: MAILER_EMAIL
+    value: plausible@example.com
+  - name: SMTP_HOST_ADDR
+    value: smtp.example.com
+  - name: SMTP_HOST_PORT
+    value: "587"
+```
+
+### Metrics
+
+Plausible exposes Prometheus metrics through the built in PromEx integration.
+Setting `metrics.enabled` exports `PROMEX_DISABLED=false`; PromEx mounts its
+plug on the main Phoenix endpoint, so metrics are served on the application HTTP
+port (`8000`) at `/metrics`. The ServiceMonitor scrapes the `http` port on that
+path.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+The ServiceMonitor requires the Prometheus Operator CRDs. Because the endpoint
+shares the application port, restrict access to `/metrics` at your ingress or
+network policy if the service is publicly reachable.
+
+### Ingress and TLS
+
+Plausible serves plain HTTP on port `8000` and expects TLS to be terminated by
+an ingress controller or reverse proxy. Set `plausible.baseUrl` to the external
+HTTPS URL and enable `ingress` with `ingress.tls` rather than configuring TLS on
+the application.

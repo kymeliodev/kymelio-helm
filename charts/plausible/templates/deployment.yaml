@@ -68,6 +68,10 @@ spec:
               value: {{ .Values.externalDatabase.url | quote }}
             - name: CLICKHOUSE_DATABASE_URL
               value: {{ .Values.externalClickhouse.url | quote }}
+            {{- if .Values.metrics.enabled }}
+            - name: PROMEX_DISABLED
+              value: "false"
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
