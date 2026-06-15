@@ -101,11 +101,18 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # The velero server exposes Prometheus metrics at /metrics on the metrics port
+  # (8085). Enabling this points the ServiceMonitor at that path.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Extra server flags applied as --key=value on startup.
+# Example: { log-level: "debug", backup-sync-period: "30m" }
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
