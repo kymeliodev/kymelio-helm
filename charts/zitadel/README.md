@@ -80,6 +80,61 @@ The connection details are passed through `ZITADEL_DATABASE_POSTGRES_HOST`,
 `ZITADEL_DATABASE_POSTGRES_USER_USERNAME` and
 `ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE`.
 
+## Metrics
+
+ZITADEL exposes Prometheus metrics at `/debug/metrics` on the main port (8080).
+The endpoint is enabled by default. Set `metrics.enabled` to true so the
+ServiceMonitor uses that path, then enable `metrics.serviceMonitor.enabled` to
+scrape it with the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+```
+
+## TLS
+
+By default the server runs with `--tlsMode disabled` and TLS is terminated by an
+ingress or proxy in front of the pod. To have ZITADEL serve TLS itself, override
+the TLS mode and point it at a certificate and key, supplied through `extraEnv`
+and mounted from a Secret:
+
+```yaml
+extraArgs:
+  - --tlsMode
+  - enabled
+extraEnv:
+  - name: ZITADEL_TLS_CERTPATH
+    value: /config/tls/tls.crt
+  - name: ZITADEL_TLS_KEYPATH
+    value: /config/tls/tls.key
+extraVolumes:
+  - name: tls
+    secret:
+      secretName: zitadel-tls
+extraVolumeMounts:
+  - name: tls
+    mountPath: /config/tls
+    readOnly: true
+```
+
+## Native configuration
+
+Any ZITADEL setting can be passed as a `ZITADEL_*` environment variable through
+`extraEnv`, for example to set the external domain and TLS expectation of
+clients:
+
+```yaml
+extraEnv:
+  - name: ZITADEL_EXTERNALDOMAIN
+    value: id.example.com
+  - name: ZITADEL_EXTERNALSECURE
+    value: "true"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -105,5 +160,7 @@ The connection details are passed through `ZITADEL_DATABASE_POSTGRES_HOST`,
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the built-in /debug/metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/debug/metrics` | Metrics path scraped by the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables, used for the database password |
