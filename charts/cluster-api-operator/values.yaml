@@ -97,6 +97,12 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable Prometheus integration for the operator metrics endpoint. The
+  # operator serves controller-runtime metrics on the service port at
+  # metrics.path.
+  enabled: false
+  # HTTP path where the operator exposes Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
