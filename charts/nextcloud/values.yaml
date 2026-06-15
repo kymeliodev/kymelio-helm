@@ -118,7 +118,29 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+#
+# Nextcloud has no native Prometheus endpoint. Enabling metrics runs the
+# community exporter xperimental/nextcloud-exporter as a sidecar. It queries the
+# Nextcloud serverinfo API with the admin credentials managed by this chart and
+# exposes /metrics on metrics.port.
 metrics:
+  # Run the nextcloud-exporter sidecar and expose its port on the Service.
+  enabled: false
+  image:
+    repository: ghcr.io/xperimental/nextcloud-exporter
+    tag: 0.6.2
+    pullPolicy: IfNotPresent
+  # Port the exporter serves Prometheus metrics on.
+  port: 9205
+  # URL the exporter uses to reach Nextcloud. Defaults to the local container.
+  serverURL: http://127.0.0.1:80
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
