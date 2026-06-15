@@ -59,4 +59,55 @@ helm upgrade my-activemq kymelio/activemq
 | securityContext | object | drop ALL | Container security context |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable JMX on the broker and add the JMX exporter sidecar |
+| metrics.path | string | `/metrics` | Path the exporter serves metrics on |
+| metrics.jmxPort | int | `1099` | JMX port the broker exposes for the sidecar |
+| metrics.image.repository | string | `docker.io/sscaling/jmx-prometheus-exporter` | JMX exporter sidecar image |
+| metrics.image.tag | string | `0.20.0` | JMX exporter sidecar image tag |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| service.metrics.port | int | `5556` | Exporter metrics service port |
+| configuration | string | `""` | Inline activemq.xml rendered into a ConfigMap and mounted |
+| configMountPath | string | `/config` | Mount path for the configuration |
+| configSubPath | string | `""` | Mount the configuration as a single file using subPath |
+
+## Configuration
+
+### Metrics
+
+ActiveMQ Classic has no native Prometheus endpoint. This chart collects metrics
+with a community JMX exporter sidecar (`sscaling/jmx-prometheus-exporter`, not
+the bitnami image) that reads the broker over JMX and serves Prometheus text
+format on port `5556` under `/metrics`. Enabling metrics turns on remote JMX on
+the broker, renders the exporter config ConfigMap, adds the sidecar and
+publishes the metrics port:
+
+```sh
+helm install my-activemq kymelio/activemq \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Broker tuning
+
+Native ActiveMQ tuning is done through `activemq.xml`. Provide it inline through
+the generic `configuration` surface and mount it over the broker configuration
+directory:
+
+```yaml
+configuration: |
+  <beans xmlns="http://www.springframework.org/schema/beans">
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="broker">
+      <systemUsage>
+        <systemUsage>
+          <memoryUsage><memoryUsage percentOfJvmHeap="70"/></memoryUsage>
+        </systemUsage>
+      </systemUsage>
+    </broker>
+  </beans>
+configFileName: activemq.xml
+configMountPath: /opt/apache-activemq/conf
+configSubPath: activemq.xml
+```
+
+Use an `existingConfigMap` instead when you manage the configuration outside the
+chart.

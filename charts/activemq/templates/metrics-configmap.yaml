@@ -1,0 +1,27 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "activemq.fullname" . }}-metrics
+  labels:
+    {{- include "activemq.labels" . | nindent 4 }}
+data:
+  config.yml: |
+    hostPort: 127.0.0.1:{{ .Values.metrics.jmxPort }}
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    rules:
+      - pattern: "org.apache.activemq<type=Broker, brokerName=(\\S*), destinationType=Queue, destinationName=(\\S*)><>(\\w+)"
+        name: activemq_queue_$3
+        attrNameSnakeCase: true
+        labels:
+          destination: $2
+      - pattern: "org.apache.activemq<type=Broker, brokerName=(\\S*), destinationType=Topic, destinationName=(\\S*)><>(\\w+)"
+        name: activemq_topic_$3
+        attrNameSnakeCase: true
+        labels:
+          destination: $2
+      - pattern: "org.apache.activemq<type=Broker, brokerName=(\\S*)><>(\\w+)"
+        name: activemq_$2
+        attrNameSnakeCase: true
+{{- end }}
