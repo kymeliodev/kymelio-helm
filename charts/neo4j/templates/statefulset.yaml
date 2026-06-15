@@ -54,12 +54,45 @@ spec:
             - name: {{ .Values.service.ports.http.name }}
               containerPort: {{ .Values.service.ports.http.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: NEO4J_AUTH
               valueFrom:
                 secretKeyRef:
                   name: {{ include "neo4j.secretName" . }}
                   key: {{ .Values.auth.secretKeys.authKey }}
+            {{- if .Values.metrics.enabled }}
+            - name: NEO4J_server_metrics_prometheus_enabled
+              value: "true"
+            - name: NEO4J_server_metrics_prometheus_endpoint
+              value: "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: NEO4J_dbms_ssl_policy_bolt_enabled
+              value: "true"
+            - name: NEO4J_dbms_ssl_policy_bolt_base__directory
+              value: {{ .Values.tls.mountPath | quote }}
+            - name: NEO4J_dbms_ssl_policy_bolt_private__key
+              value: {{ .Values.tls.keyFilename | quote }}
+            - name: NEO4J_dbms_ssl_policy_bolt_public__certificate
+              value: {{ .Values.tls.certFilename | quote }}
+            - name: NEO4J_dbms_ssl_policy_https_enabled
+              value: "true"
+            - name: NEO4J_dbms_ssl_policy_https_base__directory
+              value: {{ .Values.tls.mountPath | quote }}
+            - name: NEO4J_dbms_ssl_policy_https_private__key
+              value: {{ .Values.tls.keyFilename | quote }}
+            - name: NEO4J_dbms_ssl_policy_https_public__certificate
+              value: {{ .Values.tls.certFilename | quote }}
+            {{- end }}
+            {{- range $key, $value := .Values.neo4jConfig }}
+            - name: {{ include "neo4j.envName" $key }}
+              value: {{ $value | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -88,6 +121,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -113,11 +151,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
