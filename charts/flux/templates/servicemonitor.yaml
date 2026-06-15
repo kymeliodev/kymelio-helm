@@ -13,7 +13,10 @@ spec:
     matchLabels:
       {{- include "flux.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: metrics
+    - port: {{ .Values.metrics.portName }}
+      {{- if .Values.metrics.enabled }}
+      path: {{ .Values.metrics.path }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

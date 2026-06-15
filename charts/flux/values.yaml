@@ -109,7 +109,15 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# The source-controller serves Prometheus metrics on the metrics port at
+# /metrics by default with no extra flag. The metrics port is always exposed
+# by the Service. Enabling metrics scrapes that port at the path below.
 metrics:
+  enabled: false
+  # Name of the Service port carrying the metrics endpoint.
+  portName: metrics
+  # Path the metrics endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
