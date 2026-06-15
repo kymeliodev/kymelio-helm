@@ -15,5 +15,11 @@ spec:
       targetPort: {{ .Values.service.http.portName }}
       protocol: TCP
       name: {{ .Values.service.http.portName }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.service.metrics.port }}
+      targetPort: {{ .Values.service.metrics.portName }}
+      protocol: TCP
+      name: {{ .Values.service.metrics.portName }}
+    {{- end }}
   selector:
     {{- include "nats.selectorLabels" . | nindent 4 }}

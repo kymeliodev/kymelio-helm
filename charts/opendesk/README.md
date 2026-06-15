@@ -30,6 +30,53 @@ The nginx server is reconfigured to listen on the service port (8080) and runs
 as the unprivileged nginx user (uid 101). The landing page is rendered from a
 ConfigMap so it can be customised without rebuilding an image.
 
+## Configuration
+
+### Portal content
+
+Customise the placeholder landing page through the `portal` values, or supply
+your own nginx configuration and content through the `config`, `configuration`
+and `extraVolumes` surfaces. Pass any nginx environment overrides through
+`extraEnv`:
+
+```yaml
+portal:
+  title: openDesk
+  message: Welcome to the sovereign workplace.
+```
+
+### TLS
+
+The nginx placeholder serves plain HTTP on port 8080 and does not terminate TLS
+itself. Front it with an ingress controller or reverse proxy that terminates
+TLS, and configure `ingress.tls` for the public host name.
+
+### Metrics
+
+openDesk is a suite of independent services (collaborative editing, groupware,
+file sharing, video conferencing, project management, chat and identity), each
+with its own monitoring. There is no single openDesk metrics endpoint, and the
+nginx portal placeholder shipped by this chart does not expose Prometheus
+metrics.
+
+`metrics.enabled` is a marker that documents this. Enabling the ServiceMonitor
+creates a monitor that scrapes the HTTP service port (requires the Prometheus
+Operator CRDs). This becomes useful once you replace the placeholder with a real
+component that exposes metrics on that port, or run a metrics exporter sidecar:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
+To monitor the full suite, deploy and scrape each openDesk component through its
+own chart and its own metrics endpoint.
+
 ## Install
 
 ```sh
@@ -60,7 +107,9 @@ helm uninstall my-opendesk
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Marker for metrics support. The portal placeholder has no Prometheus endpoint |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor scraping the HTTP port |
+| extraEnv | list | `[]` | Extra environment variables passed to the container |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 101 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

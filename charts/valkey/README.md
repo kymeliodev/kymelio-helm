@@ -61,3 +61,19 @@ helm upgrade my-valkey kymelio/valkey
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (redis_exporter sidecar, Valkey compatible):
+
+```sh
+helm install my-valkey kymelio/valkey --set metrics.enabled=true
+```
+
+Tune the server with extra valkey-server flags:
+
+```yaml
+extraArgs:
+  - --maxmemory
+  - 256mb
+```

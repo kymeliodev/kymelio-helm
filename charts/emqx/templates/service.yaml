@@ -11,6 +11,12 @@ spec:
       targetPort: {{ .Values.service.mqtt.portName }}
       protocol: TCP
       name: {{ .Values.service.mqtt.portName }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.service.mqttssl.port }}
+      targetPort: {{ .Values.service.mqttssl.portName }}
+      protocol: TCP
+      name: {{ .Values.service.mqttssl.portName }}
+    {{- end }}
     - port: {{ .Values.service.dashboard.port }}
       targetPort: {{ .Values.service.dashboard.portName }}
       protocol: TCP

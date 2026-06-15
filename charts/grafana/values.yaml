@@ -102,13 +102,30 @@ networkPolicy:
   enabled: false
   ingress: []
 
-# Prometheus integration. Disabled by default.
+# Prometheus integration. Disabled by default. Grafana exposes its own
+# Prometheus metrics at /metrics on the HTTP port (service.port, default 3000).
 metrics:
+  # Expose the built in /metrics endpoint for Prometheus scraping.
+  enabled: false
   serviceMonitor:
     enabled: false
+    # HTTP path scraped by the ServiceMonitor.
+    path: /metrics
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for Grafana's own HTTP server. When enabled Grafana serves
+# HTTPS on service.port using the certificate and key from an existing Secret.
+# This sets GF_SERVER_PROTOCOL=https and points Grafana at the mounted files.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory where the certificate Secret is mounted.
+  mountPath: /etc/grafana/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

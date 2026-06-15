@@ -1,4 +1,4 @@
-{{- if .Values.metrics.serviceMonitor.enabled -}}
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -13,7 +13,8 @@ spec:
     matchLabels:
       {{- include "uptime-kuma.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.portName }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.portName }}{{ end }}
+      path: {{ .Values.metrics.path }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

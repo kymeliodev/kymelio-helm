@@ -89,7 +89,21 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Weaviate exposes Prometheus metrics natively on a dedicated port (default
+# 2112) at /metrics when PROMETHEUS_MONITORING_ENABLED is set to true. Enabling
+# metrics sets that environment variable and publishes the metrics port on the
+# container and the Service.
 metrics:
+  # Set PROMETHEUS_MONITORING_ENABLED and expose the metrics port.
+  enabled: false
+  # Metrics port served by Weaviate. Matches PROMETHEUS_MONITORING_PORT.
+  port: 2112
+  # Name of the metrics port on the container and Service.
+  portName: metrics
+  # Path of the built in Prometheus endpoint.
+  path: /metrics
+  # Group metrics across all tenants when using multi-tenancy.
+  group: false
   serviceMonitor:
     enabled: false
     interval: 30s

@@ -32,6 +32,38 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-kyverno kymelio/kyverno --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+Kyverno serves Prometheus metrics on container port `8000` at `/metrics`, set by
+the default `--metricsPort=8000` flag. Set `metrics.enabled=true` to publish a
+dedicated `metrics` port on the Service, and `metrics.serviceMonitor.enabled=true`
+to create a ServiceMonitor for the Prometheus Operator.
+
+```yaml
+metrics:
+  enabled: true
+  port: 8000
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### Controller flags
+
+Append additional controller flags with `extraArgs`, for example to raise the
+log verbosity:
+
+```yaml
+extraArgs:
+  - --loggingFormat=json
+  - --v=4
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -46,6 +78,8 @@ helm upgrade my-kyverno kymelio/kyverno --reuse-values
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Publish a dedicated metrics port on the Service |
+| metrics.port | int | `8000` | Service port for the metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot | Pod security context |

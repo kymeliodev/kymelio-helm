@@ -120,6 +120,9 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the built in PromEx metrics endpoint. This sets PROMEX_DISABLED=false
+  # and exposes Prometheus metrics on the main HTTP port at /metrics.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s

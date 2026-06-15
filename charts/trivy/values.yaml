@@ -90,6 +90,12 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Start the Trivy server with --metrics and publish a dedicated metrics
+  # Service port. Trivy exposes Prometheus metrics at /metrics on the API port
+  # (4954) when the server is run with --metrics.
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 4954
   serviceMonitor:
     enabled: false
     interval: 30s

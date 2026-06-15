@@ -100,12 +100,34 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Neo4j exposes a Prometheus endpoint when server.metrics.prometheus.enabled is true.
+# Enabling this sets that config through NEO4J_ environment variables, exposes the
+# endpoint port on the container and Service, and scrapes /metrics.
 metrics:
+  enabled: false
+  # Prometheus endpoint port (server.metrics.prometheus.endpoint).
+  port: 2004
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for Bolt and HTTPS connections. When enabled the certificate
+# Secret is mounted read only and the matching ssl policy settings are passed
+# through NEO4J_ environment variables.
+tls:
+  enabled: false
+  # Secret containing the certificate, private key and trusted certificates.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /ssl
+  certFilename: tls.crt
+  keyFilename: tls.key
+
+# Native neo4j.conf settings rendered into NEO4J_ environment variables. Keys use
+# dotted names, for example "server.memory.heap.max_size: 1G".
+neo4jConfig: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

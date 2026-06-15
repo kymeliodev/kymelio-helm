@@ -87,5 +87,55 @@ helm upgrade my-n8n kymelio/n8n
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built in Prometheus metrics endpoint (sets `N8N_METRICS=true`) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels for the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
+
+## Configuration
+
+n8n is configured through `N8N_*` and `DB_*` environment variables. The chart
+wires the host, protocol, webhook URL, encryption key and SQLite storage, and
+exposes `extraEnv` for any additional setting.
+
+```yaml
+n8n:
+  host: n8n.example.com
+  protocol: https
+  webhookUrl: https://n8n.example.com/
+extraEnv:
+  - name: GENERIC_TIMEZONE
+    value: Europe/Zurich
+  - name: N8N_DEFAULT_BINARY_DATA_MODE
+    value: filesystem
+  - name: EXECUTIONS_DATA_PRUNE
+    value: "true"
+  - name: EXECUTIONS_DATA_MAX_AGE
+    value: "336"
+```
+
+### Metrics
+
+n8n exposes a built in Prometheus endpoint. Setting `metrics.enabled` exports
+`N8N_METRICS=true` and serves metrics on the main HTTP port (`5678`) at
+`/metrics`; the ServiceMonitor scrapes the `http` port on that path.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+Additional metric groups are available through `extraEnv`, for example
+`N8N_METRICS_INCLUDE_QUEUE_METRICS=true` or
+`N8N_METRICS_INCLUDE_DEFAULT_METRICS=true`. The ServiceMonitor requires the
+Prometheus Operator CRDs.
+
+### Ingress and TLS
+
+n8n serves plain HTTP on port `5678`. Terminate TLS at an ingress controller or
+reverse proxy and set `n8n.protocol`, `n8n.host` and `n8n.webhookUrl` to the
+external HTTPS address rather than configuring TLS on the application.

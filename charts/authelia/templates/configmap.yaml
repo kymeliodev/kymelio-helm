@@ -6,4 +6,9 @@ metadata:
     {{- include "authelia.labels" . | nindent 4 }}
 data:
   configuration.yml: |
-    {{- toYaml .Values.authelia | nindent 4 }}
+    {{- $config := .Values.authelia }}
+    {{- if .Values.metrics.enabled }}
+    {{- $telemetry := dict "metrics" (dict "enabled" true "address" (printf "tcp://0.0.0.0:%v/metrics" .Values.metrics.port)) }}
+    {{- $config = merge (deepCopy .Values.authelia) (dict "telemetry" $telemetry) }}
+    {{- end }}
+    {{- toYaml $config | nindent 4 }}

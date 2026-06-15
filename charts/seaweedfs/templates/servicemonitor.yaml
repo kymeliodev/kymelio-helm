@@ -13,7 +13,10 @@ spec:
     matchLabels:
       {{- include "seaweedfs.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.portName }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.portName }}{{ end }}
+      {{- if .Values.metrics.enabled }}
+      path: /metrics
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

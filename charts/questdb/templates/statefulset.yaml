@@ -54,9 +54,20 @@ spec:
               containerPort: {{ $port }}
               protocol: TCP
             {{- end }}
-          {{- with .Values.extraEnv }}
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
+          {{- if or .Values.metrics.enabled .Values.extraEnv }}
           env:
+            {{- if .Values.metrics.enabled }}
+            - name: QDB_METRICS_ENABLED
+              value: "true"
+            {{- end }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
@@ -83,6 +94,17 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.serverConf }}
+            - name: server-conf
+              mountPath: {{ .Values.confDir }}/server.conf
+              subPath: server.conf
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -108,11 +130,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.serverConf .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.serverConf }}
+        - name: server-conf
+          configMap:
+            name: {{ include "questdb.fullname" . }}-server-conf
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

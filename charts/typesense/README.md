@@ -38,6 +38,73 @@ empty and reuse the release Secret.
 helm upgrade my-typesense kymelio/typesense
 ```
 
+## Configuration
+
+### Metrics
+
+Typesense does not expose a native Prometheus endpoint. It serves operational
+metrics as JSON at `/metrics.json` (RAM, CPU, disk and network usage) and
+`/stats.json` (per endpoint request rates and latencies) on the API port
+(`8108`). Both require the `x-typesense-api-key` header.
+
+Set `metrics.enabled=true` to add Prometheus scrape annotations to the pod and
+point the ServiceMonitor at `metrics.path` on the API port:
+
+```sh
+helm install my-typesense kymelio/typesense \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+Because the native endpoint returns JSON rather than the Prometheus exposition
+format, run a community exporter as a sidecar to convert it. Point the exporter
+at `http://localhost:8108/metrics.json`, expose its Prometheus port, and set
+`metrics.path` to the exporter path:
+
+```yaml
+metrics:
+  enabled: true
+  path: /metrics
+  serviceMonitor:
+    enabled: true
+sidecars:
+  - name: typesense-exporter
+    image: ghcr.io/example/typesense-prometheus-exporter:latest
+    env:
+      - name: TYPESENSE_HOST
+        value: "http://localhost:8108"
+      - name: TYPESENSE_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: my-typesense
+            key: api-key
+    ports:
+      - name: metrics
+        containerPort: 8080
+```
+
+### Native configuration
+
+Typesense is configured with command line flags or the matching `TYPESENSE_`
+environment variables. The chart already passes `--data-dir`, `--api-key` and
+`--listen-port`. Add further flags with `extraArgs` and environment variables
+with `extraEnv`:
+
+```yaml
+extraArgs:
+  - --enable-cors
+  - --max-memory-ratio
+  - "0.8"
+  - --num-collections-parallel-load
+  - "4"
+extraEnv:
+  - name: TYPESENSE_LOG_LEVEL
+    value: "INFO"
+```
+
+Use `extraEnvFrom` to source variables from ConfigMaps or Secrets you manage
+outside the chart.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -59,4 +126,8 @@ helm upgrade my-typesense kymelio/typesense
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add Prometheus scrape annotations targeting `metrics.path` on the API port |
+| metrics.path | string | `/metrics.json` | Metrics path scraped on the API port, override when using an exporter sidecar |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| extraArgs | list | `[]` | Extra command line flags appended to the Typesense entrypoint |
+| extraEnv | list | `[]` | Extra environment variables passed to the container |

@@ -90,6 +90,12 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the controller Prometheus endpoint on a dedicated metrics Service
+  # port. The sealed-secrets controller serves /metrics on its HTTP port (8080)
+  # by default, so no extra flag is required.
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 8080
   serviceMonitor:
     enabled: false
     interval: 30s

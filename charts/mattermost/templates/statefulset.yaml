@@ -52,6 +52,11 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.portName }}
@@ -64,9 +69,17 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.extraEnv }}
+          {{- if or .Values.metrics.enabled .Values.extraEnv }}
           env:
+            {{- if .Values.metrics.enabled }}
+            - name: MM_METRICSSETTINGS_ENABLE
+              value: "true"
+            - name: MM_METRICSSETTINGS_LISTENADDRESS
+              value: ":{{ .Values.metrics.port }}"
+            {{- end }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.extraEnvFrom }}
           envFrom:

@@ -62,4 +62,45 @@ helm upgrade my-influxdb kymelio/influxdb
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the native /metrics endpoint on the HTTP port |
+| metrics.path | string | `/metrics` | Prometheus endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Native influxd options applied as INFLUXD_ environment variables |
+| tls.enabled | bool | `false` | Serve the API and UI over TLS via INFLUXD_TLS_CERT/INFLUXD_TLS_KEY |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+
+## Configuration
+
+### Metrics
+
+InfluxDB 2.x exposes a native Prometheus endpoint at `/metrics` on the HTTP port
+(`8086`), so no exporter sidecar is needed. Enable scraping with:
+
+```sh
+helm install my-influxdb kymelio/influxdb \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Pass native `influxd` options through `parameters`. Each key becomes an
+`INFLUXD_` environment variable (uppercased, dashes converted to underscores):
+
+```yaml
+parameters:
+  query-concurrency: "20"
+  storage-cache-max-memory-size: "1073741824"
+```
+
+### TLS
+
+InfluxDB serves the API and UI over TLS when `tls-cert` and `tls-key` are set.
+Provide a Secret with the certificate and key; the chart mounts it and wires
+`INFLUXD_TLS_CERT` and `INFLUXD_TLS_KEY`:
+
+```sh
+helm install my-influxdb kymelio/influxdb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=influxdb-tls
+```

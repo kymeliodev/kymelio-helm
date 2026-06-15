@@ -105,7 +105,15 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# The argocd-server publishes metrics on a dedicated port at /metrics. The
+# endpoint is built in and needs no extra flag. Enabling metrics exposes a
+# metrics container and Service port that the ServiceMonitor can scrape.
 metrics:
+  enabled: false
+  # Container and Service port for the argocd-server metrics endpoint.
+  port: 8083
+  # Path the metrics endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

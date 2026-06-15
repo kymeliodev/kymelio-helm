@@ -137,11 +137,20 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the Authelia telemetry metrics exporter. Authelia serves Prometheus
+  # metrics at /metrics on a dedicated port (9959), enabled through the
+  # telemetry.metrics section of its configuration. Enabling this injects that
+  # section and adds the port to the container and Service.
+  enabled: false
+  # Port serving the metrics endpoint.
+  port: 9959
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path of the Prometheus metrics endpoint.
+    path: /metrics
 
 # Extra environment variables passed to the container.
 extraEnv: []

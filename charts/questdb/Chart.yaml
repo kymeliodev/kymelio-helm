@@ -2,7 +2,7 @@ apiVersion: v2
 name: questdb
 description: QuestDB high performance time series database
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "8.1.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

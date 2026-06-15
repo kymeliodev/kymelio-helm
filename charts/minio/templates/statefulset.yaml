@@ -52,6 +52,10 @@ spec:
             - {{ .Values.persistence.mountPath }}
             - --console-address
             - ":{{ .Values.service.console.port }}"
+            {{- if .Values.tls.enabled }}
+            - --certs-dir
+            - /root/.minio/certs
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -73,6 +77,14 @@ spec:
                 secretKeyRef:
                   name: {{ include "minio.secretName" . }}
                   key: {{ .Values.auth.secretKeys.rootPasswordKey }}
+            {{- if .Values.metrics.enabled }}
+            - name: MINIO_PROMETHEUS_AUTH_TYPE
+              value: {{ .Values.metrics.authType | quote }}
+            {{- end }}
+            {{- range $k, $v := .Values.parameters }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -97,6 +109,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: /root/.minio/certs
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -122,11 +139,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.tls.enabled .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
+            items:
+              - key: {{ .Values.tls.certFilename }}
+                path: public.crt
+              - key: {{ .Values.tls.keyFilename }}
+                path: private.key
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

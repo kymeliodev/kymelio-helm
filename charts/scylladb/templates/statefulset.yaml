@@ -47,6 +47,12 @@ spec:
             - "1"
             - --overprovisioned
             - "1"
+            {{- if .Values.metrics.enabled }}
+            - --prometheus-port
+            - {{ .Values.metrics.port | quote }}
+            - --prometheus-address
+            - 0.0.0.0
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -54,6 +60,11 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             exec:
               command: ["nodetool", "status"]
@@ -81,6 +92,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if or .Values.scylla.configFragment .Values.tls.enabled }}
+            - name: scylla-config
+              mountPath: {{ .Values.scylla.configFragmentMountPath }}
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -106,11 +127,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled .Values.scylla.configFragment }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.scylla.configFragment .Values.tls.enabled }}
+        - name: scylla-config
+          configMap:
+            name: {{ include "scylladb.fullname" . }}-scylla-config
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

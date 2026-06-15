@@ -67,4 +67,48 @@ helm upgrade my-etcd kymelio/etcd --reuse-values
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add a dedicated metrics listener and publish its port |
+| metrics.port | int | `2381` | Dedicated metrics listener port (ETCD_LISTEN_METRICS_URLS) |
+| metrics.path | string | `/metrics` | Metrics endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Native etcd settings applied as `--key=value` flags |
+| tls.enabled | bool | `false` | Enable client port TLS via ETCD_CERT_FILE/ETCD_KEY_FILE |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+
+## Configuration
+
+### Metrics
+
+etcd serves Prometheus metrics natively under `/metrics` on the client port.
+Enabling metrics adds a dedicated metrics listener through
+`ETCD_LISTEN_METRICS_URLS` and publishes it on its own port, so monitoring tools
+can scrape without exposing the full client API:
+
+```sh
+helm install my-etcd kymelio/etcd \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Pass native etcd flags through `parameters`. Each entry becomes a `--key=value`
+argument:
+
+```yaml
+parameters:
+  quota-backend-bytes: "8589934592"
+  auto-compaction-retention: "1"
+```
+
+### TLS
+
+Provide a Secret containing the certificate and key. When enabled the client
+URLs switch to `https` and the chart sets `ETCD_CERT_FILE` and `ETCD_KEY_FILE`.
+Set `tls.caFilename` to also enable client certificate authentication:
+
+```sh
+helm install my-etcd kymelio/etcd \
+  --set tls.enabled=true \
+  --set tls.existingSecret=etcd-tls
+```

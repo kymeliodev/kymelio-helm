@@ -90,12 +90,50 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Solr has no Prometheus endpoint on its HTTP port, but the image bundles the
+# Solr Prometheus exporter (bin/solr-exporter). Enabling this runs it as a
+# sidecar built from the same image, scraping the local node and exposing
+# metrics on metrics.port at /metrics.
 metrics:
+  enabled: false
+  # Port the bundled exporter listens on and exposes through the Service.
+  port: 8989
+  # Solr base URL the exporter scrapes.
+  baseUrl: http://localhost:8983/solr
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 256Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Java system properties and options appended to SOLR_OPTS. This is the native
+# Solr tuning mechanism alongside the generic configuration surface.
+# Example: "-Dsolr.autoSoftCommit.maxTime=3000"
+solrOpts: ""
+
+# Server side TLS. Solr enables HTTPS through SOLR_SSL_* settings backed by a
+# Java keystore. When enabled, the named Secret is mounted and the chart wires
+# the keystore and truststore through the SOLR_SSL_* environment variables.
+tls:
+  enabled: false
+  # Secret containing the keystore and truststore.
+  existingSecret: ""
+  # Keystore and truststore file names inside the Secret (PKCS12 format).
+  keyStoreFilename: keystore.p12
+  trustStoreFilename: truststore.p12
+  # Secret holding the keystore and truststore passwords.
+  passwordSecret: ""
+  keyStorePasswordKey: keystore-password
+  trustStorePasswordKey: truststore-password
+  # Mount path for the keystore Secret inside the container.
+  mountPath: /var/solr/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

@@ -52,14 +52,44 @@ spec:
             - name: {{ .Values.service.mqtt.portName }}
               containerPort: {{ .Values.service.mqtt.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: {{ .Values.tls.mqttsPortName }}
+              containerPort: {{ .Values.tls.mqttsPort }}
+              protocol: TCP
+            {{- end }}
             - name: {{ .Values.service.epmd.portName }}
               containerPort: {{ .Values.service.epmd.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: {{ .Values.service.metrics.portName }}
+              containerPort: {{ .Values.service.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: DOCKER_VERNEMQ_ACCEPT_EULA
               value: "yes"
             - name: DOCKER_VERNEMQ_ALLOW_ANONYMOUS
               value: "on"
+            {{- if .Values.metrics.enabled }}
+            - name: DOCKER_VERNEMQ_LISTENER__HTTP__DEFAULT
+              value: "0.0.0.0:{{ .Values.service.metrics.port }}"
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT
+              value: "0.0.0.0:{{ .Values.tls.mqttsPort }}"
+            - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT__CAFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.caFilename }}
+            - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT__CERTFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT__KEYFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT__REQUIRE_CERTIFICATE
+              value: {{ if .Values.tls.requireCertificate }}"on"{{ else }}"off"{{ end }}
+            {{- end }}
+            {{- range $k, $v := .Values.vernemqConf }}
+            - name: DOCKER_VERNEMQ_{{ $k | upper | replace "." "__" }}
+              value: {{ $v | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -82,6 +112,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -107,11 +142,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

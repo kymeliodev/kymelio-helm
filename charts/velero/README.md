@@ -48,6 +48,29 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-velero kymelio/velero --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+The velero server exposes Prometheus metrics at `/metrics` on the metrics port
+(8085). Enable metrics and the ServiceMonitor to scrape that endpoint.
+
+```sh
+helm install my-velero kymelio/velero \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server flags
+
+Tune the server with `parameters`, which are appended as `--key=value` flags.
+
+```yaml
+parameters:
+  log-level: "debug"
+  backup-sync-period: "30m"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -65,4 +88,6 @@ helm upgrade my-velero kymelio/velero --reuse-values
 | podSecurityContext | object | runAsNonRoot 65534 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the server /metrics endpoint via the ServiceMonitor |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Extra server flags applied as --key=value |

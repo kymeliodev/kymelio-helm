@@ -115,6 +115,31 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: NEXTCLOUD_SERVER
+              value: {{ .Values.metrics.serverURL | quote }}
+            - name: NEXTCLOUD_USERNAME
+              value: {{ .Values.auth.adminUser | quote }}
+            - name: NEXTCLOUD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.secretName" . }}
+                  key: {{ .Values.auth.secretKeys.passwordKey }}
+            - name: NEXTCLOUD_LISTEN_ADDRESS
+              value: ":{{ .Values.metrics.port }}"
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

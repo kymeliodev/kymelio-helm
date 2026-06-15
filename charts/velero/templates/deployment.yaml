@@ -47,6 +47,9 @@ spec:
             {{- toYaml .Values.command | nindent 12 }}
           args:
             {{- toYaml .Values.args | nindent 12 }}
+            {{- range $k, $v := .Values.parameters }}
+            - --{{ $k }}={{ $v }}
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

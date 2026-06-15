@@ -73,7 +73,64 @@ helm upgrade my-nextcloud kymelio/nextcloud --reuse-values
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Run a nextcloud-exporter sidecar and expose its Prometheus port |
+| metrics.image.repository | string | `ghcr.io/xperimental/nextcloud-exporter` | Exporter image repository |
+| metrics.image.tag | string | `0.6.2` | Exporter image tag |
+| metrics.port | int | `9205` | Exporter Prometheus scrape port |
+| metrics.serverURL | string | `http://127.0.0.1:80` | URL the exporter uses to reach Nextcloud |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels for the ServiceMonitor |
+| extraEnv | list | `[]` | Extra environment variables passed to the container |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 33 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
+
+## Configuration
+
+Nextcloud is configured through `NEXTCLOUD_*`, `POSTGRES_*` and `MYSQL_*`
+environment variables. The chart wires the admin account and the database
+connection; use `extraEnv` for additional settings such as trusted domains and
+the overwrite protocol behind a reverse proxy.
+
+```yaml
+extraEnv:
+  - name: NEXTCLOUD_TRUSTED_DOMAINS
+    value: cloud.example.com
+  - name: OVERWRITEPROTOCOL
+    value: https
+  - name: OVERWRITECLIURL
+    value: https://cloud.example.com
+  - name: PHP_MEMORY_LIMIT
+    value: 1024M
+```
+
+### Metrics
+
+Nextcloud does not expose a native Prometheus endpoint. Setting `metrics.enabled`
+runs the community
+[nextcloud-exporter](https://github.com/xperimental/nextcloud-exporter) as a
+sidecar. It queries the Nextcloud serverinfo API using the admin credentials
+managed by this chart and serves Prometheus metrics on port `9205` at
+`/metrics`. The Service exposes that port and the ServiceMonitor scrapes it.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+The serverinfo app must be enabled in Nextcloud (it ships enabled by default).
+Scraping with the admin user works out of the box; for least privilege, create a
+dedicated monitoring user or a serverinfo token and override `metrics.serverURL`
+and the exporter credentials. The ServiceMonitor requires the Prometheus
+Operator CRDs.
+
+### Ingress and TLS
+
+Nextcloud serves plain HTTP on port `80` and expects TLS to be terminated by an
+ingress controller or reverse proxy. Enable `ingress` with `ingress.tls` and set
+`OVERWRITEPROTOCOL=https` through `extraEnv` rather than configuring TLS on the
+application.

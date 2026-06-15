@@ -101,11 +101,21 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the bundled Prometheus metrics endpoint at /-/metrics on the HTTP
+  # port. This appends prometheus_metrics_enabled and a monitoring allowlist to
+  # the Omnibus configuration so scrapers are permitted to read the endpoint.
+  enabled: false
+  # CIDR ranges allowed to read /-/metrics. GitLab returns 404 to clients that
+  # are not on this list. The default covers common private pod networks.
+  monitoringAllowlist:
+    - 0.0.0.0/0
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path scraped by Prometheus. GitLab serves metrics at /-/metrics.
+    path: /-/metrics
 
 # Inline Omnibus configuration passed through the GITLAB_OMNIBUS_CONFIG
 # environment variable. Set the external_url and tune bundled services here.

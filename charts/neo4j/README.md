@@ -38,6 +38,47 @@ empty and reuse the release Secret.
 helm upgrade my-neo4j kymelio/neo4j
 ```
 
+## Configuration
+
+### Metrics
+
+Neo4j exposes a Prometheus endpoint when `server.metrics.prometheus.enabled` is set.
+Enabling metrics applies that config through `NEO4J_` environment variables, exposes
+port 2004 on the container and Service, and scrapes `/metrics`.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+### Config tuning
+
+Set native `neo4j.conf` settings through `neo4jConfig`. Keys use dotted names and
+are translated into the `NEO4J_` environment variables the official image expects.
+
+```yaml
+neo4jConfig:
+  server.memory.heap.max_size: 1G
+  server.memory.pagecache.size: 512m
+  dbms.security.procedures.unrestricted: apoc.*
+```
+
+### TLS
+
+Bolt and HTTPS encryption are configured through SSL policy settings. Provide a
+Secret holding the certificate and key and enable `tls`:
+
+```sh
+helm install my-neo4j kymelio/neo4j \
+  --set tls.enabled=true \
+  --set tls.existingSecret=neo4j-tls
+```
+
+The Secret is mounted read only at `tls.mountPath` and the chart sets the matching
+`dbms.ssl.policy.bolt.*` and `dbms.ssl.policy.https.*` settings.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -60,4 +101,9 @@ helm upgrade my-neo4j kymelio/neo4j
 | podSecurityContext | object | runAsNonRoot 7474 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the Prometheus endpoint on port 2004 |
+| metrics.port | int | `2004` | Prometheus endpoint port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| neo4jConfig | object | `{}` | Native neo4j.conf settings rendered into NEO4J_ env vars |
+| tls.enabled | bool | `false` | Enable Bolt and HTTPS TLS via SSL policy settings |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |

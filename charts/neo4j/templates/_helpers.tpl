@@ -95,3 +95,12 @@ Authentication string stored in the Secret, formatted as "username/password".
 {{- define "neo4j.authString" -}}
 {{ .Values.auth.username }}/{{ include "neo4j.password" . }}
 {{- end }}
+
+{{/*
+Convert a neo4j.conf setting name into the environment variable form expected by
+the official image. Dots become single underscores and literal underscores are
+doubled, then the NEO4J_ prefix is added.
+*/}}
+{{- define "neo4j.envName" -}}
+{{- printf "NEO4J_%s" (. | replace "_" "__" | replace "." "_") -}}
+{{- end }}

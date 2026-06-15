@@ -13,7 +13,7 @@ spec:
     matchLabels:
       {{- include "mysql.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.portName }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.portName }}{{ end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

@@ -55,6 +55,11 @@ spec:
             - name: {{ .Values.service.http.portName }}
               containerPort: {{ .Values.service.http.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: {{ .Values.service.metrics.portName }}
+              containerPort: {{ .Values.service.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.mqtt.portName }}

@@ -90,6 +90,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.elasticsearchConfig }}
+            - name: elasticsearch-config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -100,6 +110,22 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          args:
+            - --es.uri={{ .Values.metrics.esUri }}
+            - --web.listen-address=:{{ .Values.metrics.port }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -115,11 +141,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.elasticsearchConfig .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.elasticsearchConfig }}
+        - name: elasticsearch-config
+          configMap:
+            name: {{ include "elasticsearch.fullname" . }}-elasticsearch-config
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

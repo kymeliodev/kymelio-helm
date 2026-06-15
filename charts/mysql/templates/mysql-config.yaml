@@ -1,0 +1,11 @@
+{{- if .Values.mysqlConfiguration }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mysql.fullname" . }}-mysql-config
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+data:
+  custom.cnf: |
+    {{- .Values.mysqlConfiguration | nindent 4 }}
+{{- end }}

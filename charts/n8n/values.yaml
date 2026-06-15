@@ -111,6 +111,9 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the built in n8n metrics endpoint. This sets N8N_METRICS=true and
+  # exposes Prometheus metrics on the main HTTP port at /metrics.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s

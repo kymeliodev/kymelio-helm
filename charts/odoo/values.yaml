@@ -107,7 +107,15 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# The official Odoo image has no built in Prometheus endpoint. The community OCA
+# module monitoring_prometheus adds a /metrics route served on the same HTTP
+# port (service.port). Install that module in your Odoo addons, then enable
+# metrics here to create a ServiceMonitor that scrapes service.port at the path
+# below. See the README.
 metrics:
+  enabled: false
+  # HTTP path exposed by the monitoring_prometheus module.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

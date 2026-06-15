@@ -100,11 +100,21 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # The operator exposes controller-runtime Prometheus metrics at /metrics.
+  # Enabling this sets ROOK_OPERATOR_METRICS_BIND_ADDRESS, exposes the metrics
+  # port on the container and Service, and points the ServiceMonitor at it.
+  enabled: false
+  # Port the operator binds its metrics endpoint to.
+  port: 8080
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Operator configuration applied as environment variables.
+# Example: { ROOK_LOG_LEVEL: "DEBUG", ROOK_ENABLE_DISCOVERY_DAEMON: "true" }
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

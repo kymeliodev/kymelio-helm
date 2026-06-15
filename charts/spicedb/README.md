@@ -39,6 +39,47 @@ generated preshared key is preserved across upgrades when you keep
 helm upgrade my-spicedb kymelio/spicedb
 ```
 
+## Configuration
+
+### Metrics
+
+SpiceDB serves Prometheus metrics on port 9090 at `/metrics`. Enabling metrics sets
+`--metrics-addr`, opens the port on the container and Service, and lets the
+ServiceMonitor scrape it directly.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+### Config tuning
+
+SpiceDB is configured through `serve` flags. Append any flag through `extraArgs`:
+
+```yaml
+extraArgs:
+  - "--datastore-engine"
+  - "postgres"
+  - "--datastore-conn-uri"
+  - "postgres://spicedb@db:5432/spicedb?sslmode=disable"
+  - "--dispatch-cluster-enabled"
+```
+
+### TLS
+
+SpiceDB serves gRPC over TLS when given a certificate and key. Provide a Secret and
+enable `tls`; the chart passes `--grpc-tls-cert-path` and `--grpc-tls-key-path`:
+
+```sh
+helm install my-spicedb kymelio/spicedb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=spicedb-tls
+```
+
+The Secret is mounted read only at `tls.mountPath`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -57,4 +98,8 @@ helm upgrade my-spicedb kymelio/spicedb
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the SpiceDB Prometheus endpoint on port 9090 |
+| metrics.port | int | `9090` | Metrics server port (--metrics-addr) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| tls.enabled | bool | `false` | Serve gRPC over TLS using the provided certificate |
+| tls.existingSecret | string | `""` | Secret holding the gRPC certificate and key |

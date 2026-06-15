@@ -45,11 +45,15 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the MQTT listener.
+# Service exposing the MQTT listener. When metrics.enabled is set the exporter
+# port is added.
 service:
   type: ClusterIP
   port: 1883
   portName: mqtt
+  metrics:
+    port: 9234
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -90,7 +94,21 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Mosquitto has no native Prometheus endpoint, it publishes broker statistics on
+# the $SYS topics instead. The community sapcc/mosquitto-exporter sidecar
+# subscribes to those topics over MQTT and re-exposes them as Prometheus metrics
+# on its own port (9234). When enabled this chart adds the sidecar, publishes its
+# port and wires the ServiceMonitor to it.
 metrics:
+  enabled: false
+  # Path the exporter serves metrics on.
+  path: /metrics
+  # Exporter sidecar image.
+  image:
+    repository: sapcc/mosquitto-exporter
+    tag: "0.8.0"
+    pullPolicy: IfNotPresent
+  resources: {}
   serviceMonitor:
     enabled: false
     interval: 30s

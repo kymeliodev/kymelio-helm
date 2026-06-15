@@ -46,7 +46,7 @@ securityContext:
       - ALL
 
 # Service exposing the workload. The client port and the monitoring HTTP port
-# are published.
+# are published. When metrics.enabled is set the exporter port is added.
 service:
   type: ClusterIP
   client:
@@ -55,6 +55,9 @@ service:
   http:
     port: 8222
     portName: http
+  metrics:
+    port: 7777
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -95,12 +98,50 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# NATS exposes monitoring data as JSON on the HTTP port (8222) rather than in
+# Prometheus format. The community prometheus-nats-exporter sidecar reads that
+# endpoint and re-exposes it as Prometheus metrics on its own port (7777). When
+# enabled this chart adds the sidecar, publishes its port and wires the
+# ServiceMonitor to it.
 metrics:
+  enabled: false
+  # Path the exporter serves metrics on.
+  path: /metrics
+  # Exporter sidecar image and the NATS subsystems it scrapes.
+  image:
+    repository: natsio/prometheus-nats-exporter
+    tag: "0.15.0"
+    pullPolicy: IfNotPresent
+  # Monitoring subsystems collected from the NATS monitoring endpoint.
+  collectors:
+    - "-varz"
+  resources: {}
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. NATS configures TLS natively through a tls {} block in the
+# server configuration file. When enabled this chart mounts the certificate
+# Secret, renders the tls block into nats-server.conf and starts the server with
+# that config file (-c).
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/nats/certs
+  # Require and verify client certificates (mutual TLS).
+  verify: false
+
+# Native NATS server settings rendered into nats-server.conf and passed to the
+# server with -c. Use this for broker tuning, for example
+# { max_payload: "8MB", max_connections: "100000" }.
+natsConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

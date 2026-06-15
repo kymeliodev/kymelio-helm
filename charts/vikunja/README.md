@@ -93,5 +93,56 @@ helm upgrade my-vikunja kymelio/vikunja
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built in Prometheus metrics endpoint (sets `VIKUNJA_SERVICE_ENABLEMETRICS=true`) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels for the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
+
+## Configuration
+
+Vikunja is configured through `VIKUNJA_<SECTION>_<SETTING>` environment
+variables. The chart wires the core settings (public URL, database, JWT secret,
+file path) and exposes `extraEnv` for everything else.
+
+```yaml
+vikunja:
+  publicUrl: https://tasks.example.com/
+extraEnv:
+  - name: VIKUNJA_SERVICE_TIMEZONE
+    value: Europe/Zurich
+  - name: VIKUNJA_MAILER_ENABLED
+    value: "true"
+  - name: VIKUNJA_MAILER_HOST
+    value: smtp.example.com
+  - name: VIKUNJA_DEFAULTSETTINGS_AVATAR_PROVIDER
+    value: initials
+```
+
+### Metrics
+
+Vikunja serves Prometheus metrics from the API itself. Setting
+`metrics.enabled` exports `VIKUNJA_SERVICE_ENABLEMETRICS=true`; the endpoint is
+exposed on the API port (`3456`) at `/metrics` (also reachable at
+`/api/v1/metrics`). The ServiceMonitor then scrapes the `http` port on the
+`/metrics` path.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+When running more than one replica, enable a shared Redis keyvalue backend so
+metrics are aggregated across nodes (`VIKUNJA_KEYVALUE_TYPE=redis` and the
+matching `VIKUNJA_REDIS_*` variables via `extraEnv`). The ServiceMonitor
+requires the Prometheus Operator CRDs.
+
+### Ingress and TLS
+
+Vikunja serves plain HTTP on port `3456`. Terminate TLS at an ingress
+controller or reverse proxy rather than on the application. Set
+`vikunja.publicUrl` to the external HTTPS URL and enable `ingress` with
+`ingress.tls`.

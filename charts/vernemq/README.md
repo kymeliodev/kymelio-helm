@@ -62,4 +62,53 @@ broker outside the cluster.
 | securityContext | object | drop ALL | Container security context |
 | podSecurityContext | object | runAsNonRoot 10000 | Pod security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the native /metrics endpoint on the HTTP status port |
+| metrics.path | string | `/metrics` | Prometheus endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| service.metrics.port | int | `8888` | HTTP status and metrics service port |
+| vernemqConf | object | `{}` | Native settings applied as DOCKER_VERNEMQ_ environment variables |
+| tls.enabled | bool | `false` | Serve the SSL MQTT listener via native settings |
+| tls.existingSecret | string | `""` | Secret holding ca.crt, tls.crt and tls.key |
+| tls.requireCertificate | bool | `false` | Require and verify client certificates |
+| tls.mqttsPort | int | `8883` | SSL MQTT listener port published when TLS is enabled |
+
+## Configuration
+
+### Metrics
+
+VerneMQ exposes a native Prometheus endpoint on its HTTP status listener
+(port `8888`, path `/metrics`), so no exporter sidecar is required. The listener
+binds to localhost by default, so enabling metrics rebinds it to `0.0.0.0` so
+Prometheus can reach it, publishes the port and wires the ServiceMonitor to it.
+
+```sh
+helm install my-vernemq kymelio/vernemq \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Pass native VerneMQ settings through `vernemqConf`. Each key is a `vernemq.conf`
+option that becomes a `DOCKER_VERNEMQ_` environment variable (uppercased, dots
+converted to double underscores):
+
+```yaml
+vernemqConf:
+  max_online_messages: "10000"
+  allow_register_during_netsplit: "on"
+```
+
+### TLS
+
+VerneMQ configures the SSL MQTT listener through native
+`DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT` settings. Provide a Secret with `ca.crt`,
+`tls.crt` and `tls.key`; the chart mounts it, wires those settings and publishes
+the SSL listener on `8883`:
+
+```sh
+helm install my-vernemq kymelio/vernemq \
+  --set tls.enabled=true \
+  --set tls.existingSecret=vernemq-tls \
+  --set tls.requireCertificate=true
+```

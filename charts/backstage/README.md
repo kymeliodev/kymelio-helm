@@ -56,6 +56,41 @@ chart values and the managed Secret:
 Provide your own credentials Secret with `existingSecret`, supplying the keys
 named in `secretKeys`.
 
+## Configuration
+
+### Metrics
+
+Backstage serves Prometheus metrics on the http port (`7007`) at `/metrics`, but
+only once a metrics backend is wired into the backend. Add and register a
+metrics plugin first, for example `express-prom-bundle` with `prom-client`, or
+the OpenTelemetry Prometheus exporter, then set `metrics.enabled=true` to scrape
+the http port at `metrics.path` and `metrics.serviceMonitor.enabled=true` to
+create a ServiceMonitor for the Prometheus Operator. The endpoint shares the
+existing http port, so no extra container or Service port is added.
+
+```yaml
+metrics:
+  enabled: true
+  path: /metrics
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### Backend flags
+
+Backend behaviour is tuned with command line flags through `extraArgs`, for
+example to load an additional app config file mounted into the container:
+
+```yaml
+extraArgs:
+  - --config
+  - /config/app-config.production.yaml
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -78,7 +113,10 @@ named in `secretKeys`.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the http port at metrics.path, requires a metrics backend plugin |
+| metrics.path | string | `/metrics` | Path the metrics endpoint is served on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| extraArgs | list | `[]` | Extra command line flags appended to the backend |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

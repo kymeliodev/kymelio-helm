@@ -105,11 +105,37 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Run a mysqld_exporter sidecar that exposes metrics on metrics.port.
+  enabled: false
+  image:
+    repository: quay.io/prometheus/mysqld-exporter
+    tag: v0.15.1
+    pullPolicy: IfNotPresent
+  port: 9104
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server configuration rendered into a my.cnf. When set it is rendered into a
+# ConfigMap and mounted at /etc/mysql/conf.d/custom.cnf. Use the [mysqld] section
+# for server tuning. TLS is configured here as well (ssl-cert, ssl-key, etc.).
+# Example: |
+#   [mysqld]
+#   max_connections=200
+mariadbConfiguration: ""
+
+# Initialization scripts run on first start. Map of filename to script content,
+# mounted into /docker-entrypoint-initdb.d and executed once on an empty data dir.
+initdbScripts: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

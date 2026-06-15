@@ -51,6 +51,80 @@ release Secret. They are reused on upgrade so they stay stable. To manage them
 yourself, create a Secret with the keys `secret-key` and `utils-secret` and set
 `auth.existingSecret` to its name.
 
+## Configuration
+
+### Application settings
+
+Outline is configured entirely through environment variables. Use `extraEnv` to
+add any variable documented by Outline, for example SMTP, OIDC or storage
+settings:
+
+```yaml
+extraEnv:
+  - name: SMTP_HOST
+    value: smtp.example.com
+  - name: SMTP_PORT
+    value: "587"
+  - name: SMTP_USERNAME
+    value: outline
+  - name: FILE_STORAGE
+    value: local
+```
+
+To load settings from an existing ConfigMap or Secret, use `extraEnvFrom`:
+
+```yaml
+extraEnvFrom:
+  - secretRef:
+      name: outline-smtp
+```
+
+### TLS
+
+Outline serves plain HTTP on the application port and does not terminate TLS
+itself. Run it behind an ingress controller or reverse proxy that terminates
+TLS. Set `outline.url` to the public HTTPS address and configure `ingress.tls`:
+
+```yaml
+outline:
+  url: https://wiki.example.com
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: wiki.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: wiki-tls
+      hosts:
+        - wiki.example.com
+```
+
+### Metrics
+
+The Outline image does not expose a built in Prometheus endpoint. There is no
+official `/metrics` route, so this chart cannot scrape the application directly.
+
+`metrics.enabled` is a marker that documents this requirement. To collect
+metrics, run a sidecar or external exporter that publishes Outline metrics on
+the HTTP service port, then enable the ServiceMonitor (requires the Prometheus
+Operator CRDs):
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
+The ServiceMonitor targets the `http` service port. Without an exporter exposing
+metrics on that port it will not collect Outline specific series.
+
 ## Upgrading
 
 Review the chart version change and your overridden values before upgrading.
@@ -83,5 +157,7 @@ helm upgrade my-outline kymelio/outline
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Marker for metrics support. Outline has no built in Prometheus endpoint |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor scraping the HTTP port |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
+| extraEnvFrom | list | `[]` | Extra environment variables sourced from ConfigMaps or Secrets |

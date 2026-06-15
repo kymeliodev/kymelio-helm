@@ -89,7 +89,15 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# The pipelines controller publishes Prometheus metrics on a dedicated port at
+# /metrics. The endpoint is built in and needs no extra flag. Enabling metrics
+# exposes a metrics container and Service port that the ServiceMonitor scrapes.
 metrics:
+  enabled: false
+  # Container and Service port for the controller metrics endpoint.
+  port: 9090
+  # Path the metrics endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

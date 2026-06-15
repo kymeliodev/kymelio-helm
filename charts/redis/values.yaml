@@ -98,6 +98,20 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Run a redis_exporter sidecar that exposes metrics on metrics.port.
+  enabled: false
+  image:
+    repository: docker.io/oliver006/redis_exporter
+    tag: v1.62.0
+    pullPolicy: IfNotPresent
+  port: 9121
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s

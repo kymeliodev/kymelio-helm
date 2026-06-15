@@ -61,6 +61,10 @@ spec:
           env:
             - name: QW_DATA_DIR
               value: {{ .Values.persistence.mountPath | quote }}
+            {{- if .Values.quickwitConfig }}
+            - name: QW_CONFIG
+              value: /quickwit/node-config/quickwit.yaml
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -89,6 +93,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.quickwitConfig }}
+            - name: quickwit-config
+              mountPath: /quickwit/node-config
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -114,11 +128,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.quickwitConfig .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.quickwitConfig }}
+        - name: quickwit-config
+          configMap:
+            name: {{ include "quickwit.fullname" . }}-quickwit-config
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

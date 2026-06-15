@@ -1,0 +1,23 @@
+{{- if or .Values.cassandra.configFragment .Values.tls.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cassandra.fullname" . }}-cassandra-config
+  labels:
+    {{- include "cassandra.labels" . | nindent 4 }}
+data:
+  {{ .Values.cassandra.configFragmentFileName }}: |
+    {{- with .Values.cassandra.configFragment }}
+    {{- . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.tls.enabled }}
+    client_encryption_options:
+      enabled: true
+      optional: false
+      keystore: {{ .Values.tls.mountPath }}/{{ .Values.tls.keystoreFilename }}
+      keystore_password: {{ .Values.tls.keystorePassword | quote }}
+      require_client_auth: false
+      truststore: {{ .Values.tls.mountPath }}/{{ .Values.tls.truststoreFilename }}
+      truststore_password: {{ .Values.tls.truststorePassword | quote }}
+    {{- end }}
+{{- end }}

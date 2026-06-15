@@ -52,6 +52,11 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /api/v2.0/health
@@ -76,6 +81,14 @@ spec:
                 secretKeyRef:
                   name: {{ include "harbor.secretName" . }}
                   key: {{ .Values.auth.secretKeys.passwordKey }}
+            {{- if .Values.metrics.enabled }}
+            - name: METRIC_ENABLE
+              value: "true"
+            - name: METRIC_PORT
+              value: {{ .Values.metrics.port | quote }}
+            - name: METRIC_PATH
+              value: {{ .Values.metrics.path | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

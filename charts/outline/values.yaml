@@ -121,7 +121,13 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Outline does not ship a built in Prometheus endpoint. Setting metrics.enabled
+# is a marker only; no metrics port is exposed by the Outline image. Enabling
+# serviceMonitor creates a ServiceMonitor that scrapes the HTTP service port, so
+# you must run a sidecar or external exporter that publishes Outline metrics on
+# that port for the ServiceMonitor to collect anything. See the README.
 metrics:
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s

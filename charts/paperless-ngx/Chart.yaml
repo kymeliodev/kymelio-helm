@@ -2,7 +2,7 @@ apiVersion: v2
 name: paperless-ngx
 description: Document management system that indexes and archives scanned paperwork
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "2.11.6"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

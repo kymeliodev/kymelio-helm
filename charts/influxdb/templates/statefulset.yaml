@@ -67,6 +67,16 @@ spec:
               value: {{ .Values.auth.org | quote }}
             - name: DOCKER_INFLUXDB_INIT_BUCKET
               value: {{ .Values.auth.bucket | quote }}
+            {{- if .Values.tls.enabled }}
+            - name: INFLUXD_TLS_CERT
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: INFLUXD_TLS_KEY
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            {{- end }}
+            {{- range $k, $v := .Values.parameters }}
+            - name: INFLUXD_{{ $k | upper | replace "-" "_" }}
+              value: {{ $v | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -78,6 +88,9 @@ spec:
             httpGet:
               path: /health
               port: {{ .Values.service.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 30
             periodSeconds: 20
             timeoutSeconds: 5
@@ -86,6 +99,9 @@ spec:
             httpGet:
               path: /health
               port: {{ .Values.service.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
@@ -93,6 +109,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -118,11 +139,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

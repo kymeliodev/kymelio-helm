@@ -103,12 +103,30 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Meilisearch has a built in Prometheus endpoint at /metrics on the HTTP port.
+# Enabling it sets MEILI_EXPERIMENTAL_ENABLE_METRICS=true. The endpoint requires
+# the master key, so configure scrape authorization accordingly.
 metrics:
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
+    # Path the built in endpoint is served on.
+    path: /metrics
     labels: {}
+
+# Server side TLS. Meilisearch terminates TLS natively through MEILI_SSL_CERT_PATH
+# and MEILI_SSL_KEY_PATH. When enabled, the named Secret is mounted and those
+# variables point at the mounted certificate and key.
+tls:
+  enabled: false
+  # Secret containing the certificate and private key in PEM format.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Mount path for the certificate Secret inside the container.
+  mountPath: /etc/meilisearch/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

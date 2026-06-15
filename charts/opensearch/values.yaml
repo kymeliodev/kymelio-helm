@@ -95,12 +95,49 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# OpenSearch has no built in Prometheus HTTP endpoint in this configuration, so
+# this runs a community elasticsearch_exporter sidecar, which is compatible with
+# OpenSearch, scraping the local node over HTTP.
 metrics:
+  enabled: false
+  image:
+    repository: quay.io/prometheuscommunity/elasticsearch-exporter
+    tag: v1.7.0
+    pullPolicy: IfNotPresent
+  # Port the exporter listens on and exposes through the Service.
+  port: 9114
+  # URI the exporter uses to reach the local OpenSearch node.
+  esUri: http://127.0.0.1:9200
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native OpenSearch configuration rendered into opensearch.yml and mounted at
+# /usr/share/opensearch/config/opensearch.yml. Use this for cluster and plugin
+# settings. Leave empty to keep the image defaults.
+opensearchConfig: ""
+
+# TLS for the HTTP layer. OpenSearch TLS is provided by the security plugin and
+# configured through plugins.security.ssl.http.* in opensearch.yml. The chart
+# mounts the certificate Secret when enabled. Provide the matching settings via
+# opensearchConfig and enable the security plugin to terminate TLS.
+tls:
+  enabled: false
+  # Secret containing the certificate and private key in PEM format.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Mount path for the certificate Secret inside the container.
+  mountPath: /usr/share/opensearch/config/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

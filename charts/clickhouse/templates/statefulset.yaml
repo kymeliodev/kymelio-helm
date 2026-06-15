@@ -54,6 +54,11 @@ spec:
             - name: {{ .Values.service.ports.http.name }}
               containerPort: {{ .Values.service.ports.http.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: CLICKHOUSE_USER
               value: {{ .Values.auth.username | quote }}
@@ -94,6 +99,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if or .Values.metrics.enabled .Values.tls.enabled .Values.serverConfig }}
+            - name: server-config
+              mountPath: /etc/clickhouse-server/config.d
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -119,11 +134,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.metrics.enabled .Values.tls.enabled .Values.serverConfig }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.metrics.enabled .Values.tls.enabled .Values.serverConfig }}
+        - name: server-config
+          configMap:
+            name: {{ include "clickhouse.fullname" . }}-server-config
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

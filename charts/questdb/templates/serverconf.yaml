@@ -1,0 +1,11 @@
+{{- if .Values.serverConf }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "questdb.fullname" . }}-server-conf
+  labels:
+    {{- include "questdb.labels" . | nindent 4 }}
+data:
+  server.conf: |
+    {{- .Values.serverConf | nindent 4 }}
+{{- end }}

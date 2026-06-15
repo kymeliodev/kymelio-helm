@@ -90,11 +90,28 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the native zot metrics extension. This adds extensions.metrics to the
+  # rendered config.json so zot serves Prometheus metrics on the HTTP port.
+  enabled: false
+  # Path where zot serves Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. zot terminates TLS itself when enabled. Provide a Secret with
+# the certificate and private key; the chart mounts it and adds an http.tls
+# block to config.json.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Mount path for the certificate material inside the container.
+  mountPath: /etc/zot/tls
 
 # Extra environment variables passed to the container.
 extraEnv: []

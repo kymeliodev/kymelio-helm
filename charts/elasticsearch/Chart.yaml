@@ -2,7 +2,7 @@ apiVersion: v2
 name: elasticsearch
 description: Elasticsearch distributed search and analytics engine
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "8.15.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

@@ -49,6 +49,9 @@ spec:
             {{- toYaml .Values.args | nindent 12 }}
             - --service-account
             - {{ include "longhorn.serviceAccountName" . }}
+            {{- range $k, $v := .Values.parameters }}
+            - --{{ $k }}={{ $v }}
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

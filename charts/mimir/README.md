@@ -28,6 +28,21 @@ helm uninstall my-mimir
 
 The Mimir configuration is provided through `config` as a YAML string and mounted at `/etc/mimir/mimir.yaml`. The default is a monolithic, filesystem backed setup with a replication factor of one, suitable for a single replica. A change to `config` updates a checksum annotation on the pod so it is rolled automatically.
 
+### Monitoring
+
+Mimir exposes its own metrics at `/metrics` on the HTTP port (`service.port`, default 8080). Set `metrics.enabled` to advertise the endpoint and create a ServiceMonitor for the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -44,7 +59,9 @@ The Mimir configuration is provided through `config` as a YAML string and mounte
 | persistence.mountPath | string | `/data` | Data directory mount path |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
+| metrics.enabled | bool | `false` | Advertise the built in /metrics endpoint on the HTTP port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | HTTP path scraped by the ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 10001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

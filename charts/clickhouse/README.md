@@ -63,4 +63,54 @@ helm upgrade my-clickhouse kymelio/clickhouse
 | podSecurityContext | object | runAsNonRoot 101 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the native Prometheus endpoint and metrics port |
+| metrics.port | int | `9363` | Prometheus endpoint port |
+| metrics.path | string | `/metrics` | Prometheus endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| serverConfig | string | `""` | XML drop-in rendered under config.d for native tuning |
+| tls.enabled | bool | `false` | Mount a certificate Secret and render an openSSL drop-in |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+
+## Configuration
+
+### Metrics
+
+ClickHouse exposes a native Prometheus endpoint through its `<prometheus>`
+server config section. Enabling metrics renders that section as an XML drop-in
+under `/etc/clickhouse-server/config.d`, publishes port `9363` and serves
+`/metrics`:
+
+```sh
+helm install my-clickhouse kymelio/clickhouse \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Use `serverConfig` to provide an XML document that is rendered as a drop-in
+under `config.d`. This is the vendor mechanism for native settings:
+
+```yaml
+serverConfig: |
+  <clickhouse>
+    <max_concurrent_queries>200</max_concurrent_queries>
+    <logger>
+      <level>information</level>
+    </logger>
+  </clickhouse>
+```
+
+### TLS
+
+ClickHouse configures TLS through its XML config (`<openSSL>`, `<https_port>`,
+`<tcp_port_secure>`). Provide a Secret with the certificate and key; the chart
+mounts it and renders an `<openSSL>` drop-in that references the mounted files.
+Open the secure ports you need through `serverConfig`:
+
+```sh
+helm install my-clickhouse kymelio/clickhouse \
+  --set tls.enabled=true \
+  --set tls.existingSecret=clickhouse-tls \
+  --set-string serverConfig='<clickhouse><https_port>8443</https_port></clickhouse>'
+```

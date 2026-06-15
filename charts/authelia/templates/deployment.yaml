@@ -77,6 +77,11 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /api/health

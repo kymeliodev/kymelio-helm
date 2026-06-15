@@ -46,6 +46,8 @@ securityContext:
       - ALL
 
 # Service exposing the broker. The Kafka API and admin API are published.
+# Redpanda serves Prometheus metrics on the admin port, so no extra service port
+# is required when metrics are enabled.
 service:
   type: ClusterIP
   kafka:
@@ -94,12 +96,42 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Redpanda exposes Prometheus metrics on the admin API port (9644) under two
+# paths: /public_metrics (curated, low cardinality, redpanda_ prefix) and
+# /metrics (detailed, vectorized_ prefix). No exporter sidecar is required;
+# enabling metrics wires the ServiceMonitor to the admin port and the path below.
 metrics:
+  enabled: false
+  # Path the admin API serves metrics on. Use /public_metrics for the curated
+  # set or /metrics for the full detailed set.
+  path: /public_metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the Kafka API. Redpanda enables TLS through its native
+# redpanda.yaml configuration (the kafka_api_tls section). When enabled this
+# chart mounts the certificate Secret and passes the matching redpanda config
+# overrides as start flags so the Kafka API serves TLS.
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/redpanda/certs
+  # Require and verify client certificates (mutual TLS).
+  requireClientAuth: false
+
+# Native Redpanda configuration applied to redpanda.yaml. Each key/value pair is
+# passed as a `--set redpanda.<key>=<value>` start flag, which the broker writes
+# into its configuration before start. Use this for broker tuning, for example
+# { "default_topic_replications": "1", "auto_create_topics_enabled": "true" }.
+redpandaConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

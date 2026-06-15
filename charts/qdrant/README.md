@@ -56,6 +56,63 @@ kubectl get secret my-qdrant -o jsonpath="{.data.api-key}" | base64 -d
 
 Send the key on each request with the `api-key` header.
 
+## Configuration
+
+### Metrics
+
+Qdrant serves Prometheus metrics natively at `/metrics` on the HTTP port
+(`6333`). No exporter sidecar is required. Set `metrics.enabled=true` to add
+Prometheus scrape annotations to the pod, and `metrics.serviceMonitor.enabled=true`
+to create a ServiceMonitor for the Prometheus Operator.
+
+```sh
+helm install my-qdrant kymelio/qdrant \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+The scrape path is controlled by `metrics.path` (default `/metrics`).
+
+### Native configuration
+
+Qdrant reads configuration files from `/qdrant/config`. Provide a native
+`config.yaml` through the `configuration` value. It is rendered into a ConfigMap
+and mounted into the configuration directory, overriding the image defaults.
+
+```yaml
+configuration: |
+  service:
+    max_request_size_mb: 64
+  storage:
+    optimizers:
+      default_segment_number: 4
+  log_level: INFO
+```
+
+Use the generic `config` map for free form ConfigMap entries, or
+`existingConfigMap` to mount a ConfigMap you manage outside the chart.
+
+### TLS
+
+Qdrant terminates TLS for the REST and gRPC APIs when `service.enable_tls` is
+set. Enable it with `tls.enabled=true` and reference a Secret holding the
+certificate and key. The chart sets the `QDRANT__SERVICE__ENABLE_TLS`,
+`QDRANT__TLS__CERT` and `QDRANT__TLS__KEY` environment variables and mounts the
+Secret at `tls.mountPath` (default `/qdrant/tls`).
+
+```sh
+kubectl create secret generic qdrant-tls \
+  --from-file=tls.crt=server.crt \
+  --from-file=tls.key=server.key
+
+helm install my-qdrant kymelio/qdrant \
+  --set tls.enabled=true \
+  --set tls.existingSecret=qdrant-tls
+```
+
+Set `tls.caFilename` to also pass a CA certificate through
+`QDRANT__TLS__CA_CERT`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -77,7 +134,16 @@ Send the key on each request with the `api-key` header.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add Prometheus scrape annotations for the built in `/metrics` endpoint |
+| metrics.path | string | `/metrics` | Path of the built in Prometheus endpoint on the HTTP port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| tls.enabled | bool | `false` | Enable server side TLS for the REST and gRPC APIs |
+| tls.existingSecret | string | `""` | Secret holding the certificate, key and optional CA certificate |
+| tls.certFilename | string | `tls.crt` | Certificate file name inside the Secret |
+| tls.keyFilename | string | `tls.key` | Private key file name inside the Secret |
+| tls.caFilename | string | `""` | Optional CA certificate file name inside the Secret |
+| tls.mountPath | string | `/qdrant/tls` | Mount path for the TLS material |
+| configuration | string | `""` | Native Qdrant `config.yaml` rendered into a ConfigMap and mounted at `/qdrant/config` |
 | persistence.enabled | bool | `true` | Provision a PersistentVolumeClaim for storage |
 | persistence.size | string | `8Gi` | Size of the persistent volume |
 | persistence.mountPath | string | `/qdrant/storage` | Storage mount path inside the container |

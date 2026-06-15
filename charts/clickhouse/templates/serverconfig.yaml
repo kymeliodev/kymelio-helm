@@ -1,0 +1,37 @@
+{{- if or .Values.metrics.enabled .Values.tls.enabled .Values.serverConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "clickhouse.fullname" . }}-server-config
+  labels:
+    {{- include "clickhouse.labels" . | nindent 4 }}
+data:
+  {{- if .Values.metrics.enabled }}
+  prometheus.xml: |
+    <clickhouse>
+      <prometheus>
+        <endpoint>{{ .Values.metrics.path }}</endpoint>
+        <port>{{ .Values.metrics.port }}</port>
+        <metrics>true</metrics>
+        <events>true</events>
+        <asynchronous_metrics>true</asynchronous_metrics>
+        <status_info>true</status_info>
+      </prometheus>
+    </clickhouse>
+  {{- end }}
+  {{- if .Values.tls.enabled }}
+  tls.xml: |
+    <clickhouse>
+      <openSSL>
+        <server>
+          <certificateFile>{{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}</certificateFile>
+          <privateKeyFile>{{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}</privateKeyFile>
+        </server>
+      </openSSL>
+    </clickhouse>
+  {{- end }}
+  {{- with .Values.serverConfig }}
+  custom.xml: |
+    {{- . | nindent 4 }}
+  {{- end }}
+{{- end }}

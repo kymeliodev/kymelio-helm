@@ -38,6 +38,36 @@ empty and reuse the release Secret.
 helm upgrade my-meilisearch kymelio/meilisearch
 ```
 
+## Configuration
+
+### Metrics
+
+Meilisearch ships a built in Prometheus endpoint at `/metrics` on the HTTP port.
+Setting `metrics.enabled=true` sets `MEILI_EXPERIMENTAL_ENABLE_METRICS=true`. The
+ServiceMonitor scrapes the HTTP port at that path. The endpoint requires the master
+key, so configure scrape authorization with a bearer token.
+
+```sh
+helm install my-meilisearch kymelio/meilisearch \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### TLS
+
+Meilisearch terminates TLS natively. Set `tls.enabled=true` and provide a Secret;
+the chart mounts it and points `MEILI_SSL_CERT_PATH` and `MEILI_SSL_KEY_PATH` at
+the mounted files.
+
+```sh
+helm install my-meilisearch kymelio/meilisearch \
+  --set tls.enabled=true \
+  --set tls.existingSecret=meilisearch-tls
+```
+
+Additional launch options such as a config file are passed through `extraEnv`
+(for example `MEILI_CONFIG_FILE_PATH`) or `extraArgs`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -60,4 +90,10 @@ helm upgrade my-meilisearch kymelio/meilisearch
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built in Prometheus endpoint via MEILI_EXPERIMENTAL_ENABLE_METRICS |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | Path the endpoint is scraped on |
+| tls.enabled | bool | `false` | Terminate TLS natively with a mounted certificate Secret |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+| tls.certFilename | string | `tls.crt` | Certificate file name in the Secret |
+| tls.keyFilename | string | `tls.key` | Private key file name in the Secret |

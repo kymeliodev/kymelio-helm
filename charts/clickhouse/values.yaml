@@ -101,12 +101,39 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# ClickHouse exposes a native Prometheus endpoint enabled through the server
+# <prometheus> config section. When enabled this chart renders that section into
+# an XML drop-in under /etc/clickhouse-server/config.d and publishes the port.
 metrics:
+  enabled: false
+  # Port the native Prometheus endpoint listens on.
+  port: 9363
+  # Path the metrics are served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native ClickHouse server settings rendered as XML drop-ins under
+# /etc/clickhouse-server/config.d. Provide an XML document as a string. This is
+# the vendor mechanism for tuning the server in addition to the generic
+# configuration surface below.
+serverConfig: ""
+
+# Server side TLS. ClickHouse configures TLS through its XML server config
+# (<openSSL>, <https_port>, <tcp_port_secure>), so when enabled this chart mounts
+# the certificate Secret and renders an <openSSL> drop-in that references the
+# mounted files. Set serverConfig to open the secure ports you need.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/clickhouse-server/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

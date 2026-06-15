@@ -47,6 +47,7 @@ helm upgrade my-opentelemetry-collector kymelio/opentelemetry-collector --reuse-
 | otlp-grpc | 4317 | OTLP gRPC receiver |
 | otlp-http | 4318 | OTLP HTTP receiver |
 | health | 13133 | health_check extension |
+| metrics | 8888 | Internal Prometheus telemetry (when metrics.enabled) |
 
 ## Values
 
@@ -66,7 +67,105 @@ helm upgrade my-opentelemetry-collector kymelio/opentelemetry-collector --reuse-
 | containerPorts | list | otlp-grpc, otlp-http, health | Container ports exposed by the collector |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Publish a dedicated metrics Service port for the collector telemetry endpoint |
+| metrics.port | int | `8888` | Port published on the Service and container for the metrics endpoint |
+| metrics.path | string | `/metrics` | HTTP path where the collector exposes its internal metrics |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor (requires metrics.enabled) |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval for the ServiceMonitor |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout for the ServiceMonitor |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels added to the ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot 10001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
+
+## Configuration
+
+### Prometheus metrics
+
+The collector exposes its own internal telemetry over a Prometheus endpoint at
+`/metrics` on port `8888`. This endpoint is controlled by the collector
+configuration, not by the chart. Set `metrics.enabled` to publish a dedicated
+`metrics` Service and container port, and add a Prometheus reader to the
+`config` so the endpoint binds to `0.0.0.0` (the default binds to localhost,
+which is not reachable from outside the pod):
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+
+config:
+  config.yaml: |
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch: {}
+    exporters:
+      debug:
+        verbosity: detailed
+    service:
+      telemetry:
+        metrics:
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: 0.0.0.0
+                    port: 8888
+      extensions:
+        - health_check
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [debug]
+```
+
+If you do not run the Prometheus Operator, leave `serviceMonitor.enabled` at
+`false` and scrape the Service directly:
+
+```
+release-name-opentelemetry-collector.<namespace>.svc.cluster.local:8888/metrics
+```
+
+### Pipeline tuning
+
+The collector pipeline is defined in `config.config.yaml`, rendered into a
+ConfigMap and mounted at `configMountPath`. Edit it to add receivers,
+processors and exporters. For example, to forward traces to an OTLP backend:
+
+```yaml
+config:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    processors:
+      batch: {}
+    exporters:
+      otlp:
+        endpoint: tempo.observability.svc:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
+```

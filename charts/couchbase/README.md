@@ -40,6 +40,50 @@ empty and reuse the release Secret.
 helm upgrade my-couchbase kymelio/couchbase
 ```
 
+## Configuration
+
+### Metrics
+
+Couchbase Server exposes a native Prometheus endpoint on the admin port (8091) at
+`/metrics`. The endpoint requires authentication, so enabling metrics wires the
+ServiceMonitor with `basicAuth` that references the administrator Secret. Metrics
+share the admin port, so no extra container port is opened.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+### Config tuning
+
+Couchbase is configured at runtime through its management API. For chart level
+tuning, pass extra environment variables through `extraEnv`, extra arguments through
+`extraArgs`, or mount a native config file through the generic `configuration`
+value:
+
+```yaml
+extraEnv:
+  - name: CB_REST_USERNAME
+    value: Administrator
+configuration: |
+  # mounted at configMountPath for use by init scripts or tooling
+```
+
+### TLS
+
+Couchbase serves the management UI and data services over TLS on dedicated secure
+ports (18091 and 11207). Provide a Secret holding the certificate chain and key and
+enable `tls`; the Secret is mounted read only at `tls.mountPath` for the node to
+load, and the secure ports are added to the Service.
+
+```sh
+helm install my-couchbase kymelio/couchbase \
+  --set tls.enabled=true \
+  --set tls.existingSecret=couchbase-tls
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -63,4 +107,8 @@ helm upgrade my-couchbase kymelio/couchbase
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Scrape the native Prometheus endpoint on the admin port |
+| metrics.path | string | `/metrics` | Metrics path on the admin port |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor with basicAuth |
+| tls.enabled | bool | `false` | Mount a TLS certificate and expose the secure ports |
+| tls.existingSecret | string | `""` | Secret holding the certificate chain and key |

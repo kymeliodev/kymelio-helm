@@ -89,7 +89,31 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+#
+# Superset has no first class Prometheus HTTP endpoint. It emits application
+# metrics in StatsD format through a StatsdStatsLogger. Enabling metrics runs a
+# prometheus statsd_exporter sidecar that receives those StatsD samples and
+# republishes them on a Prometheus endpoint. Superset must be configured to send
+# StatsD to the sidecar; see the chart README for the required superset_config.py
+# stats logger snippet.
 metrics:
+  # Run the statsd_exporter sidecar and expose its Prometheus port on the Service.
+  enabled: false
+  image:
+    repository: quay.io/prometheus/statsd-exporter
+    tag: v0.27.1
+    pullPolicy: IfNotPresent
+  # Prometheus scrape port exposed by the exporter.
+  port: 9102
+  # UDP port the exporter listens on for StatsD samples from Superset.
+  statsdPort: 9125
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s

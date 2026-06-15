@@ -11,5 +11,11 @@ spec:
       targetPort: {{ .Values.service.portName }}
       protocol: TCP
       name: {{ .Values.service.portName }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: {{ .Values.metrics.portName }}
+      protocol: TCP
+      name: {{ .Values.metrics.portName }}
+    {{- end }}
   selector:
     {{- include "weaviate.selectorLabels" . | nindent 4 }}

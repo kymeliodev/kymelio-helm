@@ -50,6 +50,40 @@ The chart creates a ServiceAccount and a ClusterRole with a ClusterRoleBinding
 so the controller can reconcile source resources across all namespaces. Set
 `rbac.create=false` to manage these bindings yourself.
 
+## Configuration
+
+### Metrics
+
+The source-controller serves Prometheus metrics on the `metrics` port (`8080`)
+at `/metrics` by default with no extra flag. That port is always published by
+the Service. Set `metrics.serviceMonitor.enabled=true` to create a ServiceMonitor
+for the Prometheus Operator, and `metrics.enabled=true` to scrape the port at
+`metrics.path`.
+
+```yaml
+metrics:
+  enabled: true
+  path: /metrics
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### Controller flags
+
+Controller behaviour is tuned with command line flags. The default flags are set
+in `args`. Append additional flags with `extraArgs`, for example to raise the
+concurrency or log level:
+
+```yaml
+extraArgs:
+  - --concurrent=10
+  - --log-level=debug
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -68,7 +102,11 @@ so the controller can reconcile source resources across all namespaces. Set
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the metrics port at metrics.path |
+| metrics.portName | string | `metrics` | Service port name carrying the metrics endpoint |
+| metrics.path | string | `/metrics` | Path the metrics endpoint is served on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| extraArgs | list | `[]` | Extra command line flags appended to the controller |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

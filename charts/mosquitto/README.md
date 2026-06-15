@@ -63,4 +63,67 @@ before exposing the broker on an untrusted network.
 | securityContext | object | drop ALL | Container security context |
 | podSecurityContext | object | runAsNonRoot 1883 | Pod security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add the mosquitto-exporter sidecar and publish its port |
+| metrics.image.repository | string | `sapcc/mosquitto-exporter` | Exporter sidecar image |
+| metrics.image.tag | string | `0.8.0` | Exporter sidecar image tag |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| service.metrics.port | int | `9234` | Exporter metrics service port |
+| mosquittoConf | string | listener 1883 | Broker configuration rendered into mosquitto.conf |
+
+## Configuration
+
+### Metrics
+
+Mosquitto has no native Prometheus endpoint, it publishes broker statistics on
+the `$SYS` topics instead. The community `sapcc/mosquitto-exporter` sidecar
+subscribes to those topics over MQTT and re-exposes them as Prometheus metrics
+on its own port (`9234`). Enabling metrics adds the sidecar, publishes its port
+and wires the ServiceMonitor to it.
+
+```sh
+helm install my-mosquitto kymelio/mosquitto \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Broker configuration
+
+The broker is tuned through `mosquittoConf`, which is rendered into
+`mosquitto.conf` and mounted into the container. Override it to change listeners,
+persistence or access control:
+
+```yaml
+mosquittoConf: |-
+  listener 1883
+  allow_anonymous false
+  password_file /mosquitto/config/passwd
+  persistence true
+  persistence_location /mosquitto/data/
+  max_inflight_messages 40
+```
+
+### TLS
+
+Mosquitto enables TLS natively through `mosquitto.conf`. Mount the certificate
+files with `extraVolumes`/`extraVolumeMounts` and reference them from a TLS
+listener in `mosquittoConf`:
+
+```yaml
+extraVolumes:
+  - name: certs
+    secret:
+      secretName: mosquitto-tls
+extraVolumeMounts:
+  - name: certs
+    mountPath: /mosquitto/certs
+    readOnly: true
+mosquittoConf: |-
+  listener 1883
+  listener 8883
+  cafile /mosquitto/certs/ca.crt
+  certfile /mosquitto/certs/tls.crt
+  keyfile /mosquitto/certs/tls.key
+  require_certificate false
+  persistence true
+  persistence_location /mosquitto/data/
+```

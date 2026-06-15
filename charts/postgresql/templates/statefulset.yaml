@@ -43,9 +43,23 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.extraArgs }}
+          {{- if or .Values.parameters .Values.tls.enabled .Values.extraArgs }}
           args:
+            {{- range $k, $v := .Values.parameters }}
+            - -c
+            - {{ $k }}={{ $v }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - -c
+            - ssl=on
+            - -c
+            - ssl_cert_file=/opt/postgresql/certs/{{ .Values.tls.certFilename }}
+            - -c
+            - ssl_key_file=/opt/postgresql/certs/{{ .Values.tls.keyFilename }}
+            {{- end }}
+            {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           ports:
             - name: {{ .Values.service.portName }}
@@ -95,6 +109,15 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.initdbScripts }}
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: /opt/postgresql/certs
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -105,6 +128,29 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: DATA_SOURCE_URI
+              value: "127.0.0.1:{{ .Values.service.port }}/{{ .Values.auth.database }}?sslmode=disable"
+            - name: DATA_SOURCE_USER
+              value: {{ .Values.auth.username | quote }}
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "postgresql.secretName" . }}
+                  key: {{ .Values.auth.secretKeys.passwordKey }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -120,11 +166,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.initdbScripts .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.initdbScripts }}
+        - name: initdb
+          configMap:
+            name: {{ include "postgresql.fullname" . }}-initdb
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

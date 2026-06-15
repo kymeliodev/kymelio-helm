@@ -1,0 +1,12 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cassandra.fullname" . }}-metrics
+  labels:
+    {{- include "cassandra.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    hostPort: 127.0.0.1:{{ .Values.service.jmxPort }}
+    {{- toYaml .Values.metrics.config | nindent 4 }}
+{{- end }}

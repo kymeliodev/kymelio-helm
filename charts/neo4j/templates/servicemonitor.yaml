@@ -13,7 +13,8 @@ spec:
     matchLabels:
       {{- include "neo4j.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.ports.http.name }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.ports.http.name }}{{ end }}
+      path: /metrics
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

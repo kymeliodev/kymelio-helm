@@ -61,3 +61,12 @@ helm upgrade my-couchdb kymelio/couchdb
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+CouchDB 3.x exposes Prometheus metrics natively. Enable the metrics Service port
+and ServiceMonitor (the native listener is turned on through `configuration`):
+
+```sh
+helm install my-couchdb kymelio/couchdb --set metrics.enabled=true
+```

@@ -90,6 +90,12 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port for the operator manager Prometheus
+  # endpoint, served at /metrics. Adjust the port to match the metrics bind
+  # address configured for your operator build.
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 8080
   serviceMonitor:
     enabled: false
     interval: 30s

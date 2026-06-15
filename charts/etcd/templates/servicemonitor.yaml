@@ -13,7 +13,8 @@ spec:
     matchLabels:
       {{- include "etcd.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.ports.client.name }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.ports.client.name }}{{ end }}
+      path: {{ .Values.metrics.path }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

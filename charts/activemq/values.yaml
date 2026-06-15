@@ -45,7 +45,8 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the broker. OpenWire and the web console are published.
+# Service exposing the broker. OpenWire and the web console are published. When
+# metrics.enabled is set the JMX exporter sidecar port is published as well.
 service:
   type: ClusterIP
   openwire:
@@ -54,6 +55,9 @@ service:
   web:
     port: 8161
     portName: web
+  metrics:
+    port: 5556
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -94,12 +98,40 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# ActiveMQ Classic has no native Prometheus endpoint, so metrics are collected
+# by a community JMX exporter sidecar that reads the broker over JMX and serves
+# Prometheus text format on port 5556 (path /metrics). Enabling metrics turns on
+# remote JMX on the broker, renders the exporter config ConfigMap, adds the
+# sidecar and publishes the metrics port.
 metrics:
+  enabled: false
+  # Path the exporter serves metrics on.
+  path: /metrics
+  # JMX port the broker exposes for the sidecar to scrape.
+  jmxPort: 1099
+  # JMX exporter sidecar image. The bitnami JMX exporter is not used.
+  image:
+    repository: docker.io/sscaling/jmx-prometheus-exporter
+    tag: "0.20.0"
+    pullPolicy: IfNotPresent
+  # Resource requests and limits for the exporter sidecar.
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native ActiveMQ tuning is managed through the generic configuration surface
+# below: set `configuration` to a full activemq.xml and mount it over the broker
+# configuration directory with configMountPath / configSubPath. See the README
+# for a worked example.
 
 # Extra environment variables passed to the container.
 extraEnv: []

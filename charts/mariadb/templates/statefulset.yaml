@@ -100,6 +100,15 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.initdbScripts }}
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+            {{- end }}
+            {{- if .Values.mariadbConfiguration }}
+            - name: mariadb-config
+              mountPath: /etc/mysql/conf.d/custom.cnf
+              subPath: custom.cnf
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -110,6 +119,30 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          args:
+            - --mysqld.address=127.0.0.1:{{ .Values.service.port }}
+            - --mysqld.username=root
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mariadb.secretName" . }}
+                  key: {{ .Values.auth.secretKeys.rootPasswordKey }}
+            - name: DATA_SOURCE_NAME
+              value: "root:$(MARIADB_ROOT_PASSWORD)@(127.0.0.1:{{ .Values.service.port }})/"
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -125,11 +158,21 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.initdbScripts .Values.mariadbConfiguration }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.initdbScripts }}
+        - name: initdb
+          configMap:
+            name: {{ include "mariadb.fullname" . }}-initdb
+        {{- end }}
+        {{- if .Values.mariadbConfiguration }}
+        - name: mariadb-config
+          configMap:
+            name: {{ include "mariadb.fullname" . }}-mariadb-config
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

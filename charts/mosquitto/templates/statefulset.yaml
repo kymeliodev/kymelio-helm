@@ -90,6 +90,24 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          env:
+            - name: BROKER_ENDPOINT
+              value: "tcp://127.0.0.1:{{ .Values.service.port }}"
+            - name: BIND_ADDRESS
+              value: "0.0.0.0:{{ .Values.service.metrics.port }}"
+          ports:
+            - name: {{ .Values.service.metrics.portName }}
+              containerPort: {{ .Values.service.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

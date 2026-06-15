@@ -36,6 +36,51 @@ Review the chart version change and your overridden values before upgrading.
 helm upgrade my-weaviate kymelio/weaviate
 ```
 
+## Configuration
+
+### Metrics
+
+Weaviate exposes Prometheus metrics natively on a dedicated port (default
+`2112`) at `/metrics` once `PROMETHEUS_MONITORING_ENABLED` is set. Enabling
+`metrics.enabled` sets that variable, publishes the metrics port on the
+container and the Service, and lets a ServiceMonitor scrape it.
+
+```sh
+helm install my-weaviate kymelio/weaviate \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+Change the metrics port with `metrics.port` (mapped to
+`PROMETHEUS_MONITORING_PORT`). When running with multi-tenancy, set
+`metrics.group=true` to group metrics across all tenants
+(`PROMETHEUS_MONITORING_GROUP`).
+
+### Native configuration
+
+Weaviate is configured through environment variables. Pass them with
+`extraEnv`. For example, to require API key authentication and set a custom
+query limit:
+
+```yaml
+extraEnv:
+  - name: AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
+    value: "false"
+  - name: AUTHENTICATION_APIKEY_ENABLED
+    value: "true"
+  - name: AUTHENTICATION_APIKEY_ALLOWED_KEYS
+    value: "my-secret-key"
+  - name: AUTHENTICATION_APIKEY_USERS
+    value: "admin@example.com"
+  - name: QUERY_DEFAULTS_LIMIT
+    value: "100"
+  - name: ENABLE_MODULES
+    value: "text2vec-openai,generative-openai"
+```
+
+Use `extraEnvFrom` to source variables from ConfigMaps or Secrets you manage
+outside the chart.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -59,6 +104,9 @@ helm upgrade my-weaviate kymelio/weaviate
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the built in Prometheus endpoint and publish the metrics port |
+| metrics.port | int | `2112` | Metrics port served by Weaviate (`PROMETHEUS_MONITORING_PORT`) |
+| metrics.path | string | `/metrics` | Path of the built in Prometheus endpoint |
+| metrics.group | bool | `false` | Group metrics across tenants (`PROMETHEUS_MONITORING_GROUP`) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
 | tests.image | string | `busybox:1.36` | Image used by the helm test connection check |
-</content>

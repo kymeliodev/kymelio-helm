@@ -13,5 +13,11 @@ spec:
       targetPort: {{ .targetPort }}
       protocol: TCP
     {{- end }}
+    {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: admin
+      protocol: TCP
+    {{- end }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}

@@ -51,6 +51,31 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-seaweedfs kymelio/seaweedfs --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+SeaweedFS serves Prometheus metrics at `/metrics` when started with
+`-metricsPort`. Enabling metrics appends `-metricsPort=9327` to the weed args,
+exposes a `metrics` port on the container and Service, and the ServiceMonitor
+scrapes it.
+
+```sh
+helm install my-seaweedfs kymelio/seaweedfs \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server flags
+
+Tune the server with `parameters`, which are appended as `-key=value` flags.
+
+```yaml
+parameters:
+  volume.max: "0"
+  volume.preStopSeconds: "5"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -72,4 +97,7 @@ helm upgrade my-seaweedfs kymelio/seaweedfs --reuse-values
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Start weed with -metricsPort and expose the metrics port |
+| metrics.port | int | `9327` | Port the metrics endpoint listens on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Extra weed flags applied as -key=value |

@@ -116,11 +116,19 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the built-in metrics endpoint. The authentik server serves Prometheus
+  # metrics at /metrics on a dedicated port (9300) that requires no
+  # authentication. Enabling this adds the port to the container and Service.
+  enabled: false
+  # Port serving the metrics endpoint.
+  port: 9300
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path of the Prometheus metrics endpoint.
+    path: /metrics
 
 # Extra environment variables passed to the container.
 extraEnv: []

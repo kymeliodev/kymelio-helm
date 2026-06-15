@@ -61,3 +61,21 @@ helm upgrade my-redis kymelio/redis
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (redis_exporter sidecar):
+
+```sh
+helm install my-redis kymelio/redis --set metrics.enabled=true
+```
+
+Tune the server with extra redis-server flags:
+
+```yaml
+extraArgs:
+  - --maxmemory
+  - 256mb
+  - --maxmemory-policy
+  - allkeys-lru
+```

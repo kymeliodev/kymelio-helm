@@ -89,12 +89,44 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# QuestDB exposes a native Prometheus endpoint that must be enabled with
+# QDB_METRICS_ENABLED. When enabled this chart sets that variable and publishes
+# the metrics port.
 metrics:
+  enabled: false
+  # Port the native metrics endpoint listens on.
+  port: 9003
+  # Path the metrics are served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native QuestDB server.conf settings. When set, the content is rendered into a
+# ConfigMap and mounted as server.conf inside the QuestDB config directory. This
+# is the vendor mechanism for tuning the server in addition to the generic
+# configuration surface below.
+# Example: |
+#   shared.worker.count=4
+#   cairo.commit.lag=2000
+serverConf: ""
+# Directory QuestDB reads server.conf from. It lives under the data root.
+confDir: /var/lib/questdb/conf
+
+# Server side TLS. In open source QuestDB native TLS is configured through
+# server.conf (http.tls.enabled, http.tls.cert.path, http.tls.private.key.path);
+# full TLS termination is an Enterprise feature. When enabled this chart mounts
+# the certificate Secret so it can be referenced from serverConf.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/questdb/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

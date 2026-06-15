@@ -102,12 +102,35 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# InfluxDB 2.x exposes a native Prometheus endpoint at /metrics on the HTTP port,
+# so no exporter sidecar is required. Enabling this scrapes that path through the
+# ServiceMonitor.
 metrics:
+  enabled: false
+  # Path the Prometheus endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. InfluxDB 2.x serves the HTTP API and UI over TLS when the
+# tls-cert and tls-key options are set (INFLUXD_TLS_CERT / INFLUXD_TLS_KEY). When
+# enabled this chart mounts the certificate Secret and wires those variables.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/influxdb/certs
+
+# Native influxd configuration applied as INFLUXD_ environment variables. Keys
+# are the influxd config option names, for example { query-concurrency: "20",
+# storage-cache-max-memory-size: "1073741824" }.
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

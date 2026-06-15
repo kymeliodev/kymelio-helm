@@ -111,6 +111,13 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the all-in-one admin port (14269) on a dedicated metrics Service
+  # port. Jaeger serves Prometheus metrics at metrics.path on that port.
+  enabled: false
+  # Admin container port serving the metrics endpoint.
+  port: 14269
+  # HTTP path where Jaeger exposes Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

@@ -95,11 +95,19 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the built in Prometheus endpoint on the HTTP port at /metrics. This
+  # sets GITEA__metrics__ENABLED=true so Gitea serves /metrics itself.
+  enabled: false
+  # Restrict /metrics to clients presenting this bearer token. Empty leaves the
+  # endpoint open to anyone able to reach the HTTP port.
+  token: ""
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path scraped by Prometheus. Gitea serves metrics at /metrics.
+    path: /metrics
 
 # Extra environment variables passed to the container. The defaults configure
 # the embedded SQLite database and the public root URL. Override the database

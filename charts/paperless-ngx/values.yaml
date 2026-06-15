@@ -111,7 +111,21 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+#
+# Paperless-ngx has no native Prometheus endpoint. To collect metrics you must
+# run the community exporter github.com/hansmi/prometheus-paperless-exporter,
+# which reads the Paperless REST API and exposes /metrics on its own port. Add
+# it through the sidecars value (or as a separate Deployment) and point
+# metrics.port at the exporter port before enabling the ServiceMonitor.
 metrics:
+  # When true the ServiceMonitor scrapes metrics.port at metrics.path instead of
+  # the application HTTP port. This requires the exporter described above; the
+  # Paperless container itself serves no metrics.
+  enabled: false
+  # Port the exporter listens on. The hansmi exporter defaults to 8081.
+  port: 8081
+  # Path the exporter serves metrics on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

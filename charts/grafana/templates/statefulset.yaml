@@ -59,6 +59,14 @@ spec:
                   key: {{ .Values.auth.secretKeys.passwordKey }}
             - name: GF_PATHS_DATA
               value: {{ .Values.persistence.mountPath | quote }}
+            {{- if .Values.tls.enabled }}
+            - name: GF_SERVER_PROTOCOL
+              value: https
+            - name: GF_SERVER_CERT_FILE
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.certFilename | quote }}
+            - name: GF_SERVER_CERT_KEY
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.keyFilename | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -74,6 +82,9 @@ spec:
             httpGet:
               path: /api/health
               port: {{ .Values.service.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 30
             periodSeconds: 20
             timeoutSeconds: 5
@@ -82,6 +93,9 @@ spec:
             httpGet:
               path: /api/health
               port: {{ .Values.service.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
@@ -97,6 +111,11 @@ spec:
               {{- with .Values.configSubPath }}
               subPath: {{ . }}
               {{- end }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
             {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -116,7 +135,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
@@ -126,6 +145,11 @@ spec:
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "grafana.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}

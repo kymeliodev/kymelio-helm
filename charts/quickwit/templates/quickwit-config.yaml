@@ -1,0 +1,11 @@
+{{- if .Values.quickwitConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "quickwit.fullname" . }}-quickwit-config
+  labels:
+    {{- include "quickwit.labels" . | nindent 4 }}
+data:
+  quickwit.yaml: |
+    {{- .Values.quickwitConfig | nindent 4 }}
+{{- end }}

@@ -2,7 +2,7 @@ apiVersion: v2
 name: vikunja
 description: Self hosted to-do and project management application with SQLite by default
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "0.24.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

@@ -98,7 +98,21 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# CouchDB 3.x exposes Prometheus metrics natively on a dedicated port at
+# /_node/_local/_prometheus. No exporter sidecar is required. The metrics
+# listener itself must be enabled in the server, for example through the
+# chart configuration:
+#   configuration: |
+#     [prometheus]
+#     additional_port = false
+#     bind_address = 0.0.0.0
+#     port = 17986
 metrics:
+  # Expose the built in metrics port on the container and Service.
+  enabled: false
+  port: 17986
+  # Path the metrics listener serves on the metrics port.
+  path: /_node/_local/_prometheus
   serviceMonitor:
     enabled: false
     interval: 30s

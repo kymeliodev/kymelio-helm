@@ -5,5 +5,16 @@ metadata:
   labels:
     {{- include "zot.labels" . | nindent 4 }}
 data:
+  {{- $config := deepCopy .Values.config }}
+  {{- if .Values.metrics.enabled }}
+  {{- $extensions := $config.extensions | default dict }}
+  {{- $_ := set $extensions "metrics" (dict "enable" true "prometheus" (dict "path" .Values.metrics.path)) }}
+  {{- $_ := set $config "extensions" $extensions }}
+  {{- end }}
+  {{- if .Values.tls.enabled }}
+  {{- $http := $config.http | default dict }}
+  {{- $_ := set $http "tls" (dict "cert" (printf "%s/%s" .Values.tls.mountPath .Values.tls.certFilename) "key" (printf "%s/%s" .Values.tls.mountPath .Values.tls.keyFilename)) }}
+  {{- $_ := set $config "http" $http }}
+  {{- end }}
   config.json: |
-    {{- toJson .Values.config | nindent 4 }}
+    {{- toJson $config | nindent 4 }}

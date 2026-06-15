@@ -46,6 +46,39 @@ so the control plane can reconcile Crossplane resources and manage the CRDs and
 RBAC required by installed Providers. Set `rbac.create=false` to manage these
 bindings yourself.
 
+## Configuration
+
+### Metrics
+
+Crossplane core serves controller-runtime Prometheus metrics on the metrics port
+(`8080`) at `/metrics` by default with no extra flag. That port is the primary
+Service port. Set `metrics.serviceMonitor.enabled=true` to create a
+ServiceMonitor for the Prometheus Operator, and `metrics.enabled=true` to scrape
+the port at `metrics.path`.
+
+```yaml
+metrics:
+  enabled: true
+  path: /metrics
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### Core flags
+
+Core behaviour is tuned with command line flags. The default flags are set in
+`args`. Append additional flags with `extraArgs`, for example to raise the log
+verbosity:
+
+```yaml
+extraArgs:
+  - --debug
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -65,7 +98,10 @@ bindings yourself.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the metrics port at metrics.path |
+| metrics.path | string | `/metrics` | Path the metrics endpoint is served on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| extraArgs | list | `[]` | Extra command line flags appended to the core |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

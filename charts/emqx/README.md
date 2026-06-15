@@ -62,4 +62,52 @@ login.
 | securityContext | object | drop ALL | Container security context |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape the native Prometheus endpoint on the dashboard port |
+| metrics.path | string | `/api/v5/prometheus/stats` | Prometheus endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| emqxConf | object | `{}` | Native EMQX settings applied as EMQX_ environment variables |
+| tls.enabled | bool | `false` | Serve the SSL MQTT listener via native settings |
+| tls.existingSecret | string | `""` | Secret holding ca.crt, tls.crt and tls.key |
+| tls.verifyPeer | bool | `false` | Require and verify client certificates |
+| service.mqttssl.port | int | `8883` | SSL MQTT listener port published when TLS is enabled |
+
+## Configuration
+
+### Metrics
+
+EMQX exposes a native Prometheus endpoint on the dashboard port (`18083`) at
+`/api/v5/prometheus/stats`, so no exporter sidecar is required. Basic auth on
+the endpoint is disabled by default in EMQX, which keeps the scrape
+unauthenticated. Enable scraping with:
+
+```sh
+helm install my-emqx kymelio/emqx \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Pass native EMQX settings through `emqxConf`. Each key is a dotted config path
+that becomes an `EMQX_` environment variable (uppercased, dots converted to
+double underscores):
+
+```yaml
+emqxConf:
+  mqtt.max_packet_size: "1MB"
+  node.process_limit: "2097152"
+```
+
+### TLS
+
+EMQX configures the SSL MQTT listener through native
+`EMQX_LISTENERS__SSL__DEFAULT__*` settings. Provide a Secret with `ca.crt`,
+`tls.crt` and `tls.key`; the chart mounts it, wires those settings and publishes
+the SSL listener on `8883`:
+
+```sh
+helm install my-emqx kymelio/emqx \
+  --set tls.enabled=true \
+  --set tls.existingSecret=emqx-tls \
+  --set tls.verifyPeer=true
+```

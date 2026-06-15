@@ -65,6 +65,18 @@ spec:
               value: "true"
             - name: KC_HTTP_ENABLED
               value: "true"
+            {{- if .Values.metrics.enabled }}
+            - name: KC_METRICS_ENABLED
+              value: "true"
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: KC_HTTPS_CERTIFICATE_FILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            - name: KC_HTTPS_PORT
+              value: {{ .Values.tls.port | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -76,6 +88,16 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: https
+              containerPort: {{ .Values.tls.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: management
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /realms/master
@@ -90,7 +112,7 @@ spec:
             failureThreshold: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumeMounts }}
+          {{- if or .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumeMounts }}
           volumeMounts:
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
@@ -98,6 +120,11 @@ spec:
               {{- with .Values.configSubPath }}
               subPath: {{ . }}
               {{- end }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
             {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -118,12 +145,18 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "keycloak.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}

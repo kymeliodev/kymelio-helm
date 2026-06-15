@@ -2,7 +2,7 @@ apiVersion: v2
 name: dragonfly
 description: Dragonfly in-memory data store compatible with Redis
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v1.23"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

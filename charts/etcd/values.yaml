@@ -98,12 +98,39 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# etcd serves Prometheus metrics natively under /metrics on the client port. When
+# enabled this chart adds a dedicated metrics listener via ETCD_LISTEN_METRICS_URLS
+# and publishes it, so the metrics endpoint can be scraped without exposing the
+# full client API.
 metrics:
+  enabled: false
+  # Port the dedicated metrics listener binds to.
+  port: 2381
+  # Path the metrics are served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the client port. When enabled the chart switches the client
+# URLs to https and passes the etcd TLS flags through ETCD_CERT_FILE and
+# ETCD_KEY_FILE. The Secret must contain the certificate and key files.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Optional CA used to enable client certificate authentication.
+  caFilename: ""
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/etcd/certs
+
+# Native etcd tuning applied as --key=value flags. Use this for server settings,
+# for example { quota-backend-bytes: "8589934592", auto-compaction-retention: "1" }.
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

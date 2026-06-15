@@ -45,7 +45,9 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the broker. The MQTT listener and the control center are published.
+# Service exposing the broker. The MQTT listener and the control center are
+# published. When metrics.enabled is set the Prometheus extension port is
+# published as well.
 service:
   type: ClusterIP
   mqtt:
@@ -54,6 +56,9 @@ service:
   http:
     port: 8080
     portName: http
+  metrics:
+    port: 9399
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -94,12 +99,28 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# HiveMQ CE has no built in Prometheus endpoint; it requires the official HiveMQ
+# Prometheus extension, which exposes metrics on port 9399 under /metrics. The
+# extension must be present in the image (the stock hivemq/hivemq-ce image does
+# not ship it enabled). Enabling metrics here publishes the extension port and
+# wires the ServiceMonitor to it. See the README for how to install the
+# extension. No metrics are scraped until the extension is enabled in the image.
 metrics:
+  enabled: false
+  # Port the HiveMQ Prometheus extension listens on.
+  port: 9399
+  # Path the extension serves metrics on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native HiveMQ tuning is managed through the generic configuration surface
+# below: set `configuration` to a full config.xml and mount it over the HiveMQ
+# configuration directory with configMountPath / configSubPath. See the README
+# for a worked example.
 
 # Extra environment variables passed to the container.
 extraEnv: []

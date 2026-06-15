@@ -58,6 +58,24 @@ spec:
             - --node-id
             - "0"
             - --check=false
+            {{- range $key, $value := .Values.redpandaConf }}
+            - --set
+            - redpanda.{{ $key }}={{ $value }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - --set
+            - redpanda.kafka_api_tls[0].enabled=true
+            - --set
+            - redpanda.kafka_api_tls[0].name=external
+            - --set
+            - redpanda.kafka_api_tls[0].cert_file={{ printf "%s/%s" .Values.tls.mountPath .Values.tls.certFilename }}
+            - --set
+            - redpanda.kafka_api_tls[0].key_file={{ printf "%s/%s" .Values.tls.mountPath .Values.tls.keyFilename }}
+            - --set
+            - redpanda.kafka_api_tls[0].truststore_file={{ printf "%s/%s" .Values.tls.mountPath .Values.tls.caFilename }}
+            - --set
+            - redpanda.kafka_api_tls[0].require_client_auth={{ .Values.tls.requireClientAuth }}
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -102,6 +120,11 @@ spec:
               subPath: {{ . }}
               {{- end }}
             {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -120,7 +143,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
@@ -130,6 +153,11 @@ spec:
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "redpanda.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}

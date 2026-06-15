@@ -50,6 +50,11 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: jmx
+              containerPort: {{ .Values.service.jmxPort }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             exec:
               command: ["nodetool", "status"]
@@ -73,6 +78,12 @@ spec:
               value: {{ .Values.cassandra.datacenter | quote }}
             - name: CASSANDRA_ENDPOINT_SNITCH
               value: {{ .Values.cassandra.endpointSnitch | quote }}
+            {{- if .Values.metrics.enabled }}
+            - name: LOCAL_JMX
+              value: "no"
+            - name: JVM_OPTS
+              value: "-Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -83,6 +94,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if or .Values.cassandra.configFragment .Values.tls.enabled }}
+            - name: cassandra-config
+              mountPath: {{ .Values.cassandra.configFragmentMountPath }}
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -93,6 +114,28 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.metrics.port | quote }}
+            - name: CONFIG_YML
+              value: /opt/jmx_exporter/config.yaml
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: metrics-config
+              mountPath: /opt/jmx_exporter
+              readOnly: true
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -108,11 +151,27 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.metrics.enabled .Values.tls.enabled .Values.cassandra.configFragment }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.cassandra.configFragment .Values.tls.enabled }}
+        - name: cassandra-config
+          configMap:
+            name: {{ include "cassandra.fullname" . }}-cassandra-config
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
+        {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics-config
+          configMap:
+            name: {{ include "cassandra.fullname" . }}-metrics
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

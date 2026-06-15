@@ -57,4 +57,57 @@ JetStream is enabled by default with the store directory set to `/data`.
 | securityContext | object | drop ALL | Container security context |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add the prometheus-nats-exporter sidecar and publish its port |
+| metrics.image.repository | string | `natsio/prometheus-nats-exporter` | Exporter sidecar image |
+| metrics.image.tag | string | `0.15.0` | Exporter sidecar image tag |
+| metrics.collectors | list | `["-varz"]` | NATS monitoring subsystems collected by the exporter |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| service.metrics.port | int | `7777` | Exporter metrics service port |
+| natsConf | object | `{}` | Native settings rendered into nats-server.conf |
+| tls.enabled | bool | `false` | Serve TLS using a native tls block |
+| tls.existingSecret | string | `""` | Secret holding ca.crt, tls.crt and tls.key |
+| tls.verify | bool | `false` | Require and verify client certificates |
+
+## Configuration
+
+### Metrics
+
+NATS exposes monitoring data as JSON on the HTTP port (`8222`) rather than in
+Prometheus format. The community `prometheus-nats-exporter` sidecar reads that
+endpoint and re-exposes it as Prometheus metrics on its own port (`7777`).
+Enabling metrics adds the sidecar, publishes its port and wires the
+ServiceMonitor to it.
+
+```sh
+helm install my-nats kymelio/nats \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+Collect additional subsystems by extending `metrics.collectors`, for example
+`{-varz, -connz, -jsz=all}`.
+
+### Server tuning
+
+Pass native server settings through `natsConf`. Each key/value pair is rendered
+into `nats-server.conf`, mounted at `/etc/nats/nats-server.conf` and loaded with
+`-c`:
+
+```yaml
+natsConf:
+  max_payload: 8MB
+  max_connections: "100000"
+```
+
+### TLS
+
+NATS configures TLS through a native `tls {}` block. Provide a Secret with
+`ca.crt`, `tls.crt` and `tls.key`; the chart mounts it, renders the block into
+`nats-server.conf` and starts the server with that config:
+
+```sh
+helm install my-nats kymelio/nats \
+  --set tls.enabled=true \
+  --set tls.existingSecret=nats-tls \
+  --set tls.verify=true
+```

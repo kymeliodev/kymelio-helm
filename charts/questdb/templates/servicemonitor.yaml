@@ -13,7 +13,10 @@ spec:
     matchLabels:
       {{- include "questdb.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.primaryPortName }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.primaryPortName }}{{ end }}
+      {{- if .Values.metrics.enabled }}
+      path: {{ .Values.metrics.path }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

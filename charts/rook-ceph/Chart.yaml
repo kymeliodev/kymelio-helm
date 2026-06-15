@@ -2,7 +2,7 @@ apiVersion: v2
 name: rook-ceph
 description: Rook Ceph operator that manages Ceph storage clusters on Kubernetes.
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v1.14.9"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

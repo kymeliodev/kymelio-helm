@@ -115,11 +115,17 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Scrape the built-in metrics endpoint. ZITADEL serves Prometheus metrics at
+  # /debug/metrics on the main port (8080). The endpoint is enabled by default,
+  # so this only configures the ServiceMonitor path.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path of the Prometheus metrics endpoint.
+    path: /debug/metrics
 
 # Extra environment variables passed to the container.
 extraEnv: []

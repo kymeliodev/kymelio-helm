@@ -13,7 +13,13 @@ spec:
     matchLabels:
       {{- include "cockroachdb.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.ports.http.name }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.ports.http.name }}{{ end }}
+      path: {{ .Values.metrics.path }}
+      {{- if .Values.tls.enabled }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

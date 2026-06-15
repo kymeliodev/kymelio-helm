@@ -13,7 +13,10 @@ spec:
     matchLabels:
       {{- include "argocd.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: http
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}http{{ end }}
+      {{- if .Values.metrics.enabled }}
+      path: {{ .Values.metrics.path }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

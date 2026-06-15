@@ -28,6 +28,21 @@ helm uninstall my-loki
 
 The Loki configuration is provided through `config` as a YAML string and mounted at `/etc/loki/loki.yaml`. The default is a single binary, filesystem backed setup suitable for a single replica. A change to `config` updates a checksum annotation on the pod so it is rolled automatically.
 
+### Monitoring
+
+Loki exposes its own metrics at `/metrics` on the HTTP port (`service.port`, default 3100). Set `metrics.enabled` to advertise the endpoint and create a ServiceMonitor for the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -44,7 +59,9 @@ The Loki configuration is provided through `config` as a YAML string and mounted
 | persistence.mountPath | string | `/loki` | Data directory mount path |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
+| metrics.enabled | bool | `false` | Advertise the built in /metrics endpoint on the HTTP port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | HTTP path scraped by the ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 10001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

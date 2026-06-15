@@ -84,3 +84,61 @@ helm upgrade my-gitlab kymelio/gitlab --reuse-values
 | securityContext | object | runAsUser 0, drop ALL | Container security context, root by exception |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | resources | object | requests and limits | Container resource requests and limits |
+| metrics.enabled | bool | `false` | Enable the bundled /-/metrics endpoint on the HTTP port |
+| metrics.monitoringAllowlist | list | `["0.0.0.0/0"]` | CIDR ranges permitted to read /-/metrics |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/-/metrics` | Path scraped by Prometheus |
+
+## Configuration
+
+### Metrics
+
+GitLab serves its bundled Prometheus metrics at `/-/metrics` on the HTTP port
+(`80`). Set `metrics.enabled=true` to append
+`gitlab_rails['prometheus_metrics_enabled'] = true` and a
+`monitoring_whitelist` to the Omnibus configuration so the endpoint is reachable
+by scrapers. Enable the ServiceMonitor to have Prometheus scrape it:
+
+```sh
+helm install my-gitlab kymelio/gitlab \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+Restrict the allowlist to your Prometheus network rather than the open default:
+
+```yaml
+metrics:
+  enabled: true
+  monitoringAllowlist:
+    - 10.0.0.0/8
+    - 192.168.0.0/16
+```
+
+### Native configuration
+
+Tune the instance through `omnibusConfig`, which is passed to the container as
+`GITLAB_OMNIBUS_CONFIG`. Set `external_url` and any Omnibus setting, for example
+to externalize the database and raise the worker count:
+
+```yaml
+omnibusConfig: |
+  external_url 'https://gitlab.example.com'
+  gitlab_rails['db_adapter'] = 'postgresql'
+  gitlab_rails['db_host'] = 'postgres.db.svc'
+  gitlab_rails['db_database'] = 'gitlabhq_production'
+  puma['worker_processes'] = 4
+```
+
+### TLS
+
+GitLab can terminate TLS itself through the bundled NGINX. Point `external_url`
+at an `https://` address and let Omnibus request a Let's Encrypt certificate, or
+disable the built in NGINX and terminate TLS at an Ingress instead:
+
+```yaml
+omnibusConfig: |
+  external_url 'https://gitlab.example.com'
+  letsencrypt['enable'] = true
+  letsencrypt['contact_emails'] = ['admin@example.com']
+```

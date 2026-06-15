@@ -51,9 +51,19 @@ spec:
             - name: {{ .Values.service.amqp.portName }}
               containerPort: {{ .Values.service.amqp.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: {{ .Values.tls.amqpsPortName }}
+              containerPort: {{ .Values.tls.amqpsPort }}
+              protocol: TCP
+            {{- end }}
             - name: {{ .Values.service.management.portName }}
               containerPort: {{ .Values.service.management.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: {{ .Values.service.metrics.portName }}
+              containerPort: {{ .Values.service.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: RABBITMQ_DEFAULT_USER
               value: {{ .Values.auth.username | quote }}
@@ -99,6 +109,21 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.metrics.enabled }}
+            - name: server-conf
+              mountPath: /etc/rabbitmq/enabled_plugins
+              subPath: enabled_plugins
+            {{- end }}
+            {{- if or .Values.tls.enabled .Values.rabbitmqConf }}
+            - name: server-conf
+              mountPath: /etc/rabbitmq/rabbitmq.conf
+              subPath: rabbitmq.conf
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -124,11 +149,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.metrics.enabled .Values.tls.enabled .Values.rabbitmqConf }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.metrics.enabled .Values.tls.enabled .Values.rabbitmqConf }}
+        - name: server-conf
+          configMap:
+            name: {{ include "rabbitmq.fullname" . }}-server-conf
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

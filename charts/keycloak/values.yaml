@@ -107,11 +107,35 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the built-in Micrometer metrics endpoint. Keycloak serves Prometheus
+  # metrics at /metrics on the management interface (port 9000) when
+  # KC_METRICS_ENABLED is true. The management interface is already active
+  # because health checks are enabled.
+  enabled: false
+  # Management interface port that exposes /metrics and /health.
+  port: 9000
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path of the Prometheus metrics endpoint on the management port.
+    path: /metrics
+
+# Server side TLS. Keycloak terminates TLS itself when enabled, reading a PEM
+# certificate and key from a mounted Secret via KC_HTTPS_CERTIFICATE_FILE and
+# KC_HTTPS_CERTIFICATE_KEY_FILE. The HTTPS port is added to the container and
+# Service.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # HTTPS port served by Keycloak.
+  port: 8443
+  # Mount path for the certificate files inside the container.
+  mountPath: /opt/keycloak/conf/tls
 
 # Extra environment variables passed to the container. Production mode requires
 # database and hostname settings here, for example KC_DB, KC_DB_URL,

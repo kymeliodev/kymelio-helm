@@ -65,6 +65,39 @@ The host values are passed to authentik through `AUTHENTIK_POSTGRESQL__HOST` and
 `AUTHENTIK_REDIS__HOST`. The secret key is read from `AUTHENTIK_SECRET_KEY`,
 which is sourced from a Secret managed by this chart.
 
+## Configuration
+
+### Metrics
+
+The authentik server exposes Prometheus metrics at `/metrics` on a dedicated
+port (9300) that requires no authentication. Set `metrics.enabled` to true to
+add the port to the container and Service, and enable
+`metrics.serviceMonitor.enabled` to scrape it with the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+```
+
+### Native configuration
+
+authentik is configured through `AUTHENTIK_*` environment variables. Pass any
+of them through `extraEnv`, for example to set the error reporting and email
+options:
+
+```yaml
+extraEnv:
+  - name: AUTHENTIK_ERROR_REPORTING__ENABLED
+    value: "false"
+  - name: AUTHENTIK_EMAIL__HOST
+    value: smtp.example.com
+  - name: AUTHENTIK_EMAIL__PORT
+    value: "587"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -91,5 +124,8 @@ which is sourced from a Secret managed by this chart.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the built-in /metrics endpoint on port 9300 |
+| metrics.port | int | `9300` | Port serving the metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | Metrics path scraped by the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables, used for the database password |

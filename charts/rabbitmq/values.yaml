@@ -61,7 +61,8 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the broker. AMQP and the management UI are published.
+# Service exposing the broker. AMQP and the management UI are published. When
+# metrics.enabled is set the Prometheus port is published as well.
 service:
   type: ClusterIP
   amqp:
@@ -70,6 +71,9 @@ service:
   management:
     port: 15672
     portName: management
+  metrics:
+    port: 15692
+    portName: metrics
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -110,12 +114,44 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# RabbitMQ ships the rabbitmq_prometheus plugin, which exposes all broker
+# metrics in Prometheus text format on a dedicated port (15692, path /metrics).
+# Enabling this renders an enabled_plugins file that turns the plugin on
+# alongside the management plugin, publishes the metrics port and wires the
+# ServiceMonitor to it. No exporter sidecar is required.
 metrics:
+  enabled: false
+  # Path the Prometheus plugin serves metrics on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the AMQP listener. RabbitMQ enables TLS through its native
+# configuration (ssl_options in rabbitmq.conf). When enabled this chart mounts
+# the certificate Secret and appends the matching ssl_options to the rendered
+# rabbitmq.conf so the broker serves AMQPS on amqpsPort.
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /etc/rabbitmq/certs
+  # Require and verify client certificates (mutual TLS).
+  verifyPeer: false
+  # AMQPS listener port published when TLS is enabled.
+  amqpsPort: 5671
+  amqpsPortName: amqps
+
+# Native RabbitMQ configuration rendered into rabbitmq.conf and mounted at
+# /etc/rabbitmq/rabbitmq.conf. Use this for sysctl style broker tuning, for
+# example { vm_memory_high_watermark.relative: "0.6", channel_max: "2048" }.
+rabbitmqConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
