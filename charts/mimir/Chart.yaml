@@ -2,7 +2,7 @@ apiVersion: v2
 name: mimir
 description: Mimir horizontally scalable long term storage for Prometheus metrics
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "2.13.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
