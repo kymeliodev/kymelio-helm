@@ -1,0 +1,19 @@
+{{- if or .Values.scylla.configFragment .Values.tls.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "scylladb.fullname" . }}-scylla-config
+  labels:
+    {{- include "scylladb.labels" . | nindent 4 }}
+data:
+  {{ .Values.scylla.configFragmentFileName }}: |
+    {{- with .Values.scylla.configFragment }}
+    {{- . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.tls.enabled }}
+    client_encryption_options:
+      enabled: true
+      certificate: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+      keyfile: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+    {{- end }}
+{{- end }}

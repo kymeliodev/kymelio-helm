@@ -42,6 +42,52 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-scylladb kymelio/scylladb --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+ScyllaDB serves Prometheus metrics natively on port 9180 at `/metrics`. Enabling
+metrics passes `--prometheus-port` / `--prometheus-address` to the server, opens the
+port on the container and Service, and lets the ServiceMonitor scrape it directly.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+### Config tuning
+
+Pass extra start flags through `extraArgs`, or set native `scylla.yaml` settings
+through `scylla.configFragment`. The fragment is rendered into a ConfigMap and
+mounted at `scylla.configFragmentMountPath`.
+
+```yaml
+scylla:
+  configFragment: |
+    authenticator: PasswordAuthenticator
+    authorizer: CassandraAuthorizer
+    compaction_static_shares: 100
+extraArgs:
+  - --memory
+  - 2G
+```
+
+### TLS
+
+Client encryption is configured through the `scylla.yaml` fragment. Provide a Secret
+holding the certificate and key and enable `tls`:
+
+```sh
+helm install my-scylladb kymelio/scylladb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=scylla-tls
+```
+
+The Secret is mounted read only at `tls.mountPath` and the chart writes the matching
+`client_encryption_options` block into the rendered `scylla.yaml`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -59,4 +105,9 @@ helm upgrade my-scylladb kymelio/scylladb --reuse-values
 | podSecurityContext | object | runAsNonRoot, uid 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the native Prometheus endpoint on port 9180 |
+| metrics.port | int | `9180` | Native Prometheus listener port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| scylla.configFragment | string | `""` | Native scylla.yaml fragment mounted into the pod |
+| tls.enabled | bool | `false` | Enable client TLS via scylla.yaml client_encryption_options |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |

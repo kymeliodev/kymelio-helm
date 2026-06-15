@@ -86,12 +86,29 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# ScyllaDB serves Prometheus metrics natively on metrics.port at the /metrics path.
+# Enabling this exposes the port on the container and Service.
 metrics:
+  enabled: false
+  # Native Prometheus listener port (scylla prometheus_port).
+  port: 9180
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for client (CQL) connections. When enabled the settings are
+# rendered into the mounted scylla.yaml fragment and the certificate Secret is
+# mounted read only.
+tls:
+  enabled: false
+  # Secret containing the certificate, key and optional CA files.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /etc/scylla/certs
+  certFilename: tls.crt
+  keyFilename: tls.key
 
 # Extra environment variables passed to the container.
 extraEnv: []
@@ -139,6 +156,21 @@ affinity: {}
 # Image used by the helm test connection check.
 tests:
   image: busybox:1.36
+
+# ScyllaDB native configuration.
+scylla:
+  # Native scylla.yaml tuning. When set (or when tls.enabled is true) the fragment
+  # is rendered into a ConfigMap and mounted at scylla.configFragmentMountPath.
+  # Use this for server settings such as compaction throughput, authenticator or
+  # client_encryption_options.
+  # Example: |
+  #   authenticator: PasswordAuthenticator
+  #   authorizer: CassandraAuthorizer
+  configFragment: ""
+  # File name used for the rendered scylla.yaml fragment.
+  configFragmentFileName: scylla.yaml
+  # Mount path for the rendered scylla.yaml fragment.
+  configFragmentMountPath: /etc/scylla-extra
 
 # Persistent storage for the StatefulSet.
 persistence:
