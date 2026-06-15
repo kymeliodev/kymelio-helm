@@ -358,6 +358,28 @@ entries:
   couchdb:
   - apiVersion: v2
     appVersion: "3.3"
+    created: "2026-06-15T09:27:34.507536046Z"
+    description: Apache CouchDB document database
+    digest: 7dfe118ec51c24ef98845a7f1d466a9bfbda363b14af4344a1c30e896e0f80c7
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - couchdb
+    - database
+    - nosql
+    - document
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: couchdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://couchdb.apache.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/couchdb-0.1.1/couchdb-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "3.3"
     created: "2026-06-15T07:05:24.213874364Z"
     description: Apache CouchDB document database
     digest: cd683284e801a4d3eff3aa29963d3ae3abdcaeea75e98d887d57aee57b0ab21d
@@ -968,6 +990,29 @@ entries:
   mariadb:
   - apiVersion: v2
     appVersion: "11.4"
+    created: "2026-06-15T09:27:34.843841566Z"
+    description: MariaDB relational database server
+    digest: e5ea2a2d72d20ee52f74251d7cbf842a0e276b8b98dbcaaf8e2648936b61adab
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mariadb
+    - mysql
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mariadb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://mariadb.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mariadb-0.1.1/mariadb-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "11.4"
     created: "2026-06-15T07:05:31.086243708Z"
     description: MariaDB relational database server
     digest: 0b08085dd5dd2b91ce0bd26c59ab3e04f25ec8e5b7827dcf9b3356a2c38e8602
@@ -1107,6 +1152,29 @@ entries:
   mongodb:
   - apiVersion: v2
     appVersion: "7.0"
+    created: "2026-06-15T09:27:35.094862154Z"
+    description: MongoDB document-oriented NoSQL database
+    digest: a1ab96aaea456afdc3788ea5347d243e10c6188521e585250688ecb9d4be44f9
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mongodb
+    - mongo
+    - database
+    - nosql
+    - document
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mongodb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.mongodb.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mongodb-0.1.1/mongodb-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "7.0"
     created: "2026-06-15T07:05:32.495482554Z"
     description: MongoDB document-oriented NoSQL database
     digest: 3fb3bb9d958743b4ef4ef0e1f274550cdbddd6b44f2638dc8b3b2daa714e2df4
@@ -1149,6 +1217,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/mosquitto-0.1.0/mosquitto-0.1.0.tgz
     version: 0.1.0
   mysql:
+  - apiVersion: v2
+    appVersion: "8.4"
+    created: "2026-06-15T09:27:35.353259178Z"
+    description: MySQL relational database server
+    digest: 3a91a87484e71fb29c94479c3ce69390a9f8122adad9a64c96337e4655ffd912
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mysql
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mysql
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.mysql.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mysql-0.1.1/mysql-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: "8.4"
     created: "2026-06-15T07:05:33.016581282Z"
@@ -2103,6 +2193,29 @@ entries:
   valkey:
   - apiVersion: v2
     appVersion: "8.0"
+    created: "2026-06-15T09:27:35.607681693Z"
+    description: Valkey in-memory key value data store
+    digest: 67d759d9c1aec088520a37ecf1f3a2ddcde57ce50c9df455b00eff69e3e5f87c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - valkey
+    - redis
+    - cache
+    - key-value
+    - database
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: valkey
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://valkey.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/valkey-0.1.1/valkey-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "8.0"
     created: "2026-06-15T07:05:43.473226144Z"
     description: Valkey in-memory key value data store
     digest: a1204bd387181e340ce7cb7d3a10af4afe79240737e212a91ffad856e42ec64d
@@ -2336,4 +2449,4 @@ entries:
     urls:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/zot-0.1.0/zot-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-15T07:05:45.84039674Z"
+generated: "2026-06-15T09:27:35.607710206Z"
