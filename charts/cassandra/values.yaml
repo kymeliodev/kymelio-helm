@@ -96,6 +96,9 @@ metrics:
 # Extra environment variables passed to the container.
 extraEnv: []
 
+# Extra command line arguments appended to the container entrypoint.
+extraArgs: []
+
 # Extra environment variables sourced from ConfigMaps or Secrets (envFrom).
 extraEnvFrom: []
 
