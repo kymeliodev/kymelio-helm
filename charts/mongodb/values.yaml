@@ -99,6 +99,20 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Run a mongodb_exporter sidecar that exposes metrics on metrics.port.
+  enabled: false
+  image:
+    repository: docker.io/percona/mongodb_exporter
+    tag: "0.40.0"
+    pullPolicy: IfNotPresent
+  port: 9216
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
@@ -113,6 +127,11 @@ extraEnvFrom: []
 
 # Extra command line arguments appended to the container entrypoint.
 extraArgs: []
+
+# Initialization scripts run on first start. Map of filename to script content,
+# mounted into /docker-entrypoint-initdb.d and executed once on an empty data dir.
+# The official mongo image runs *.js and *.sh files placed there on first init.
+initdbScripts: {}
 
 # Inline application configuration. When set it is rendered into a ConfigMap and
 # mounted at configMountPath. Use this for native config files like an app.conf.

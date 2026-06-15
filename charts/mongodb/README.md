@@ -61,3 +61,19 @@ helm upgrade my-mongodb kymelio/mongodb
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (percona mongodb_exporter sidecar):
+
+```sh
+helm install my-mongodb kymelio/mongodb --set metrics.enabled=true
+```
+
+Run init scripts on first start (executed once on an empty data directory):
+
+```yaml
+initdbScripts:
+  01-init.js: |
+    db.getSiblingDB("app").createCollection("items");
+```
