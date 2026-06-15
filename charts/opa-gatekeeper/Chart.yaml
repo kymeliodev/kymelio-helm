@@ -2,7 +2,7 @@ apiVersion: v2
 name: opa-gatekeeper
 description: Open Policy Agent Gatekeeper admission controller
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v3.17.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
