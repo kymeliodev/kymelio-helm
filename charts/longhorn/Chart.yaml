@@ -1,0 +1,19 @@
+apiVersion: v2
+name: longhorn
+description: Longhorn manager control plane for cloud native distributed block storage on Kubernetes.
+type: application
+version: 0.1.0
+appVersion: "v1.7.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - longhorn
+  - storage
+  - block-storage
+  - csi
+  - persistent-volume
+  - distributed
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

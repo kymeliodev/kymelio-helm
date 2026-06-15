@@ -1,0 +1,131 @@
+# Number of replicas. Ignored when autoscaling is enabled.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/library/mongo
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Database authentication settings.
+auth:
+  # Root user created on first start.
+  username: root
+  # Root password. A random password is generated when left empty.
+  password: ""
+  # Use an existing Secret instead of managing credentials in this chart.
+  existingSecret: ""
+  secretKeys:
+    # Key inside the Secret that holds the password.
+    passwordKey: mongodb-password
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context. Matches the mongodb user shipped in the image.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  runAsGroup: 999
+  fsGroup: 999
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container level security context.
+securityContext:
+  allowPrivilegeEscalation: false
+  # Set to true for images that tolerate an immutable root filesystem.
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service exposing the workload.
+service:
+  type: ClusterIP
+  port: 27017
+  portName: mongodb
+
+# Ingress is not applicable to a TCP database and stays disabled.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+# Autoscaling is not supported for a single primary and stays disabled.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+metrics:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container.
+extraEnv: []
+
+# Free form configuration rendered into a ConfigMap when not empty.
+config: {}
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Image used by the helm test connection check.
+tests:
+  image: docker.io/library/mongo:7.0
+
+# Persistent storage for the StatefulSet.
+persistence:
+  enabled: true
+  # Leave empty to use the cluster default StorageClass.
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  mountPath: /data/db

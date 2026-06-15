@@ -1,0 +1,30 @@
+SurrealDB has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "surrealdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Root user: {{ .Values.auth.username }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "surrealdb.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Reach the HTTP API on your workstation with:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "surrealdb.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then connect with the surreal CLI:
+
+  surreal sql --endpoint http://127.0.0.1:{{ .Values.service.port }} --user {{ .Values.auth.username }} --pass <password>
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

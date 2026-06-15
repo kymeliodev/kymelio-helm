@@ -1,0 +1,21 @@
+zot has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The registry API is reachable inside the cluster at:
+
+  http://{{ include "zot.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward the registry to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "zot.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Check the registry is up:
+
+  curl http://127.0.0.1:{{ .Values.service.port }}/v2/
+
+Push an image to the registry:
+
+  docker tag my-image 127.0.0.1:{{ .Values.service.port }}/my-image
+  docker push 127.0.0.1:{{ .Values.service.port }}/my-image

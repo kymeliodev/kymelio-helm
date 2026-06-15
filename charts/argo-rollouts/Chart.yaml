@@ -1,0 +1,20 @@
+apiVersion: v2
+name: argo-rollouts
+description: Progressive delivery controller for the Argo Rollouts engine
+type: application
+version: 0.1.0
+appVersion: "v1.7.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/argoproj/argo-rollouts
+keywords:
+  - argo
+  - rollouts
+  - progressive-delivery
+  - canary
+  - controller
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

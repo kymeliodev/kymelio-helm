@@ -1,0 +1,19 @@
+apiVersion: v2
+name: nexus
+description: Sonatype Nexus Repository 3 universal artifact manager
+type: application
+version: 0.1.0
+appVersion: "3.70.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://www.sonatype.com/products/sonatype-nexus-repository
+keywords:
+  - nexus
+  - repository
+  - artifacts
+  - maven
+  - registry
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

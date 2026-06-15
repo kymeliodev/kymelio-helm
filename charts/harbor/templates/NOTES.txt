@@ -1,0 +1,26 @@
+Harbor core has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The Harbor core API is reachable inside the cluster at:
+
+  http://{{ include "harbor.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+This release deploys only the harbor-core component. It stays unhealthy until
+an external PostgreSQL database, an external Redis instance and the remaining
+Harbor services (registry, jobservice, portal) are provided and wired through
+extraEnv. See the chart README for the full list.
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the initial admin password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "harbor.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Check the core health endpoint:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "harbor.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+  curl http://127.0.0.1:{{ .Values.service.port }}/api/v2.0/health

@@ -1,0 +1,19 @@
+apiVersion: v2
+name: mongodb
+description: MongoDB document-oriented NoSQL database
+type: application
+version: 0.1.0
+appVersion: "7.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://www.mongodb.com
+keywords:
+  - mongodb
+  - mongo
+  - database
+  - nosql
+  - document
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

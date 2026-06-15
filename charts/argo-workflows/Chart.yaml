@@ -1,0 +1,20 @@
+apiVersion: v2
+name: argo-workflows
+description: Workflow controller for the Argo Workflows engine on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "v3.5.10"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/argoproj/argo-workflows
+keywords:
+  - argo
+  - workflows
+  - controller
+  - pipelines
+  - operator
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

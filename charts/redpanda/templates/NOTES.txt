@@ -1,0 +1,21 @@
+Redpanda has been installed. Redpanda is a Kafka-compatible streaming
+data platform.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Kafka API endpoint inside the cluster:
+
+  {{ include "redpanda.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.kafka.port }}
+
+Admin API endpoint inside the cluster:
+
+  {{ include "redpanda.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.admin.port }}
+
+Port forward the Kafka API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "redpanda.fullname" . }} {{ .Values.service.kafka.port }}:{{ .Values.service.kafka.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

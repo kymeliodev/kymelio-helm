@@ -1,0 +1,18 @@
+apiVersion: v2
+name: questdb
+description: QuestDB high performance time series database
+type: application
+version: 0.1.0
+appVersion: "8.1.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://questdb.io
+keywords:
+  - questdb
+  - timeseries
+  - database
+  - sql
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

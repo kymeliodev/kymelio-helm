@@ -1,0 +1,14 @@
+apiVersion: v2
+name: emqx
+description: EMQX MQTT broker deployed as a StatefulSet with a management dashboard
+type: application
+version: 0.1.0
+appVersion: "5.7"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - emqx
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

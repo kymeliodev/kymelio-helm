@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["namespace"],
+  "properties": {
+    "namespace": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 63,
+          "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        },
+        "labels": { "type": "object" },
+        "annotations": { "type": "object" }
+      }
+    },
+    "resourceQuota": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "hard": { "type": "object" }
+      }
+    },
+    "limitRange": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "limits": { "type": "array" }
+      }
+    },
+    "networkPolicy": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    }
+  }
+}

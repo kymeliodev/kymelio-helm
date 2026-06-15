@@ -1,0 +1,27 @@
+GitLab CE has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+This release runs the all in one GitLab Omnibus CE image. It can take several
+minutes to finish bootstrapping all bundled services on first start.
+
+Web UI inside the cluster:
+
+  http://{{ include "gitlab.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.service.ssh.enabled }}
+
+Git SSH is exposed on port {{ .Values.service.ssh.port }} of the same Service.
+{{- end }}
+
+Port forward the web UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "gitlab.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Retrieve the initial root password (valid for 24 hours after first boot):
+
+  kubectl --namespace {{ .Release.Namespace }} exec -it sts/{{ include "gitlab.fullname" . }} -- \
+    cat /etc/gitlab/initial_root_password
+
+Set external_url through the omnibusConfig value so links resolve correctly.

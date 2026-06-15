@@ -1,0 +1,33 @@
+Forgejo has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Web UI inside the cluster:
+
+  http://{{ include "forgejo.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.service.ssh.enabled }}
+
+Git SSH is exposed on port {{ .Values.service.ssh.port }} of the same Service.
+{{- end }}
+
+Port forward the web UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "forgejo.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+{{- if .Values.admin.create }}
+{{- if not .Values.admin.existingSecret }}
+
+Retrieve the administrator password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "forgejo.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.admin.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Administrator user: {{ .Values.admin.username }}
+{{- else }}
+
+No administrator was created. Set admin.create=true or complete the setup
+through the web UI on first visit.
+{{- end }}

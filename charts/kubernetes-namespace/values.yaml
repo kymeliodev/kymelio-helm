@@ -1,0 +1,42 @@
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# Namespace to provision and govern.
+namespace:
+  # Name of the Namespace created by this chart. Required.
+  name: example
+  # Extra labels applied to the Namespace.
+  labels: {}
+  # Extra annotations applied to the Namespace.
+  annotations: {}
+
+# ResourceQuota limiting aggregate resource consumption in the namespace.
+resourceQuota:
+  enabled: true
+  # Hard limits enforced across all pods in the namespace.
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "50"
+
+# LimitRange applying default requests and limits to containers that omit them.
+limitRange:
+  enabled: true
+  limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+
+# Default deny NetworkPolicy isolating the namespace. When enabled it denies all
+# ingress and egress for pods in the namespace until explicit allow policies are
+# added alongside it.
+networkPolicy:
+  enabled: true

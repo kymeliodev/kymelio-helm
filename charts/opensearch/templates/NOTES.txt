@@ -1,0 +1,23 @@
+OpenSearch has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The security plugin is disabled in this chart, so the REST API is served over
+plain HTTP with no authentication.
+
+Reach the REST API from inside the cluster at:
+
+  http://{{ include "opensearch.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:9200
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "opensearch.fullname" . }} 9200:9200
+
+Then query the cluster health:
+
+  curl http://127.0.0.1:9200/_cluster/health
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

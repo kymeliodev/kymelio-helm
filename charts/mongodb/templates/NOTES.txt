@@ -1,0 +1,28 @@
+MongoDB has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+User: {{ .Values.auth.username }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "mongodb.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Connect with mongosh from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run mongosh-client --rm -it --restart=Never \
+    --image {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }} -- \
+    mongosh --host {{ include "mongodb.fullname" . }} -u {{ .Values.auth.username }} -p <password> --authenticationDatabase admin
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

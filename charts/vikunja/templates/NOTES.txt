@@ -1,0 +1,38 @@
+Vikunja has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "vikunja.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "vikunja.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the application at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+{{- if eq .Values.database.type "sqlite" }}
+
+This release runs standalone on a SQLite database stored at
+{{ .Values.persistence.mountPath }}/vikunja.db on the persistent volume.
+{{- else }}
+
+This release uses an external {{ .Values.database.type }} database at
+{{ .Values.externalDatabase.host }}.
+{{- end }}
+
+{{- if not .Values.auth.existingSecret }}
+
+The JWT secret is stored in the release Secret. Retrieve it with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "vikunja.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.jwtSecretKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

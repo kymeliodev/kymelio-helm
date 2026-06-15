@@ -1,0 +1,22 @@
+Argo Workflows controller has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The workflow controller is now running. It watches Workflow custom resources and
+runs the pods that make up each workflow.
+
+NOTE: this chart does not install the Argo Workflows custom resource definitions.
+Install the CRDs separately before submitting any workflows.
+
+Check the controller is ready with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "argo-workflows.fullname" . }}
+
+Scrape controller metrics from inside the cluster at:
+
+  {{ include "argo-workflows.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

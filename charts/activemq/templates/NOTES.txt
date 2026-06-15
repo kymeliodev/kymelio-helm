@@ -1,0 +1,27 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+OpenWire endpoint inside the cluster:
+
+  {{ include "activemq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.openwire.port }}
+
+Web console endpoint inside the cluster:
+
+  {{ include "activemq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.web.port }}
+
+The broker ships with default credentials for the web console and broker login:
+
+  Username: admin
+  Password: admin
+
+Open the web console on your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "activemq.fullname" . }} {{ .Values.service.web.port }}:{{ .Values.service.web.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.web.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

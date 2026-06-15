@@ -1,0 +1,32 @@
+Couchbase Server has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Admin console inside the cluster:
+
+  {{ include "couchbase.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.admin.port }}
+
+Data port:    11210
+Admin user:   {{ .Values.auth.username }}
+
+Port forward the admin console to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "couchbase.fullname" . }} {{ .Values.service.ports.admin.port }}:{{ .Values.service.ports.admin.port }}
+
+Then open http://127.0.0.1:{{ .Values.service.ports.admin.port }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the administrator password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "couchbase.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+This chart does not run an automated cluster init. Initialize the cluster
+manually through the web console using the admin user and password above.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

@@ -1,0 +1,28 @@
+NATS server with JetStream has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Client endpoint inside the cluster:
+
+  {{ include "nats.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.client.port }}
+
+Monitoring HTTP endpoint inside the cluster:
+
+  {{ include "nats.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+
+JetStream is enabled with the store directory set to /data.
+
+Port forward the client port to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "nats.fullname" . }} {{ .Values.service.client.port }}:{{ .Values.service.client.port }}
+
+Port forward the monitoring HTTP port to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "nats.fullname" . }} {{ .Values.service.http.port }}:{{ .Values.service.http.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.http.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

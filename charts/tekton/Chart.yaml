@@ -1,0 +1,18 @@
+apiVersion: v2
+name: tekton
+description: Tekton Pipelines controller for cloud native CI/CD
+type: application
+version: 0.1.0
+appVersion: "v0.62.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - tekton
+  - ci-cd
+  - pipelines
+  - build
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

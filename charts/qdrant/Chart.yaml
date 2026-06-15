@@ -1,0 +1,18 @@
+apiVersion: v2
+name: qdrant
+description: Qdrant vector database and similarity search engine
+type: application
+version: 0.1.0
+appVersion: "v1.11.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - qdrant
+  - vector-database
+  - embeddings
+  - similarity-search
+  - search
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

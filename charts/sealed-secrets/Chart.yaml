@@ -1,0 +1,18 @@
+apiVersion: v2
+name: sealed-secrets
+description: Sealed Secrets controller for encrypted Kubernetes secrets
+type: application
+version: 0.1.0
+appVersion: "0.27.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - sealed-secrets
+  - security
+  - secrets
+  - encryption
+  - gitops
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

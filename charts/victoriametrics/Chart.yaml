@@ -1,0 +1,20 @@
+apiVersion: v2
+name: victoriametrics
+description: Fast and cost effective time series database and monitoring solution
+type: application
+version: 0.1.0
+appVersion: "v1.102.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://victoriametrics.com
+keywords:
+  - victoriametrics
+  - metrics
+  - monitoring
+  - timeseries
+  - prometheus
+  - tsdb
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

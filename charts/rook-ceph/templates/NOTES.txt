@@ -1,0 +1,20 @@
+The Rook Ceph operator has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The operator runs as a Deployment exposing its webhook on port {{ .Values.service.port }} ({{ .Values.service.portName }}).
+
+Important: this chart installs the operator only. The CephCluster and the other
+Rook Custom Resource Definitions are installed separately and must be present
+before you create any storage resources.
+
+Next steps:
+
+  1. Install the Rook Custom Resource Definitions (installed separately).
+  2. Create a CephCluster resource to provision the Ceph daemons.
+  3. Create CephBlockPool, CephFilesystem or CephObjectStore resources as needed.
+
+Check the operator rollout with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "rook-ceph.fullname" . }}

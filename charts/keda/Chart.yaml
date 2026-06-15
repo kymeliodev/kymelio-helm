@@ -1,0 +1,20 @@
+apiVersion: v2
+name: keda
+description: KEDA event-driven autoscaling operator for Kubernetes workloads
+type: application
+version: 0.1.0
+appVersion: "2.15.1"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/kedacore/keda
+keywords:
+  - keda
+  - autoscaling
+  - event-driven
+  - operator
+  - scaling
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

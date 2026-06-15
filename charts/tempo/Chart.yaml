@@ -1,0 +1,19 @@
+apiVersion: v2
+name: tempo
+description: Tempo distributed tracing backend for storing and querying traces
+type: application
+version: 0.1.0
+appVersion: "2.5.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://grafana.com/oss/tempo
+keywords:
+  - tempo
+  - tracing
+  - traces
+  - observability
+  - opentelemetry
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

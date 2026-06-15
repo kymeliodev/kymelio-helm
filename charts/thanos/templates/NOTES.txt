@@ -1,0 +1,23 @@
+The Thanos Querier has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the Querier UI and HTTP API from inside the cluster at:
+
+  {{ include "thanos.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+The Store API gRPC endpoint is available at:
+
+  {{ include "thanos.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:10901
+
+To port forward the HTTP UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "thanos.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+This chart runs the Querier only. Deploy Thanos stores, sidecars or receivers
+separately and point the Querier at them with --store arguments.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

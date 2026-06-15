@@ -1,0 +1,23 @@
+Weaviate has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Anonymous access is enabled, no authentication is required.
+
+Reach the REST and GraphQL API from inside the cluster at:
+
+  http://{{ include "weaviate.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "weaviate.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then check readiness:
+
+  curl http://127.0.0.1:{{ .Values.service.port }}/v1/.well-known/ready
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+</content>

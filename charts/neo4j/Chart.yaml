@@ -1,0 +1,18 @@
+apiVersion: v2
+name: neo4j
+description: Neo4j native graph database
+type: application
+version: 0.1.0
+appVersion: "5.23"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - neo4j
+  - database
+  - graph
+  - cypher
+  - nosql
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

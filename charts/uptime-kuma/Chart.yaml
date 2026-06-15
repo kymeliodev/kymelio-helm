@@ -1,0 +1,19 @@
+apiVersion: v2
+name: uptime-kuma
+description: Self hosted monitoring tool for uptime and status page tracking
+type: application
+version: 0.1.0
+appVersion: "1.23.13"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/louislam/uptime-kuma
+keywords:
+  - uptime-kuma
+  - monitoring
+  - uptime
+  - status-page
+  - healthcheck
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

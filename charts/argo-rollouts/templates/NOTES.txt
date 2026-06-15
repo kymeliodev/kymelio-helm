@@ -1,0 +1,22 @@
+Argo Rollouts controller has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The rollouts controller is now running. It watches Rollout custom resources and
+drives progressive delivery strategies such as canary and blue-green.
+
+NOTE: this chart does not install the Argo Rollouts custom resource definitions.
+Install the CRDs separately before creating any Rollout resources.
+
+Check the controller is ready with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "argo-rollouts.fullname" . }}
+
+Scrape controller metrics from inside the cluster at:
+
+  {{ include "argo-rollouts.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

@@ -1,0 +1,19 @@
+apiVersion: v2
+name: paperless-ngx
+description: Document management system that indexes and archives scanned paperwork
+type: application
+version: 0.1.0
+appVersion: "2.11.6"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/paperless-ngx/paperless-ngx
+keywords:
+  - paperless-ngx
+  - documents
+  - dms
+  - ocr
+  - archiving
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

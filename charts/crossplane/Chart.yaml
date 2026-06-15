@@ -1,0 +1,19 @@
+apiVersion: v2
+name: crossplane
+description: Crossplane control plane core for cloud infrastructure composition
+type: application
+version: 0.1.0
+appVersion: "v1.16.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/crossplane/crossplane
+keywords:
+  - crossplane
+  - control-plane
+  - infrastructure
+  - composition
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

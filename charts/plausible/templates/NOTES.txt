@@ -1,0 +1,36 @@
+Plausible has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "plausible.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "plausible.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the dashboard at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+Plausible requires external PostgreSQL and ClickHouse services. This release is
+configured to use:
+
+  PostgreSQL: {{ .Values.externalDatabase.url }}
+  ClickHouse: {{ .Values.externalClickhouse.url }}
+
+Make sure both are reachable. The container runs database migrations on start.
+
+{{- if not .Values.auth.existingSecret }}
+
+SECRET_KEY_BASE is stored in the release Secret. Retrieve it with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "plausible.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.secretKeyBaseKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

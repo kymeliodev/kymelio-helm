@@ -1,0 +1,19 @@
+apiVersion: v2
+name: cert-manager
+description: Controller that automates TLS certificate issuance and renewal
+type: application
+version: 0.1.0
+appVersion: "v1.15.2"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://cert-manager.io
+keywords:
+  - cert-manager
+  - certificates
+  - tls
+  - acme
+  - kubernetes
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

@@ -1,0 +1,19 @@
+apiVersion: v2
+name: timescaledb
+description: TimescaleDB time series SQL database on PostgreSQL
+type: application
+version: 0.1.0
+appVersion: "2.17.2-pg16"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://www.timescale.com
+keywords:
+  - timescaledb
+  - timeseries
+  - postgresql
+  - database
+  - sql
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

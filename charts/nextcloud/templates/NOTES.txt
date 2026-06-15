@@ -1,0 +1,37 @@
+Nextcloud has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "nextcloud.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "nextcloud.fullname" . }} 8080:{{ .Values.service.port }}
+
+Then open Nextcloud at:
+
+  http://127.0.0.1:8080/
+
+Admin user: {{ .Values.auth.adminUser }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the admin password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "nextcloud.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+{{- if eq .Values.externalDatabase.type "sqlite" }}
+
+NOTE: this release uses the SQLite database backend, which is suitable for
+evaluation and small instances. For production set externalDatabase.type to
+mysql or pgsql and provide an external database.
+{{- end }}

@@ -1,0 +1,21 @@
+Gitea has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Web UI inside the cluster:
+
+  http://{{ include "gitea.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+{{- if .Values.service.ssh.enabled }}
+
+Git SSH is exposed on port {{ .Values.service.ssh.port }} of the same Service.
+{{- end }}
+
+Port forward the web UI to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "gitea.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Complete the initial setup through the web UI on first visit. The default
+configuration uses the embedded SQLite database stored under /data. Set
+GITEA__server__ROOT_URL through extraEnv so links resolve correctly.

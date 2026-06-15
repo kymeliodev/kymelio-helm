@@ -1,0 +1,19 @@
+apiVersion: v2
+name: backstage
+description: Backstage developer portal for cataloging software and services
+type: application
+version: 0.1.0
+appVersion: "1.30.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/backstage/backstage
+keywords:
+  - backstage
+  - developer-portal
+  - catalog
+  - idp
+  - platform
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

@@ -1,0 +1,22 @@
+Kamaji operator has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The Kamaji operator is now running. It watches TenantControlPlane custom
+resources and runs the hosted Kubernetes control planes they describe.
+
+NOTE: this chart does not install the Kamaji custom resource definitions.
+Install the CRDs separately before creating any TenantControlPlane resources.
+
+Check the operator is ready with:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "kamaji.fullname" . }}
+
+Scrape operator metrics from inside the cluster at:
+
+  {{ include "kamaji.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

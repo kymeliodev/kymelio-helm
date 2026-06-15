@@ -1,0 +1,19 @@
+apiVersion: v2
+name: plausible
+description: Privacy friendly web analytics backed by PostgreSQL and ClickHouse
+type: application
+version: 0.1.0
+appVersion: "v2.1.4"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://github.com/plausible/community-edition
+keywords:
+  - plausible
+  - analytics
+  - web-analytics
+  - privacy
+  - statistics
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

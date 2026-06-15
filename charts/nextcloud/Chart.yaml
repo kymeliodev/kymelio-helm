@@ -1,0 +1,19 @@
+apiVersion: v2
+name: nextcloud
+description: Self hosted Nextcloud content collaboration platform for files, sharing and sync
+type: application
+version: 0.1.0
+appVersion: "29"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - nextcloud
+  - files
+  - storage
+  - collaboration
+  - sync
+  - sharing
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

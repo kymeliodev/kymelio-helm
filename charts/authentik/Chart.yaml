@@ -1,0 +1,19 @@
+apiVersion: v2
+name: authentik
+description: Open source identity provider for SSO and access management
+type: application
+version: 0.1.0
+appVersion: "2024.6"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://goauthentik.io
+keywords:
+  - authentik
+  - identity
+  - sso
+  - oidc
+  - saml
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

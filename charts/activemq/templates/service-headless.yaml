@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "activemq.fullname" . }}-headless
+  labels:
+    {{- include "activemq.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.openwire.port }}
+      targetPort: {{ .Values.service.openwire.portName }}
+      protocol: TCP
+      name: {{ .Values.service.openwire.portName }}
+    - port: {{ .Values.service.web.port }}
+      targetPort: {{ .Values.service.web.portName }}
+      protocol: TCP
+      name: {{ .Values.service.web.portName }}
+  selector:
+    {{- include "activemq.selectorLabels" . | nindent 4 }}

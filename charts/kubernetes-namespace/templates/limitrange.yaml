@@ -1,0 +1,12 @@
+{{- if .Values.limitRange.enabled -}}
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ .Values.namespace.name }}-limits
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "kubernetes-namespace.labels" . | nindent 4 }}
+spec:
+  limits:
+    {{- toYaml .Values.limitRange.limits | nindent 4 }}
+{{- end }}

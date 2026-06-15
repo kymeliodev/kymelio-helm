@@ -1,0 +1,21 @@
+Crossplane has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The metrics endpoint is reachable inside the cluster at:
+
+  {{ include "crossplane.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+Verify the control plane is running:
+
+  kubectl --namespace {{ .Release.Namespace }} rollout status deploy/{{ include "crossplane.fullname" . }}
+
+The Crossplane Custom Resource Definitions are installed separately from this
+chart. Once they are present, install Providers and Configurations, for example:
+
+  kubectl apply -f provider.yaml
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

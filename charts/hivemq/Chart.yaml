@@ -1,0 +1,14 @@
+apiVersion: v2
+name: hivemq
+description: HiveMQ Community Edition MQTT broker with persistent storage
+type: application
+version: 0.1.0
+appVersion: "2024.7"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+keywords:
+  - hivemq
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

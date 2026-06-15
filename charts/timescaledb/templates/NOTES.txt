@@ -1,0 +1,30 @@
+TimescaleDB has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Connection host inside the cluster:
+
+  {{ include "timescaledb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Database: {{ .Values.auth.database }}
+User:     {{ .Values.auth.username }}
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "timescaledb.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Connect with psql from a temporary client pod:
+
+  kubectl --namespace {{ .Release.Namespace }} run psql-client --rm -it --restart=Never \
+    --image {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }} \
+    --env PGPASSWORD=<password> -- \
+    psql -h {{ include "timescaledb.fullname" . }} -U {{ .Values.auth.username }} -d {{ .Values.auth.database }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

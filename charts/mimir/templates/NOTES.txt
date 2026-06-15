@@ -1,0 +1,20 @@
+Mimir has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the Mimir HTTP endpoint from inside the cluster at:
+
+  {{ include "mimir.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "mimir.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Push metrics to http://127.0.0.1:{{ .Values.service.port }}/api/v1/push
+
+The configuration is mounted from a ConfigMap at /etc/mimir/mimir.yaml.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

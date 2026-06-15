@@ -1,0 +1,33 @@
+n8n has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "n8n.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "n8n.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the editor at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+This release runs standalone on a SQLite database stored under
+{{ .Values.persistence.mountPath }} on the persistent volume.
+
+{{- if not .Values.auth.existingSecret }}
+
+The encryption key is stored in the release Secret. Retrieve it with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "n8n.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.encryptionKeyKey }}}" | base64 -d
+
+Keep this key safe. Stored credentials cannot be decrypted without it.
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

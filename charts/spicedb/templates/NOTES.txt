@@ -1,0 +1,23 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+SpiceDB exposes a gRPC API on port {{ .Values.service.ports.grpc.port }} and an
+HTTP API on port {{ .Values.service.ports.http.port }}.
+
+Reach the gRPC API from inside the cluster at:
+
+  {{ include "spicedb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.grpc.port }}
+
+Retrieve the gRPC preshared key used to authenticate API clients:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "spicedb.secretName" . }} -o jsonpath="{.data['{{ .Values.auth.secretKeys.presharedKeyKey }}']}" | base64 -d
+
+To port forward the gRPC API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "spicedb.fullname" . }} {{ .Values.service.ports.grpc.port }}:{{ .Values.service.ports.grpc.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

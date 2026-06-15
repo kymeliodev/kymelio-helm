@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cockroachdb.fullname" . }}-headless
+  labels:
+    {{- include "cockroachdb.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    {{- range $key, $p := .Values.service.ports }}
+    - port: {{ $p.port }}
+      targetPort: {{ $p.name }}
+      protocol: TCP
+      name: {{ $p.name }}
+    {{- end }}
+  selector:
+    {{- include "cockroachdb.selectorLabels" . | nindent 4 }}

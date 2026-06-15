@@ -1,0 +1,19 @@
+apiVersion: v2
+name: gitlab
+description: All in one GitLab Community Edition DevOps platform
+type: application
+version: 0.1.0
+appVersion: "17.2.1-ce.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://gitlab.com
+keywords:
+  - gitlab
+  - git
+  - devops
+  - cicd
+  - scm
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

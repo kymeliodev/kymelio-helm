@@ -1,0 +1,19 @@
+apiVersion: v2
+name: mariadb
+description: MariaDB relational database server
+type: application
+version: 0.1.0
+appVersion: "11.4"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://mariadb.org
+keywords:
+  - mariadb
+  - mysql
+  - database
+  - sql
+  - rdbms
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

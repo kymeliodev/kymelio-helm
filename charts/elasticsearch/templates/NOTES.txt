@@ -1,0 +1,22 @@
+Elasticsearch has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the HTTP API from inside the cluster at:
+
+  http://{{ include "elasticsearch.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.http.port }}
+
+Node to node transport is exposed on port {{ .Values.service.transport.port }}.
+
+Port forward the HTTP API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "elasticsearch.fullname" . }} {{ .Values.service.http.port }}:{{ .Values.service.http.port }}
+
+Then check cluster health:
+
+  curl http://127.0.0.1:{{ .Values.service.http.port }}/_cluster/health
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

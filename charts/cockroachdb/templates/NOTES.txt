@@ -1,0 +1,20 @@
+{{ .Chart.Name }} has been installed as a single insecure node.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+SQL endpoint inside the cluster:
+
+  {{ include "cockroachdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.sql.port }}
+
+Port forward the SQL endpoint to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "cockroachdb.fullname" . }} {{ .Values.service.ports.sql.port }}:{{ .Values.service.ports.sql.port }}
+
+Port forward the admin HTTP UI and open http://127.0.0.1:{{ .Values.service.ports.http.port }}
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "cockroachdb.fullname" . }} {{ .Values.service.ports.http.port }}:{{ .Values.service.ports.http.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

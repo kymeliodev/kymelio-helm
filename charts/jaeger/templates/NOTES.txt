@@ -1,0 +1,22 @@
+Jaeger has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Endpoints inside the cluster ({{ include "jaeger.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local):
+
+  User interface     port 16686
+  OTLP gRPC ingest   port 4317
+  Thrift collector   port 14268
+
+To open the user interface, port forward it to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "jaeger.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then browse to http://127.0.0.1:{{ .Values.service.port }}.
+
+Spans are kept in memory only and are lost when the pod restarts.
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

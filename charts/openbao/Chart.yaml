@@ -1,0 +1,19 @@
+apiVersion: v2
+name: openbao
+description: OpenBao secrets management and data protection server
+type: application
+version: 0.1.0
+appVersion: "2.0.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://openbao.org
+keywords:
+  - openbao
+  - secrets
+  - vault
+  - encryption
+  - security
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

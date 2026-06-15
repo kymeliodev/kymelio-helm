@@ -1,0 +1,22 @@
+Vector has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+The GraphQL API is reachable inside the cluster at:
+
+  {{ include "vector.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+To port forward the API to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "vector.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open the GraphQL playground at http://127.0.0.1:{{ .Values.service.port }}/playground.
+
+The default pipeline emits demo log events to the console sink. Watch them with:
+
+  kubectl --namespace {{ .Release.Namespace }} logs deploy/{{ include "vector.fullname" . }} -f
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

@@ -1,0 +1,26 @@
+QuestDB has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Service host inside the cluster:
+
+  {{ include "questdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+Exposed ports:
+{{- range $name, $port := .Values.service.ports }}
+  {{ $name }}: {{ $port }}
+{{- end }}
+
+The web console and REST API listen on the http port. The PostgreSQL wire
+protocol listens on the postgres port.
+
+Open the web console on your workstation with:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "questdb.fullname" . }} {{ include "questdb.primaryPort" . }}:{{ include "questdb.primaryPort" . }}
+
+Then browse to http://127.0.0.1:{{ include "questdb.primaryPort" . }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

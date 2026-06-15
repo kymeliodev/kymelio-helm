@@ -1,0 +1,27 @@
+{{ .Chart.Name }} has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+ClickHouse is reachable from inside the cluster at:
+
+  {{ include "clickhouse.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+  Native protocol: port {{ .Values.service.ports.native.port }}
+  HTTP interface:  port {{ .Values.service.ports.http.port }}
+
+User:     {{ .Values.auth.username }}
+Database: {{ .Values.auth.database }}
+
+Retrieve the password from the Secret:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "clickhouse.secretName" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.passwordKey }}}" | base64 -d
+
+To port forward the native protocol to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "clickhouse.fullname" . }} {{ .Values.service.ports.native.port }}:{{ .Values.service.ports.native.port }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

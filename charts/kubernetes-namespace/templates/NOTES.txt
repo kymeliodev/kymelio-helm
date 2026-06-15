@@ -1,0 +1,27 @@
+The namespace "{{ .Values.namespace.name }}" has been provisioned.
+
+Release name: {{ .Release.Name }}
+
+The following governance objects were applied:
+
+  Namespace:     {{ .Values.namespace.name }}
+{{- if .Values.resourceQuota.enabled }}
+  ResourceQuota: {{ .Values.namespace.name }}-quota
+{{- end }}
+{{- if .Values.limitRange.enabled }}
+  LimitRange:    {{ .Values.namespace.name }}-limits
+{{- end }}
+{{- if .Values.networkPolicy.enabled }}
+  NetworkPolicy: {{ .Values.namespace.name }}-default-deny (default deny ingress and egress)
+{{- end }}
+
+Inspect the namespace and its quota:
+
+  kubectl get namespace {{ .Values.namespace.name }}
+  kubectl --namespace {{ .Values.namespace.name }} get resourcequota,limitrange,networkpolicy
+
+{{- if .Values.networkPolicy.enabled }}
+
+The default deny NetworkPolicy blocks all pod traffic in the namespace. Add
+explicit allow NetworkPolicies for the connections your workloads need.
+{{- end }}

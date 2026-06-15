@@ -1,0 +1,19 @@
+apiVersion: v2
+name: external-secrets
+description: Operator that syncs secrets from external providers into Kubernetes
+type: application
+version: 0.1.0
+appVersion: "v0.10.0"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://external-secrets.io
+keywords:
+  - external-secrets
+  - secrets
+  - operator
+  - kubernetes
+  - security
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

@@ -1,0 +1,27 @@
+OpenTalk controller has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "opentalk.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "opentalk.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+The controller depends on external PostgreSQL, Redis and Keycloak. Confirm those
+services are reachable with the connection settings you supplied.
+
+{{- if not .Values.auth.existingSecret }}
+
+Retrieve the service authentication key with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "opentalk.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.auth.secretKeys.serviceKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
