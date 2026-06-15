@@ -2,7 +2,7 @@ apiVersion: v2
 name: solr
 description: Apache Solr enterprise search platform
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "9.6"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
