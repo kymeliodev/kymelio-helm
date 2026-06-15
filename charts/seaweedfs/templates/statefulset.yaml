@@ -48,6 +48,12 @@ spec:
             {{- toYaml .Values.command | nindent 12 }}
           args:
             {{- toYaml .Values.args | nindent 12 }}
+            {{- if .Values.metrics.enabled }}
+            - -metricsPort={{ .Values.metrics.port }}
+            {{- end }}
+            {{- range $k, $v := .Values.parameters }}
+            - -{{ $k }}={{ $v }}
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -55,6 +61,11 @@ spec:
             {{- range .Values.service.ports }}
             - name: {{ .name }}
               containerPort: {{ .port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
               protocol: TCP
             {{- end }}
           livenessProbe:

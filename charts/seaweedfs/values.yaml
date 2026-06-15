@@ -113,11 +113,21 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # SeaweedFS serves Prometheus metrics at /metrics when started with
+  # -metricsPort. Enabling this appends -metricsPort=<port> to the weed args,
+  # exposes the port on the container and Service, and the ServiceMonitor
+  # scrapes it.
+  enabled: false
+  port: 9327
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Extra weed flags applied as -key=value on startup.
+# Example: { "volume.max": "0", "volume.preStopSeconds": "5" }
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
