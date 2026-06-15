@@ -61,3 +61,18 @@ helm upgrade my-dragonfly kymelio/dragonfly
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (redis_exporter sidecar):
+
+```sh
+helm install my-dragonfly kymelio/dragonfly --set metrics.enabled=true
+```
+
+Tune Dragonfly with extra flags:
+
+```yaml
+extraArgs:
+  - --maxmemory=2gb
+```
