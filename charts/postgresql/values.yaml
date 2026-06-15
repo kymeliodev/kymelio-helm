@@ -100,11 +100,41 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Run a postgres_exporter sidecar that exposes metrics on metrics.port.
+  enabled: false
+  image:
+    repository: quay.io/prometheuscommunity/postgres-exporter
+    tag: v0.15.0
+    pullPolicy: IfNotPresent
+  port: 9187
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. Provide a Secret with the certificate and private key.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+
+# Server parameters applied with -c key=value on startup (postgresql.conf tuning).
+# Example: { max_connections: "200", shared_buffers: "256MB" }
+parameters: {}
+
+# Initialization scripts run on first start. Map of filename to script content,
+# mounted into /docker-entrypoint-initdb.d and executed once on an empty data dir.
+initdbScripts: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
