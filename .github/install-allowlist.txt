@@ -3,3 +3,8 @@ redis
 minio
 keycloak
 rabbitmq
+mariadb
+mysql
+mongodb
+valkey
+couchdb
