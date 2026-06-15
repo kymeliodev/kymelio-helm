@@ -2,7 +2,7 @@ apiVersion: v2
 name: knative
 description: Knative Serving controller for serverless workloads on Kubernetes
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v1.15.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
