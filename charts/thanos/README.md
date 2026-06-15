@@ -45,6 +45,21 @@ args:
   - "--store=dnssrv+_grpc._tcp.thanos-store.monitoring.svc.cluster.local"
 ```
 
+## Monitoring
+
+The Querier exposes its own metrics at `/metrics` on the HTTP port (`service.port`, default 10902). Set `metrics.enabled` to advertise the endpoint and create a ServiceMonitor for the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -59,7 +74,9 @@ args:
 | service.extraPorts | list | grpc 10901 | Additional Service and container ports |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
+| metrics.enabled | bool | `false` | Advertise the built in /metrics endpoint on the HTTP port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | HTTP path scraped by the ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 1001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
