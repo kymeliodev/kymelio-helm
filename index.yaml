@@ -3,6 +3,25 @@ entries:
   activemq:
   - apiVersion: v2
     appVersion: 6.1.2
+    created: "2026-06-15T19:45:09.312675256Z"
+    description: Apache ActiveMQ Classic message broker deployed as a single node
+      StatefulSet
+    digest: 0b409e2bf68a5c82cf32166287e471c69a244e52d1f6bed776cfd52dcfa90eec
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - activemq
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: activemq
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/activemq-0.3.0/activemq-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 6.1.2
     created: "2026-06-15T13:55:33.116687846Z"
     description: Apache ActiveMQ Classic message broker deployed as a single node
       StatefulSet
@@ -40,6 +59,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/activemq-0.1.0/activemq-0.1.0.tgz
     version: 0.1.0
   airlock-microgateway:
+  - apiVersion: v2
+    appVersion: "4.4"
+    created: "2026-06-15T19:45:09.48756605Z"
+    description: Airlock Microgateway operator and gateway that enforces API security
+      and WAF policies for Kubernetes workloads
+    digest: a9f27413199f205337e76b3080d0d04a2a71e3eb3406c23ae06a3ac5984e8a87
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - airlock
+    - microgateway
+    - waf
+    - api-security
+    - operator
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: airlock-microgateway
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/airlock-microgateway-0.3.0/airlock-microgateway-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "4.4"
     created: "2026-06-15T13:55:33.346262782Z"
@@ -91,6 +134,30 @@ entries:
   argo-rollouts:
   - apiVersion: v2
     appVersion: v1.7.2
+    created: "2026-06-15T19:45:09.632427167Z"
+    description: Progressive delivery controller for the Argo Rollouts engine
+    digest: d52f72a8afd2459e9ad4784655c2d9efa7837476ad70b8aeabf47e17c0b04bdd
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - argo
+    - rollouts
+    - progressive-delivery
+    - canary
+    - controller
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: argo-rollouts
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/argoproj/argo-rollouts
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/argo-rollouts-0.3.0/argo-rollouts-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.7.2
     created: "2026-06-15T13:55:33.581431425Z"
     description: Progressive delivery controller for the Argo Rollouts engine
     digest: 6c7fc35df94f794ca86f5c10645a1096f944b1f018a78992cba3ee95f2a52f5a
@@ -138,6 +205,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/argo-rollouts-0.1.0/argo-rollouts-0.1.0.tgz
     version: 0.1.0
   argo-workflows:
+  - apiVersion: v2
+    appVersion: v3.5.10
+    created: "2026-06-15T19:45:09.914639071Z"
+    description: Workflow controller for the Argo Workflows engine on Kubernetes
+    digest: c96aa586b0839c63d91ef18587f0c90bf5eb3f8ea69bd1f02aae583eecb390d8
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - argo
+    - workflows
+    - controller
+    - pipelines
+    - operator
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: argo-workflows
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/argoproj/argo-workflows
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/argo-workflows-0.3.0/argo-workflows-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v3.5.10
     created: "2026-06-15T13:55:33.84254021Z"
@@ -189,6 +280,29 @@ entries:
   argocd:
   - apiVersion: v2
     appVersion: v2.12.1
+    created: "2026-06-15T19:45:10.131657976Z"
+    description: Argo CD GitOps continuous delivery server for Kubernetes
+    digest: 3e92b25f02f0a990f4c544d9c66d4cfe3a2f0d3ddfac9e012c50584d9e56f514
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - argocd
+    - gitops
+    - continuous-delivery
+    - deployment
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: argocd
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/argoproj/argo-cd
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/argocd-0.3.0/argocd-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v2.12.1
     created: "2026-06-15T13:55:34.087180793Z"
     description: Argo CD GitOps continuous delivery server for Kubernetes
     digest: 2a6430995806f6ddb054347f81df0d671f5371823f8ea18083072b819a1acd58
@@ -234,6 +348,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/argocd-0.1.0/argocd-0.1.0.tgz
     version: 0.1.0
   authelia:
+  - apiVersion: v2
+    appVersion: "4.38"
+    created: "2026-06-15T19:45:10.287178238Z"
+    description: Authentication and authorization server providing SSO and 2FA
+    digest: 56bc5d60d8f6f985a58a1fa6b119da6156c6969a8b092ac14d02621a9b72fefa
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - authelia
+    - authentication
+    - sso
+    - 2fa
+    - security
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: authelia
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.authelia.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/authelia-0.3.0/authelia-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "4.38"
     created: "2026-06-15T13:55:34.31379687Z"
@@ -283,6 +420,29 @@ entries:
   authentik:
   - apiVersion: v2
     appVersion: "2024.6"
+    created: "2026-06-15T19:45:10.455097349Z"
+    description: Open source identity provider for SSO and access management
+    digest: 1ba2b8d06d06464800b5a4d82e9736f11e9bbf5fe1c87523167eb19729c4d059
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - authentik
+    - identity
+    - sso
+    - oidc
+    - saml
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: authentik
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://goauthentik.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/authentik-0.3.0/authentik-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "2024.6"
     created: "2026-06-15T13:55:34.553925685Z"
     description: Open source identity provider for SSO and access management
     digest: 51f70d6c7d774041bf45cc3ff24d65660c38dcafc6e4e03bfe509cd861c26052
@@ -328,6 +488,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/authentik-0.1.0/authentik-0.1.0.tgz
     version: 0.1.0
   backstage:
+  - apiVersion: v2
+    appVersion: 1.30.0
+    created: "2026-06-15T19:45:10.649441547Z"
+    description: Backstage developer portal for cataloging software and services
+    digest: 6cb9ec57fd1f8effc3ca6db5862e6155a07c535c38c30e99338b64c6feb1d0c8
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - backstage
+    - developer-portal
+    - catalog
+    - idp
+    - platform
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: backstage
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/backstage/backstage
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/backstage-0.3.0/backstage-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 1.30.0
     created: "2026-06-15T13:55:34.771954729Z"
@@ -377,6 +560,28 @@ entries:
   cassandra:
   - apiVersion: v2
     appVersion: "5.0"
+    created: "2026-06-15T19:45:10.843398475Z"
+    description: Apache Cassandra wide column distributed database
+    digest: 18339a2f8092d36a7b3041fed8a93313447ae1c64dc42a9e1ec18b4d2e30687a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - cassandra
+    - database
+    - nosql
+    - wide-column
+    - distributed
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: cassandra
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/cassandra-0.3.0/cassandra-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "5.0"
     created: "2026-06-15T13:55:34.986788802Z"
     description: Apache Cassandra wide column distributed database
     digest: f6089591bf9049dbf1d58b55e61fb01aa3d5e862038f4bc2fdb5eb94975bc812
@@ -420,6 +625,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/cassandra-0.1.0/cassandra-0.1.0.tgz
     version: 0.1.0
   cert-manager:
+  - apiVersion: v2
+    appVersion: v1.15.2
+    created: "2026-06-15T19:45:11.031470986Z"
+    description: Controller that automates TLS certificate issuance and renewal
+    digest: d414638f5b9fd816c55e09cf4be30c51e1e5ae8e1b558344b2a6cefde8e97cdb
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - cert-manager
+    - certificates
+    - tls
+    - acme
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: cert-manager
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://cert-manager.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/cert-manager-0.3.0/cert-manager-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.15.2
     created: "2026-06-15T13:55:35.236011245Z"
@@ -469,6 +697,28 @@ entries:
   clickhouse:
   - apiVersion: v2
     appVersion: "24.8"
+    created: "2026-06-15T19:45:11.176611187Z"
+    description: ClickHouse column oriented OLAP database
+    digest: e8cf96f9e970f39234455bcbeb97d8208fd9cd8e24da5500c7daca2bb119ff74
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - clickhouse
+    - database
+    - olap
+    - analytics
+    - columnar
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: clickhouse
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/clickhouse-0.3.0/clickhouse-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "24.8"
     created: "2026-06-15T13:55:35.496512801Z"
     description: ClickHouse column oriented OLAP database
     digest: f867bebed42f401bcd17d93febeafe673116510d82d275e46d85fcbe93b477cd
@@ -512,6 +762,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/clickhouse-0.1.0/clickhouse-0.1.0.tgz
     version: 0.1.0
   cluster-api-operator:
+  - apiVersion: v2
+    appVersion: v0.12.0
+    created: "2026-06-15T19:45:11.37182858Z"
+    description: Cluster API Operator that manages Cluster API providers lifecycle
+    digest: eded156aa86b225a61fabd223372ee6cab3f3ed367c1940fde8d147cb950e630
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - cluster-api
+    - operator
+    - providers
+    - lifecycle
+    - sigs
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: cluster-api-operator
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/kubernetes-sigs/cluster-api-operator
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/cluster-api-operator-0.3.0/cluster-api-operator-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v0.12.0
     created: "2026-06-15T13:55:35.747440347Z"
@@ -563,6 +837,28 @@ entries:
   cockroachdb:
   - apiVersion: v2
     appVersion: v24.2.4
+    created: "2026-06-15T19:45:11.546578625Z"
+    description: CockroachDB distributed SQL database
+    digest: 5bcd40660c48806bd09c9dcf7059487cf752ccf94e869ed69a5e8e9ee87d8dc2
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - cockroachdb
+    - database
+    - sql
+    - distributed
+    - newsql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: cockroachdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/cockroachdb-0.3.0/cockroachdb-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v24.2.4
     created: "2026-06-15T13:55:36.009120767Z"
     description: CockroachDB distributed SQL database
     digest: ea56e123f0bdbbd02b5ad6f943a5ae040508d660c6e08ad1de64ae0fe9dd01b8
@@ -606,6 +902,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/cockroachdb-0.1.0/cockroachdb-0.1.0.tgz
     version: 0.1.0
   codey:
+  - apiVersion: v2
+    appVersion: "1.22"
+    created: "2026-06-15T19:45:11.7138422Z"
+    description: Self hosted Git service and code hosting platform
+    digest: 2e45fcf614cee9339afa86a6627c86d447013ee694ec355eb58b79bdf02267fc
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - codey
+    - git
+    - gitea
+    - code
+    - scm
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: codey
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/codey-0.3.0/codey-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "1.22"
     created: "2026-06-15T13:55:36.254768455Z"
@@ -653,6 +971,28 @@ entries:
   couchbase:
   - apiVersion: v2
     appVersion: 7.6.2
+    created: "2026-06-15T19:45:11.900001688Z"
+    description: Couchbase distributed NoSQL document database
+    digest: c9842c064e7bbc82b75331302f248e117e13589dd6396531466305398331b70c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - couchbase
+    - database
+    - nosql
+    - document
+    - key-value
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: couchbase
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/couchbase-0.3.0/couchbase-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 7.6.2
     created: "2026-06-15T13:55:36.497776907Z"
     description: Couchbase distributed NoSQL document database
     digest: 6652f5fb7cc12393dc3d37579e5fa95d3a6c7cc59b0e904da72d4508fcfe4219
@@ -696,6 +1036,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/couchbase-0.1.0/couchbase-0.1.0.tgz
     version: 0.1.0
   couchdb:
+  - apiVersion: v2
+    appVersion: "3.3"
+    created: "2026-06-15T19:45:12.055592435Z"
+    description: Apache CouchDB document database
+    digest: ba6ba2c046951f269d3314551a5428d21abf1066abeca21eed0d902a4b390da7
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - couchdb
+    - database
+    - nosql
+    - document
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: couchdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://couchdb.apache.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/couchdb-0.3.0/couchdb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "3.3"
     created: "2026-06-15T13:55:36.749471029Z"
@@ -765,6 +1127,29 @@ entries:
   crossplane:
   - apiVersion: v2
     appVersion: v1.16.0
+    created: "2026-06-15T19:45:12.303059519Z"
+    description: Crossplane control plane core for cloud infrastructure composition
+    digest: 8aaa8e1e5f7b5524844e14e8e881f5256dc037f94bd36dd8df56cd2c8da8e92c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - crossplane
+    - control-plane
+    - infrastructure
+    - composition
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: crossplane
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/crossplane/crossplane
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/crossplane-0.3.0/crossplane-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.16.0
     created: "2026-06-15T13:55:37.001039295Z"
     description: Crossplane control plane core for cloud infrastructure composition
     digest: 88c635be1cffd75296536e50fe737f8e8b87c648157c8a2776a8ed81b79ece73
@@ -812,6 +1197,28 @@ entries:
   documenso:
   - apiVersion: v2
     appVersion: 1.7.1
+    created: "2026-06-15T19:45:12.491375778Z"
+    description: Documenso open source document signing platform
+    digest: db15d250005392f9a21deb222ffac3e7d148fd76d9cb8a6c734dae6931da534c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - documenso
+    - documents
+    - signing
+    - e-signature
+    - collaboration
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: documenso
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/documenso-0.3.0/documenso-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.7.1
     created: "2026-06-15T13:55:37.248668053Z"
     description: Documenso open source document signing platform
     digest: 3c31ff4343dc790479d36f49d5f55dff47fffc297861b0533e7bfee90a9fba14
@@ -855,6 +1262,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/documenso-0.1.0/documenso-0.1.0.tgz
     version: 0.1.0
   dragonfly:
+  - apiVersion: v2
+    appVersion: v1.23
+    created: "2026-06-15T19:45:12.702722844Z"
+    description: Dragonfly in-memory data store compatible with Redis
+    digest: 3cc7df7cf53c2fc30e0de6bce648047c7a1210891f1192824ddf1be3bfb4d3f2
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - dragonfly
+    - redis
+    - cache
+    - key-value
+    - database
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: dragonfly
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.dragonflydb.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/dragonfly-0.3.0/dragonfly-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.23
     created: "2026-06-15T13:55:37.493681941Z"
@@ -904,6 +1334,28 @@ entries:
   elasticsearch:
   - apiVersion: v2
     appVersion: 8.15.0
+    created: "2026-06-15T19:45:12.906612864Z"
+    description: Elasticsearch distributed search and analytics engine
+    digest: e8a21d3016e027472e596ed85338a7898329d1c9635389d7217f2238ef8b3533
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - elasticsearch
+    - search
+    - analytics
+    - full-text
+    - lucene
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: elasticsearch
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/elasticsearch-0.3.0/elasticsearch-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 8.15.0
     created: "2026-06-15T13:55:37.750251715Z"
     description: Elasticsearch distributed search and analytics engine
     digest: 64c27e066a3815afa7976c6786f0b60f33a732821ae564edfbf02b9ae46f9288
@@ -949,6 +1401,24 @@ entries:
   emqx:
   - apiVersion: v2
     appVersion: "5.7"
+    created: "2026-06-15T19:45:13.108391649Z"
+    description: EMQX MQTT broker deployed as a StatefulSet with a management dashboard
+    digest: 8940a0e743b80f5ff8439113e28092b9b92322defe61ab631a4451de95d57a46
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - emqx
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: emqx
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/emqx-0.3.0/emqx-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "5.7"
     created: "2026-06-15T13:55:38.007230565Z"
     description: EMQX MQTT broker deployed as a StatefulSet with a management dashboard
     digest: e09f58c156f756ed9990fe6c97463501377a3b000e2e7c92446351180ceb4ba2
@@ -984,6 +1454,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/emqx-0.1.0/emqx-0.1.0.tgz
     version: 0.1.0
   etcd:
+  - apiVersion: v2
+    appVersion: v3.5.16
+    created: "2026-06-15T19:45:13.312706827Z"
+    description: etcd distributed reliable key value store
+    digest: f2d41449f6ebae8bac09971d4612b6e9863f130132c0fde31813095329ec4ecb
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - etcd
+    - key-value
+    - distributed
+    - consensus
+    - configuration
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: etcd
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/etcd-0.3.0/etcd-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v3.5.16
     created: "2026-06-15T13:55:38.26894079Z"
@@ -1029,6 +1521,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/etcd-0.1.0/etcd-0.1.0.tgz
     version: 0.1.0
   external-secrets:
+  - apiVersion: v2
+    appVersion: v0.10.0
+    created: "2026-06-15T19:45:13.505237686Z"
+    description: Operator that syncs secrets from external providers into Kubernetes
+    digest: b412faa7a9b8550a900b857b9d7384fe59e5a9aafc09f5fc4943b163a81bedc9
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - external-secrets
+    - secrets
+    - operator
+    - kubernetes
+    - security
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: external-secrets
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://external-secrets.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/external-secrets-0.3.0/external-secrets-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v0.10.0
     created: "2026-06-15T13:55:38.518442676Z"
@@ -1078,6 +1593,28 @@ entries:
   falco:
   - apiVersion: v2
     appVersion: 0.38.2
+    created: "2026-06-15T19:45:13.707827685Z"
+    description: Falco runtime security and threat detection engine
+    digest: 7194ca97b2c6a698dbad3d7bd3fae1dacb2dfe09c57ea05c631756a40b83e488
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - falco
+    - security
+    - runtime-security
+    - threat-detection
+    - observability
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: falco
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/falco-0.3.0/falco-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.38.2
     created: "2026-06-15T13:55:38.824837823Z"
     description: Falco runtime security and threat detection engine
     digest: a986ee0f2a9a0a48dd5716b18f85d55907f2db7cdbf6097cd9fef417acc1af71
@@ -1121,6 +1658,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/falco-0.1.0/falco-0.1.0.tgz
     version: 0.1.0
   flux:
+  - apiVersion: v2
+    appVersion: v1.3.0
+    created: "2026-06-15T19:45:13.907015744Z"
+    description: Flux source-controller for GitOps artifact acquisition on Kubernetes
+    digest: e0f0ffd2b1ccfe5a97666b837e723ab17d25263fe2a372c51df30cd51a72b0b1
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - flux
+    - fluxcd
+    - gitops
+    - source-controller
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: flux
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/fluxcd/source-controller
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/flux-0.3.0/flux-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.3.0
     created: "2026-06-15T13:55:39.07029595Z"
@@ -1170,6 +1730,29 @@ entries:
   forgejo:
   - apiVersion: v2
     appVersion: "8.0"
+    created: "2026-06-15T19:45:14.118248684Z"
+    description: Self hosted lightweight software forge for Git hosting
+    digest: 5fc1eb8346e8bc5f5e940343d7c3628057dce2e48d6a0a3953c7e9254c31bd16
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - forgejo
+    - git
+    - forge
+    - scm
+    - devops
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: forgejo
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://forgejo.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/forgejo-0.3.0/forgejo-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "8.0"
     created: "2026-06-15T13:55:39.301043804Z"
     description: Self hosted lightweight software forge for Git hosting
     digest: a3aa2374b7bad786f3835cf7627671bf9b874bf3d7defb53f1b82f9078541080
@@ -1215,6 +1798,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/forgejo-0.1.0/forgejo-0.1.0.tgz
     version: 0.1.0
   gitea:
+  - apiVersion: v2
+    appVersion: "1.22"
+    created: "2026-06-15T19:45:14.348570834Z"
+    description: Self hosted lightweight Git service and code hosting
+    digest: 897bfbfe285481c547698bb58eb8231d0703a81736347b85c28a395a924594fa
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - gitea
+    - git
+    - forge
+    - scm
+    - devops
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: gitea
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://about.gitea.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/gitea-0.3.0/gitea-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "1.22"
     created: "2026-06-15T13:55:39.543521983Z"
@@ -1264,6 +1870,29 @@ entries:
   gitlab:
   - apiVersion: v2
     appVersion: 17.2.1-ce.0
+    created: "2026-06-15T19:45:14.565334095Z"
+    description: All in one GitLab Community Edition DevOps platform
+    digest: 7ac1427e5ac8a57e9363a0ec6b51f6d84eb101047a4c2ddd8d5012a46e2b3ee9
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - gitlab
+    - git
+    - devops
+    - cicd
+    - scm
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: gitlab
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://gitlab.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/gitlab-0.5.0/gitlab-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 17.2.1-ce.0
     created: "2026-06-15T13:55:39.783922072Z"
     description: All in one GitLab Community Edition DevOps platform
     digest: 210a6b8d058880a44821ffc3772dd7863779441c114dc7d0c221bcf59bbf2825
@@ -1309,6 +1938,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/gitlab-0.1.0/gitlab-0.1.0.tgz
     version: 0.1.0
   grafana:
+  - apiVersion: v2
+    appVersion: 11.1.4
+    created: "2026-06-15T19:45:14.797172836Z"
+    description: Grafana observability platform for metrics, logs and traces dashboards
+    digest: 5b8cb3267a9b43a277a61abaf1ee0617095b9dfdaeff8a0f49728149fae5eca6
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - grafana
+    - dashboards
+    - observability
+    - visualization
+    - monitoring
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: grafana
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://grafana.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/grafana-0.3.0/grafana-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 11.1.4
     created: "2026-06-15T13:55:40.040240655Z"
@@ -1358,6 +2010,28 @@ entries:
   harbor:
   - apiVersion: v2
     appVersion: v2.11.1
+    created: "2026-06-15T19:45:15.004685158Z"
+    description: Core service of the Harbor cloud native container registry
+    digest: 5e3dabaf7533325e598766912a302939b3f4f52739fb5dd4b5ecea7a51839655
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - harbor
+    - registry
+    - container
+    - oci
+    - artifacts
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: harbor
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/harbor-0.4.0/harbor-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: v2.11.1
     created: "2026-06-15T13:55:40.286411112Z"
     description: Core service of the Harbor cloud native container registry
     digest: bd3254eaa745ebe04a814db0c2ae84f991f6cbc4f72e46d4a755833f191d93a2
@@ -1403,6 +2077,24 @@ entries:
   hivemq:
   - apiVersion: v2
     appVersion: "2024.7"
+    created: "2026-06-15T19:45:15.204202298Z"
+    description: HiveMQ Community Edition MQTT broker with persistent storage
+    digest: 0a4368604a26f84723ab4f12b2659c2b6c755dfabe89abb8cf9fb8fc9432622b
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - hivemq
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: hivemq
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/hivemq-0.3.0/hivemq-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "2024.7"
     created: "2026-06-15T13:55:40.551681333Z"
     description: HiveMQ Community Edition MQTT broker with persistent storage
     digest: 03e725db661d7fe4c91c1454b3d918012ae5078a867526bec31fd02bf2f9934a
@@ -1438,6 +2130,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/hivemq-0.1.0/hivemq-0.1.0.tgz
     version: 0.1.0
   influxdb:
+  - apiVersion: v2
+    appVersion: "2.7"
+    created: "2026-06-15T19:45:15.421140962Z"
+    description: InfluxDB time series database
+    digest: 181b02e25839edbfb6e710cd040afb21bfb3084a7bd54bacde4ec79c2542ee41
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - influxdb
+    - timeseries
+    - database
+    - metrics
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: influxdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.influxdata.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/influxdb-0.3.0/influxdb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "2.7"
     created: "2026-06-15T13:55:40.82355047Z"
@@ -1485,6 +2199,29 @@ entries:
   jaeger:
   - apiVersion: v2
     appVersion: "1.60"
+    created: "2026-06-15T19:45:15.619772995Z"
+    description: All in one distributed tracing backend with in memory span storage
+    digest: 0aa6a068dd68df3d0ee04f8954cb71dfce74f57141ed02da0a0b8fdbb5c21508
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - jaeger
+    - tracing
+    - observability
+    - opentelemetry
+    - distributed-tracing
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: jaeger
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.jaegertracing.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/jaeger-0.3.0/jaeger-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "1.60"
     created: "2026-06-15T13:55:41.064778918Z"
     description: All in one distributed tracing backend with in memory span storage
     digest: e95fc2d36720e4511436db18dbb3c768fd11f203ba421d8605d9cd9fd1bcf738
@@ -1530,6 +2267,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/jaeger-0.1.0/jaeger-0.1.0.tgz
     version: 0.1.0
   kamaji:
+  - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2026-06-15T19:45:15.853902262Z"
+    description: Kamaji operator for hosted control planes on Kubernetes
+    digest: 06e7773bf4d3364c91d60f1afa4f3da4badec7fb1d5e2d31845a7b04ebc626c6
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - kamaji
+    - control-plane
+    - multi-tenancy
+    - operator
+    - clastix
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: kamaji
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/clastix/kamaji
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/kamaji-0.3.0/kamaji-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.0.0
     created: "2026-06-15T13:55:41.322234918Z"
@@ -1581,6 +2342,30 @@ entries:
   keda:
   - apiVersion: v2
     appVersion: 2.15.1
+    created: "2026-06-15T19:45:16.091189628Z"
+    description: KEDA event-driven autoscaling operator for Kubernetes workloads
+    digest: 4c262e6ec9f3109562a8b1bd643b6102e0bc2e20f0c494b81532a0847abe70e7
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - keda
+    - autoscaling
+    - event-driven
+    - operator
+    - scaling
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: keda
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/kedacore/keda
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/keda-0.3.0/keda-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 2.15.1
     created: "2026-06-15T13:55:41.590899166Z"
     description: KEDA event-driven autoscaling operator for Kubernetes workloads
     digest: 5629659369e2deb07b0fca139e7659e9e83517602acb8993eb764edebb655cd6
@@ -1630,6 +2415,30 @@ entries:
   keycloak:
   - apiVersion: v2
     appVersion: "25.0"
+    created: "2026-06-15T19:45:16.324709028Z"
+    description: Open source identity and access management
+    digest: 206a381b99df7f688938820f9ff2936d1de9f54a1eb1f4454180c990eceeddd5
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - keycloak
+    - iam
+    - identity
+    - oidc
+    - saml
+    - sso
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: keycloak
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.keycloak.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/keycloak-0.3.0/keycloak-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "25.0"
     created: "2026-06-15T13:55:41.849551752Z"
     description: Open source identity and access management
     digest: fef0175379220bd767fe8951cb11a47c769fc20b1cf456f8a9b4569c8201d316
@@ -1677,6 +2486,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/keycloak-0.1.1/keycloak-0.1.1.tgz
     version: 0.1.1
   knative:
+  - apiVersion: v2
+    appVersion: v1.15.0
+    created: "2026-06-15T19:45:16.564966011Z"
+    description: Knative Serving controller for serverless workloads on Kubernetes
+    digest: 228537579d8cdbee2e29a8622fa4b8f968fbfa5046c870e15521961f4f68fb25
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - knative
+    - serving
+    - serverless
+    - controller
+    - autoscaling
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: knative
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/knative/serving
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/knative-0.3.0/knative-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.15.0
     created: "2026-06-15T13:55:42.094411619Z"
@@ -1751,6 +2584,28 @@ entries:
   kyverno:
   - apiVersion: v2
     appVersion: v1.12.5
+    created: "2026-06-15T19:45:16.768322245Z"
+    description: Kyverno policy engine for Kubernetes
+    digest: 6fd6e610a59bbbe3cfaf05cf6f65556a8f9af17ca47c22dd22bfbdeb7f118a8a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - kyverno
+    - policy
+    - security
+    - governance
+    - admission-control
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: kyverno
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/kyverno-0.3.0/kyverno-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.12.5
     created: "2026-06-15T13:55:42.325547414Z"
     description: Kyverno policy engine for Kubernetes
     digest: 30f69857187a6e5190d9c8c2d846acfe7bcdcfe4f5a2817fc658d809514d2855
@@ -1794,6 +2649,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/kyverno-0.1.0/kyverno-0.1.0.tgz
     version: 0.1.0
   loki:
+  - apiVersion: v2
+    appVersion: 3.1.0
+    created: "2026-06-15T19:45:16.974206251Z"
+    description: Loki horizontally scalable log aggregation system for storing logs
+    digest: a4ca11d5d425adb85a8a761516965cfa6d6d7f3eda68cdaa818b8a5dcb147853
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - loki
+    - logging
+    - logs
+    - observability
+    - aggregation
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: loki
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://grafana.com/oss/loki
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/loki-0.3.0/loki-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 3.1.0
     created: "2026-06-15T13:55:42.567216949Z"
@@ -1843,6 +2721,30 @@ entries:
   longhorn:
   - apiVersion: v2
     appVersion: v1.7.0
+    created: "2026-06-15T19:45:17.182630994Z"
+    description: Longhorn manager control plane for cloud native distributed block
+      storage on Kubernetes.
+    digest: 5e3ecb4002c67912568dfebd14e0d93ba6d429a380a8e011aa284ec0d73f9513
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - longhorn
+    - storage
+    - block-storage
+    - csi
+    - persistent-volume
+    - distributed
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: longhorn
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/longhorn-0.3.0/longhorn-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.7.0
     created: "2026-06-15T13:55:42.818223356Z"
     description: Longhorn manager control plane for cloud native distributed block
       storage on Kubernetes.
@@ -1890,6 +2792,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/longhorn-0.1.0/longhorn-0.1.0.tgz
     version: 0.1.0
   mariadb:
+  - apiVersion: v2
+    appVersion: "11.4"
+    created: "2026-06-15T19:45:17.414178493Z"
+    description: MariaDB relational database server
+    digest: f9870967f201651a84a13b26c9045ae6d0ab38fd828499b32b5ebd322e1f5121
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mariadb
+    - mysql
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mariadb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://mariadb.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mariadb-0.3.0/mariadb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "11.4"
     created: "2026-06-15T13:55:43.065157391Z"
@@ -1962,6 +2887,28 @@ entries:
   mattermost:
   - apiVersion: v2
     appVersion: "9.10"
+    created: "2026-06-15T19:45:17.637729451Z"
+    description: Mattermost self hosted team collaboration and messaging
+    digest: 106e0a095593495bb86d42d9ca8343978f3698de1923dc7a316bcf38383e9cf3
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mattermost
+    - chat
+    - collaboration
+    - messaging
+    - team
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mattermost
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mattermost-0.3.0/mattermost-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "9.10"
     created: "2026-06-15T13:55:43.310007314Z"
     description: Mattermost self hosted team collaboration and messaging
     digest: 0310ff7b6eb6d8509d463db56fc49940c99517ac74e942175129d885a4f879c1
@@ -2007,6 +2954,27 @@ entries:
   meilisearch:
   - apiVersion: v2
     appVersion: v1.10
+    created: "2026-06-15T19:45:17.838345184Z"
+    description: Meilisearch fast and relevant full text search engine
+    digest: 97b21ba8e757eab6a314a667848e4688b33f6c98bc92b8bc636e249e40dc721a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - meilisearch
+    - search
+    - full-text
+    - instant-search
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: meilisearch
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/meilisearch-0.3.0/meilisearch-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.10
     created: "2026-06-15T13:55:43.558175128Z"
     description: Meilisearch fast and relevant full text search engine
     digest: 7065d05ae8e97ad73ef32d133cd30ee37d7e982d01deb0f4ef0f0c8c23e4a2e5
@@ -2048,6 +3016,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/meilisearch-0.1.0/meilisearch-0.1.0.tgz
     version: 0.1.0
   milvus:
+  - apiVersion: v2
+    appVersion: v2.4.6
+    created: "2026-06-15T19:45:18.037998475Z"
+    description: Milvus vector database for similarity search and AI applications
+    digest: 37967c95bfa13389cbd1acb6f227c45438b8de3372879c6e87c0dc00c8f21ac6
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - milvus
+    - vector-database
+    - embeddings
+    - similarity-search
+    - ai
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: milvus
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/milvus-0.3.0/milvus-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v2.4.6
     created: "2026-06-15T13:55:43.799322446Z"
@@ -2093,6 +3083,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/milvus-0.1.0/milvus-0.1.0.tgz
     version: 0.1.0
   mimir:
+  - apiVersion: v2
+    appVersion: 2.13.0
+    created: "2026-06-15T19:45:18.310156499Z"
+    description: Mimir horizontally scalable long term storage for Prometheus metrics
+    digest: 7763b0a6388c6340f600b91ec0a28f16daa5d2f79376b42236b1fcc01aeea8f1
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mimir
+    - metrics
+    - prometheus
+    - tsdb
+    - monitoring
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mimir
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://grafana.com/oss/mimir
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mimir-0.3.0/mimir-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 2.13.0
     created: "2026-06-15T13:55:44.044375408Z"
@@ -2142,6 +3155,28 @@ entries:
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-08-17T01-24-54Z
+    created: "2026-06-15T19:45:18.504992989Z"
+    description: High performance S3 compatible object storage
+    digest: 2a923e374a09d639838fdfb47c838d83df869458d086d59c6a38164a0719ef56
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - minio
+    - object-storage
+    - s3
+    - storage
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: minio
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://min.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/minio-0.3.0/minio-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: RELEASE.2024-08-17T01-24-54Z
     created: "2026-06-15T13:55:44.308112451Z"
     description: High performance S3 compatible object storage
     digest: ed8e2dd4a5a6c34cd7793aa990a817f8b6aac1a2fe90920b1f4012480ae49e39
@@ -2185,6 +3220,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/minio-0.1.1/minio-0.1.1.tgz
     version: 0.1.1
   mongodb:
+  - apiVersion: v2
+    appVersion: "7.0"
+    created: "2026-06-15T19:45:18.706472301Z"
+    description: MongoDB document-oriented NoSQL database
+    digest: c1f4c545e44e46e90df6b6e2217ffcb5c0937d88533f091e11f0a8ebc9bebb3d
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mongodb
+    - mongo
+    - database
+    - nosql
+    - document
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mongodb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.mongodb.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mongodb-0.3.0/mongodb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "7.0"
     created: "2026-06-15T13:55:44.541102187Z"
@@ -2257,6 +3315,25 @@ entries:
   mosquitto:
   - apiVersion: v2
     appVersion: "2.0"
+    created: "2026-06-15T19:45:18.929208044Z"
+    description: Eclipse Mosquitto MQTT broker deployed as a StatefulSet with persistent
+      storage
+    digest: 967639fc47a79166715b8e4698c9832fc16b0cfc235c390c7e6d3540dd8641af
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mosquitto
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mosquitto
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mosquitto-0.3.0/mosquitto-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "2.0"
     created: "2026-06-15T13:55:44.790100355Z"
     description: Eclipse Mosquitto MQTT broker deployed as a StatefulSet with persistent
       storage
@@ -2294,6 +3371,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/mosquitto-0.1.0/mosquitto-0.1.0.tgz
     version: 0.1.0
   mysql:
+  - apiVersion: v2
+    appVersion: "8.4"
+    created: "2026-06-15T19:45:19.165824125Z"
+    description: MySQL relational database server
+    digest: d82ddd4aadd02f3a8ee0642bfd690e702920d8d68e579f1123bd08799d6716a6
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - mysql
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: mysql
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.mysql.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/mysql-0.3.0/mysql-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "8.4"
     created: "2026-06-15T13:55:45.02805777Z"
@@ -2363,6 +3462,30 @@ entries:
   n8n:
   - apiVersion: v2
     appVersion: 1.55.3
+    created: "2026-06-15T19:45:19.356834971Z"
+    description: Workflow automation tool for connecting apps and services with SQLite
+      storage
+    digest: 851dd425a2d6cacf1648aa67c764b2ee59d7fc3246de126c93e9b0db00cb67b8
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - n8n
+    - workflow
+    - automation
+    - integration
+    - no-code
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: n8n
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/n8n-io/n8n
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/n8n-0.3.0/n8n-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.55.3
     created: "2026-06-15T13:55:45.275689968Z"
     description: Workflow automation tool for connecting apps and services with SQLite
       storage
@@ -2412,6 +3535,25 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: "2.10"
+    created: "2026-06-15T19:45:19.568198499Z"
+    description: NATS server with JetStream, deployed as a StatefulSet with persistent
+      storage
+    digest: 9d0d9080fd7e9fec8f9d92bf1e386355c634a3e2629e1e38b7e285c309f6c22d
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - nats
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: nats
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/nats-0.3.0/nats-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "2.10"
     created: "2026-06-15T13:55:45.519268519Z"
     description: NATS server with JetStream, deployed as a StatefulSet with persistent
       storage
@@ -2449,6 +3591,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/nats-0.1.0/nats-0.1.0.tgz
     version: 0.1.0
   neo4j:
+  - apiVersion: v2
+    appVersion: "5.23"
+    created: "2026-06-15T19:45:19.766905545Z"
+    description: Neo4j native graph database
+    digest: adb71541424208f8f967bcbcfacf93c42dd2477f98851e3235ee8ea8b51e1071
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - neo4j
+    - database
+    - graph
+    - cypher
+    - nosql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: neo4j
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/neo4j-0.3.0/neo4j-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "5.23"
     created: "2026-06-15T13:55:45.755497773Z"
@@ -2494,6 +3658,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/neo4j-0.1.0/neo4j-0.1.0.tgz
     version: 0.1.0
   nextcloud:
+  - apiVersion: v2
+    appVersion: "29"
+    created: "2026-06-15T19:45:20.028721966Z"
+    description: Self hosted Nextcloud content collaboration platform for files, sharing
+      and sync
+    digest: 051f2bae701d5abda6c22d4735ae21f0aba374f682d7409e85d0b045b07440b6
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - nextcloud
+    - files
+    - storage
+    - collaboration
+    - sync
+    - sharing
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: nextcloud
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/nextcloud-0.3.0/nextcloud-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "29"
     created: "2026-06-15T13:55:46.000365333Z"
@@ -2545,6 +3733,29 @@ entries:
   nexus:
   - apiVersion: v2
     appVersion: 3.70.1
+    created: "2026-06-15T19:45:20.230463644Z"
+    description: Sonatype Nexus Repository 3 universal artifact manager
+    digest: bc1f2ca8e8f9a825d035a78ce021a4baff0d14208331aef3ca9d44314c3cc081
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - nexus
+    - repository
+    - artifacts
+    - maven
+    - registry
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: nexus
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.sonatype.com/products/sonatype-nexus-repository
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/nexus-0.3.0/nexus-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 3.70.1
     created: "2026-06-15T13:55:46.237207548Z"
     description: Sonatype Nexus Repository 3 universal artifact manager
     digest: a833ab0541d5f1cd9fbb284243e3997a48e74ce4c9a343208b3d28da92ca33f9
@@ -2592,6 +3803,28 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: "17.0"
+    created: "2026-06-15T19:45:20.483792753Z"
+    description: Odoo open source ERP and CRM business management suite
+    digest: 4868e93c9072749ce55b89c056f808bf29f7643486fe536d4ade39bfd3440665
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - odoo
+    - erp
+    - crm
+    - business
+    - accounting
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: odoo
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/odoo-0.3.0/odoo-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "17.0"
     created: "2026-06-15T13:55:46.488938182Z"
     description: Odoo open source ERP and CRM business management suite
     digest: 2f1883d615b5b9ab08c8e930a90439da3682f08a91eeefb430d1cde6a8674ecb
@@ -2637,6 +3870,28 @@ entries:
   opa-gatekeeper:
   - apiVersion: v2
     appVersion: v3.17.0
+    created: "2026-06-15T19:45:20.718787071Z"
+    description: Open Policy Agent Gatekeeper admission controller
+    digest: 628f495d4d33dc2d15177a5c1f3e7b9e5b2c0111a72cba16081ff9c1ebd0e81a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opa
+    - gatekeeper
+    - policy
+    - admission-control
+    - security
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opa-gatekeeper
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opa-gatekeeper-0.3.0/opa-gatekeeper-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v3.17.0
     created: "2026-06-15T13:55:46.742014232Z"
     description: Open Policy Agent Gatekeeper admission controller
     digest: 58edb9117cd0b916dc3ab37f86e4f4b9e72d88ea0fe03c4dc2108b8428786da5
@@ -2680,6 +3935,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/opa-gatekeeper-0.1.0/opa-gatekeeper-0.1.0.tgz
     version: 0.1.0
   openbao:
+  - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2026-06-15T19:45:20.931377315Z"
+    description: OpenBao secrets management and data protection server
+    digest: c285bad47acf0aa7722b47e9f434e77a6e142a8dedb19d2b805fe20fafefce5b
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - openbao
+    - secrets
+    - vault
+    - encryption
+    - security
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: openbao
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://openbao.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/openbao-0.3.0/openbao-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 2.0.0
     created: "2026-06-15T13:55:47.001987401Z"
@@ -2729,6 +4007,28 @@ entries:
   opencloud:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-06-15T19:45:21.147809894Z"
+    description: Self hosted OpenCloud file platform for storage, sharing and collaboration
+    digest: 71f890c3e29b2628edd19dcdf721eaa874b632096bda7a73052198f3d91c1d6b
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opencloud
+    - files
+    - storage
+    - collaboration
+    - sharing
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opencloud
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opencloud-0.3.0/opencloud-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-06-15T13:55:47.284203093Z"
     description: Self hosted OpenCloud file platform for storage, sharing and collaboration
     digest: 50432ffc0d83f7f8909ee6e91fb399108dceae7141741558f36194d7860ea2d5
@@ -2772,6 +4072,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/opencloud-0.1.0/opencloud-0.1.0.tgz
     version: 0.1.0
   opendesk:
+  - apiVersion: v2
+    appVersion: "1.27"
+    created: "2026-06-15T19:45:21.352800325Z"
+    description: Portal placeholder for the openDesk Sovereign Workplace suite
+    digest: 345a7cbdf787b3258bb050b0fb742997ed80db3ea865d9191e60f45f354415de
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opendesk
+    - portal
+    - workplace
+    - sovereign
+    - placeholder
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opendesk
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opendesk-0.3.0/opendesk-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "1.27"
     created: "2026-06-15T13:55:47.560694623Z"
@@ -2819,6 +4141,24 @@ entries:
   opensearch:
   - apiVersion: v2
     appVersion: 2.16.0
+    created: "2026-06-15T19:45:21.571160887Z"
+    description: OpenSearch single node search and analytics engine
+    digest: 726d8429326271ecbb5c76dda00658f1c744703c4c2ac0eaecb8e80d1e34d27f
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opensearch
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opensearch
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opensearch-0.3.0/opensearch-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 2.16.0
     created: "2026-06-15T13:55:47.81167216Z"
     description: OpenSearch single node search and analytics engine
     digest: b2dd253b35e5179cb965afde3a65967ecc6957ad6016853a5de63d8b9b483f12
@@ -2854,6 +4194,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/opensearch-0.1.0/opensearch-0.1.0.tgz
     version: 0.1.0
   opentalk:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-06-15T19:45:21.782550556Z"
+    description: OpenTalk controller for self hosted video conferencing and meetings
+    digest: dbf1ed720caae54ffa1206cbd76aee588bbda3f55551c5994d3564f06c71c21c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opentalk
+    - video
+    - conferencing
+    - meetings
+    - webrtc
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opentalk
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opentalk-0.3.0/opentalk-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2026-06-15T13:55:48.056357759Z"
@@ -2899,6 +4261,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/opentalk-0.1.0/opentalk-0.1.0.tgz
     version: 0.1.0
   opentelemetry-collector:
+  - apiVersion: v2
+    appVersion: 0.106.1
+    created: "2026-06-15T19:45:22.038597571Z"
+    description: Vendor neutral collector for receiving and exporting telemetry data
+    digest: 85e3776c40b8205e0c73efb558b3fb8af624a1cd40f5153de28a52999a05d1dd
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - opentelemetry
+    - otel
+    - collector
+    - telemetry
+    - observability
+    - otlp
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: opentelemetry-collector
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://opentelemetry.io/docs/collector
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/opentelemetry-collector-0.3.0/opentelemetry-collector-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 0.106.1
     created: "2026-06-15T13:55:48.301257242Z"
@@ -2950,6 +4336,30 @@ entries:
   outline:
   - apiVersion: v2
     appVersion: 0.79.0
+    created: "2026-06-15T19:45:22.245281413Z"
+    description: Collaborative team knowledge base and wiki backed by PostgreSQL and
+      Redis
+    digest: 05373e2ff73c80413005ed4a23e94b04d3aae2920b00c14562ed3be02f7b6d44
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - outline
+    - wiki
+    - knowledge-base
+    - documentation
+    - collaboration
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: outline
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/outline/outline
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/outline-0.3.0/outline-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.79.0
     created: "2026-06-15T13:55:48.563311521Z"
     description: Collaborative team knowledge base and wiki backed by PostgreSQL and
       Redis
@@ -2999,6 +4409,29 @@ entries:
   paperless-ngx:
   - apiVersion: v2
     appVersion: 2.11.6
+    created: "2026-06-15T19:45:22.438682479Z"
+    description: Document management system that indexes and archives scanned paperwork
+    digest: 6df9c1ea182a3e17a33fd50a200d9d8942df0530c38fb8742d9d7d78e6016a05
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - paperless-ngx
+    - documents
+    - dms
+    - ocr
+    - archiving
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: paperless-ngx
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/paperless-ngx/paperless-ngx
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/paperless-ngx-0.3.0/paperless-ngx-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 2.11.6
     created: "2026-06-15T13:55:48.822463424Z"
     description: Document management system that indexes and archives scanned paperwork
     digest: 457f1a1c5e2d19bed30412f344b180056d36bd3e4b64ec117e9566580e983d7c
@@ -3044,6 +4477,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/paperless-ngx-0.1.0/paperless-ngx-0.1.0.tgz
     version: 0.1.0
   plausible:
+  - apiVersion: v2
+    appVersion: v2.1.4
+    created: "2026-06-15T19:45:22.641665796Z"
+    description: Privacy friendly web analytics backed by PostgreSQL and ClickHouse
+    digest: c237c55c21af4d67542f87b66e7e0ca6f02346bcbeb8d1020608d19d844b464c
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - plausible
+    - analytics
+    - web-analytics
+    - privacy
+    - statistics
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: plausible
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/plausible/community-edition
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/plausible-0.3.0/plausible-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v2.1.4
     created: "2026-06-15T13:55:49.077180166Z"
@@ -3093,6 +4549,29 @@ entries:
   postgresql:
   - apiVersion: v2
     appVersion: "16.4"
+    created: "2026-06-15T19:45:22.856931074Z"
+    description: PostgreSQL object-relational database server
+    digest: ffc01edaa76a4e5a25d98d78a16fbd9201efea828940ab23370fb89d1fa535c0
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    - sql
+    - rdbms
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: postgresql
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.postgresql.org
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/postgresql-0.3.0/postgresql-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "16.4"
     created: "2026-06-15T13:55:49.315011331Z"
     description: PostgreSQL object-relational database server
     digest: 176ed881487f90ae8650e29aabae255199c157ee237a3b8c679bc415269d0dc0
@@ -3138,6 +4617,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/postgresql-0.1.1/postgresql-0.1.1.tgz
     version: 0.1.1
   prometheus:
+  - apiVersion: v2
+    appVersion: v2.53.1
+    created: "2026-06-15T19:45:23.087308149Z"
+    description: Prometheus monitoring system and time series database for metrics
+    digest: f675bd373398b97d0b761d7742f763c60ce64108d3986ac1231e50ada7106e3f
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - prometheus
+    - monitoring
+    - metrics
+    - tsdb
+    - alerting
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: prometheus
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://prometheus.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/prometheus-0.3.0/prometheus-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v2.53.1
     created: "2026-06-15T13:55:49.555660843Z"
@@ -3187,6 +4689,25 @@ entries:
   pulsar:
   - apiVersion: v2
     appVersion: 3.3.1
+    created: "2026-06-15T19:45:23.315994075Z"
+    description: Apache Pulsar messaging and streaming platform running in standalone
+      mode
+    digest: b206bfa78923f647b653e764f6db85c9a928bb746231a2207a680ce9be6bf920
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - pulsar
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: pulsar
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/pulsar-0.3.0/pulsar-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 3.3.1
     created: "2026-06-15T13:55:49.801099826Z"
     description: Apache Pulsar messaging and streaming platform running in standalone
       mode
@@ -3224,6 +4745,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/pulsar-0.1.0/pulsar-0.1.0.tgz
     version: 0.1.0
   qdrant:
+  - apiVersion: v2
+    appVersion: v1.11.0
+    created: "2026-06-15T19:45:23.542510882Z"
+    description: Qdrant vector database and similarity search engine
+    digest: fdb14f353884f9249c9e11c6dde84cfce5acba29b8a4057f02927e5c977dc1cd
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - qdrant
+    - vector-database
+    - embeddings
+    - similarity-search
+    - search
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: qdrant
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/qdrant-0.3.0/qdrant-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.11.0
     created: "2026-06-15T13:55:50.046687633Z"
@@ -3271,6 +4814,28 @@ entries:
   questdb:
   - apiVersion: v2
     appVersion: 8.1.1
+    created: "2026-06-15T19:45:23.734554197Z"
+    description: QuestDB high performance time series database
+    digest: ad449523174f59c656cc5c6346631a057047ec389fca06e8b4089b21c7e81e95
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - questdb
+    - timeseries
+    - database
+    - sql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: questdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://questdb.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/questdb-0.3.0/questdb-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 8.1.1
     created: "2026-06-15T13:55:50.303284087Z"
     description: QuestDB high performance time series database
     digest: fe8de4129f06a8d11613e69504f8b8df470b87b73496987903581f37ce72b7b9
@@ -3314,6 +4879,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/questdb-0.1.0/questdb-0.1.0.tgz
     version: 0.1.0
   quickwit:
+  - apiVersion: v2
+    appVersion: v0.8.2
+    created: "2026-06-15T19:45:23.927777793Z"
+    description: Quickwit search engine for logs and traces
+    digest: a5454c1f02b3aa7c39f9d3c4a4ad5423e464ce6cc12f31de4a977ba67d9667b4
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - quickwit
+    - search
+    - logs
+    - observability
+    - full-text
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: quickwit
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/quickwit-0.3.0/quickwit-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v0.8.2
     created: "2026-06-15T13:55:50.596841481Z"
@@ -3361,6 +4948,29 @@ entries:
   rabbitmq:
   - apiVersion: v2
     appVersion: "3.13"
+    created: "2026-06-15T19:45:24.117684707Z"
+    description: Multi protocol message broker implementing AMQP
+    digest: 6137692b045d079c6362366e2f0e51cfdf02a5cf9555e3286013800684272e02
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - rabbitmq
+    - amqp
+    - message-broker
+    - queue
+    - messaging
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: rabbitmq
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.rabbitmq.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/rabbitmq-0.3.0/rabbitmq-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "3.13"
     created: "2026-06-15T13:55:50.858167462Z"
     description: Multi protocol message broker implementing AMQP
     digest: 3b5a6e54fe7b58e18ee9b3f62f561598f0cc3795994ca338bfd962ba872f1a36
@@ -3406,6 +5016,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/rabbitmq-0.1.1/rabbitmq-0.1.1.tgz
     version: 0.1.1
   redis:
+  - apiVersion: v2
+    appVersion: "7.4"
+    created: "2026-06-15T19:45:24.33118233Z"
+    description: In-memory data structure store used as database, cache and message
+      broker
+    digest: edcc14b12a78b9ee131db5f3763341c44b37cc02081b8471e77e75b2a6b2c00f
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - redis
+    - cache
+    - key-value
+    - database
+    - nosql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: redis
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://redis.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/redis-0.3.0/redis-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "7.4"
     created: "2026-06-15T13:55:51.128135386Z"
@@ -3457,6 +5091,25 @@ entries:
   redpanda:
   - apiVersion: v2
     appVersion: v24.2.2
+    created: "2026-06-15T19:45:24.535417764Z"
+    description: Redpanda Kafka-compatible streaming data platform deployed as a single
+      node StatefulSet
+    digest: dcdf597865d9a1ec5b41994494c11e4a74b2d97923f82434383dbc8a6b3d9561
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - redpanda
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: redpanda
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/redpanda-0.3.0/redpanda-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v24.2.2
     created: "2026-06-15T13:55:51.388608059Z"
     description: Redpanda Kafka-compatible streaming data platform deployed as a single
       node StatefulSet
@@ -3494,6 +5147,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/redpanda-0.1.0/redpanda-0.1.0.tgz
     version: 0.1.0
   rook-ceph:
+  - apiVersion: v2
+    appVersion: v1.14.9
+    created: "2026-06-15T19:45:24.738414527Z"
+    description: Rook Ceph operator that manages Ceph storage clusters on Kubernetes.
+    digest: 3307228d314d2a50406719972a6aef6c348f693253838721145ff9cf899c6bb2
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - rook
+    - ceph
+    - storage
+    - operator
+    - csi
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: rook-ceph
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/rook-ceph-0.3.0/rook-ceph-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.14.9
     created: "2026-06-15T13:55:51.650338439Z"
@@ -3541,6 +5216,28 @@ entries:
   scylladb:
   - apiVersion: v2
     appVersion: "6.1"
+    created: "2026-06-15T19:45:24.963559605Z"
+    description: ScyllaDB high performance NoSQL database
+    digest: ae6d0b804668939f8dd14876105b59bc89e678accc09ae7977a8ddb7df673fe7
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - scylladb
+    - database
+    - nosql
+    - wide-column
+    - cassandra
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: scylladb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/scylladb-0.3.0/scylladb-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "6.1"
     created: "2026-06-15T13:55:51.901842302Z"
     description: ScyllaDB high performance NoSQL database
     digest: 00eb57835f07fc04225d9505f37bf6661f2bfd6389e268fe888d98787b3ad960
@@ -3586,6 +5283,28 @@ entries:
   sealed-secrets:
   - apiVersion: v2
     appVersion: 0.27.1
+    created: "2026-06-15T19:45:25.173794903Z"
+    description: Sealed Secrets controller for encrypted Kubernetes secrets
+    digest: c8440b4a083af19648e35bdc8ea189cec44e1704fadb563758e6e26853517636
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - sealed-secrets
+    - security
+    - secrets
+    - encryption
+    - gitops
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: sealed-secrets
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/sealed-secrets-0.3.0/sealed-secrets-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.27.1
     created: "2026-06-15T13:55:52.157113623Z"
     description: Sealed Secrets controller for encrypted Kubernetes secrets
     digest: 599097e2711a1de388baea80fe0844d75ac790bc253356e5186e24dc956542bf
@@ -3629,6 +5348,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/sealed-secrets-0.1.0/sealed-secrets-0.1.0.tgz
     version: 0.1.0
   seaweedfs:
+  - apiVersion: v2
+    appVersion: "3.71"
+    created: "2026-06-15T19:45:25.384689051Z"
+    description: SeaweedFS distributed object and file storage running master, volume
+      and filer in one server.
+    digest: 0fabf063fedf96c1ffca43e6f570b47fef4077ad5d9e3880b2a6efb7c12449ec
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - seaweedfs
+    - storage
+    - object-storage
+    - filesystem
+    - distributed
+    - s3
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: seaweedfs
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/seaweedfs-0.3.0/seaweedfs-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "3.71"
     created: "2026-06-15T13:55:52.446579774Z"
@@ -3680,6 +5423,28 @@ entries:
   solr:
   - apiVersion: v2
     appVersion: "9.6"
+    created: "2026-06-15T19:45:25.611835208Z"
+    description: Apache Solr enterprise search platform
+    digest: eee2e14052cc0fde8315c69179eaff23800ace126a2ed5e0803830b982cc9afc
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - solr
+    - search
+    - lucene
+    - full-text
+    - indexing
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: solr
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/solr-0.3.0/solr-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "9.6"
     created: "2026-06-15T13:55:52.690516227Z"
     description: Apache Solr enterprise search platform
     digest: 00bd3ca69f8592d727623c84d0b9872cf0d5ccf5f96d2d04eb141b0467dfd574
@@ -3723,6 +5488,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/solr-0.1.0/solr-0.1.0.tgz
     version: 0.1.0
   spicedb:
+  - apiVersion: v2
+    appVersion: v1.35.3
+    created: "2026-06-15T19:45:25.839811818Z"
+    description: SpiceDB authorization and permissions database
+    digest: 1d098b9ffb3af8f0e32c0d49c52c4548353737e17efb13bc43fddc95121deef7
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - spicedb
+    - authorization
+    - permissions
+    - zanzibar
+    - security
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: spicedb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/spicedb-0.3.0/spicedb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.35.3
     created: "2026-06-15T13:55:52.922082135Z"
@@ -3770,6 +5557,28 @@ entries:
   superset:
   - apiVersion: v2
     appVersion: 4.0.2
+    created: "2026-06-15T19:45:26.044889849Z"
+    description: Apache Superset data exploration and business intelligence platform
+    digest: 718948698d4050b1279ea593b12ab58e128b4ad7772825641623fbcd28ef8175
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - superset
+    - analytics
+    - dashboards
+    - visualization
+    - business-intelligence
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: superset
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/superset-0.3.0/superset-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 4.0.2
     created: "2026-06-15T13:55:53.16142455Z"
     description: Apache Superset data exploration and business intelligence platform
     digest: 0b8685f120d362b4adf0afc7e8e799b28a86309c8c96716d99c75a38c575f441
@@ -3813,6 +5622,28 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/superset-0.1.0/superset-0.1.0.tgz
     version: 0.1.0
   surrealdb:
+  - apiVersion: v2
+    appVersion: v2.0
+    created: "2026-06-15T19:45:26.232919942Z"
+    description: SurrealDB multi-model database
+    digest: 628369c8310ff3e217786ff8a1c9ab2b0b3006f16489fe64453a63a958315c66
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - surrealdb
+    - database
+    - nosql
+    - multi-model
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: surrealdb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://surrealdb.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/surrealdb-0.3.0/surrealdb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v2.0
     created: "2026-06-15T13:55:53.392769209Z"
@@ -3860,6 +5691,28 @@ entries:
   tekton:
   - apiVersion: v2
     appVersion: v0.62.0
+    created: "2026-06-15T19:45:26.436850937Z"
+    description: Tekton Pipelines controller for cloud native CI/CD
+    digest: 3eecac4d95c1594aeaeb658ce48cc3d620fd6f614854a92fbf772bcac7eb03b3
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - tekton
+    - ci-cd
+    - pipelines
+    - build
+    - kubernetes
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: tekton
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/tekton-0.3.0/tekton-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.62.0
     created: "2026-06-15T13:55:53.628648309Z"
     description: Tekton Pipelines controller for cloud native CI/CD
     digest: 3f5c202ad20a7e1ca1c09c4d3337d8fa08c467d100cd16f3b23a29042e27d342
@@ -3903,6 +5756,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/tekton-0.1.0/tekton-0.1.0.tgz
     version: 0.1.0
   tempo:
+  - apiVersion: v2
+    appVersion: 2.5.0
+    created: "2026-06-15T19:45:26.640346641Z"
+    description: Tempo distributed tracing backend for storing and querying traces
+    digest: c26c39db8ca50118cde124bead3d0ab8909850ed120a12e9e32d1acd274c7ad4
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - tempo
+    - tracing
+    - traces
+    - observability
+    - opentelemetry
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: tempo
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://grafana.com/oss/tempo
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/tempo-0.3.0/tempo-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 2.5.0
     created: "2026-06-15T13:55:53.854668125Z"
@@ -3952,6 +5828,29 @@ entries:
   thanos:
   - apiVersion: v2
     appVersion: v0.36.1
+    created: "2026-06-15T19:45:26.833022083Z"
+    description: Thanos Querier providing a unified query view across Prometheus stores
+    digest: dee1b41a7d628feebee3ac78993b51ed9255772784c13ae00bb45814b906f103
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - thanos
+    - querier
+    - prometheus
+    - metrics
+    - monitoring
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: thanos
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://thanos.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/thanos-0.3.0/thanos-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.36.1
     created: "2026-06-15T13:55:54.136016025Z"
     description: Thanos Querier providing a unified query view across Prometheus stores
     digest: 3507a83a256dae89a6d9c3f79c916ade66e3d6d2e56d59eae57c00ca224509de
@@ -3997,6 +5896,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/thanos-0.1.0/thanos-0.1.0.tgz
     version: 0.1.0
   timescaledb:
+  - apiVersion: v2
+    appVersion: 2.17.2-pg16
+    created: "2026-06-15T19:45:27.055569236Z"
+    description: TimescaleDB time series SQL database on PostgreSQL
+    digest: e028f903542f4e63c4e11966fa138fccb78f64e2bd363b4a2294a4bcfb5cdb5a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - timescaledb
+    - timeseries
+    - postgresql
+    - database
+    - sql
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: timescaledb
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.timescale.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/timescaledb-0.3.0/timescaledb-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 2.17.2-pg16
     created: "2026-06-15T13:55:54.397515535Z"
@@ -4046,6 +5968,28 @@ entries:
   trivy:
   - apiVersion: v2
     appVersion: 0.54.1
+    created: "2026-06-15T19:45:27.278950303Z"
+    description: Trivy vulnerability and misconfiguration scanner in server mode
+    digest: 5f02234ae2a224a2a71a14543ccac44edf877d290c865cc3a6ef0b5674023e2e
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - trivy
+    - security
+    - vulnerability-scanner
+    - sbom
+    - scanning
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: trivy
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/trivy-0.3.0/trivy-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.54.1
     created: "2026-06-15T13:55:54.637971055Z"
     description: Trivy vulnerability and misconfiguration scanner in server mode
     digest: 0f5abb9ada39404f8ecb1a9f78ef772a05643db601b9175afe3cafae35de2655
@@ -4091,6 +6035,27 @@ entries:
   typesense:
   - apiVersion: v2
     appVersion: "27.1"
+    created: "2026-06-15T19:45:27.504044209Z"
+    description: Typesense fast typo tolerant search engine
+    digest: 29302fa5442cc62bb4eeca296162d7a7f252b672c84a0526f8f00a29ac9d62e4
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - typesense
+    - search
+    - full-text
+    - instant-search
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: typesense
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/typesense-0.3.0/typesense-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "27.1"
     created: "2026-06-15T13:55:54.897912315Z"
     description: Typesense fast typo tolerant search engine
     digest: 3bbd7af665203833ab2856aa91ea326c30280d689e288f69f24e5a0ccc544993
@@ -4132,6 +6097,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/typesense-0.1.0/typesense-0.1.0.tgz
     version: 0.1.0
   uptime-kuma:
+  - apiVersion: v2
+    appVersion: 1.23.13
+    created: "2026-06-15T19:45:27.711187411Z"
+    description: Self hosted monitoring tool for uptime and status page tracking
+    digest: 58dad750175ffe297c067182c3d27fadac42deba5be792ae769fb02599376511
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - uptime-kuma
+    - monitoring
+    - uptime
+    - status-page
+    - healthcheck
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: uptime-kuma
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://github.com/louislam/uptime-kuma
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/uptime-kuma-0.3.0/uptime-kuma-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 1.23.13
     created: "2026-06-15T13:55:55.133462805Z"
@@ -4179,6 +6167,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/uptime-kuma-0.1.0/uptime-kuma-0.1.0.tgz
     version: 0.1.0
   valkey:
+  - apiVersion: v2
+    appVersion: "8.0"
+    created: "2026-06-15T19:45:27.92229849Z"
+    description: Valkey in-memory key value data store
+    digest: ebab113e5197684c5b356be08cfb465b0f453e98b2f83eb6a5015baba0debf7d
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - valkey
+    - redis
+    - cache
+    - key-value
+    - database
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: valkey
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://valkey.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/valkey-0.3.0/valkey-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: "8.0"
     created: "2026-06-15T13:55:55.387200589Z"
@@ -4251,6 +6262,29 @@ entries:
   vault:
   - apiVersion: v2
     appVersion: 1.17.2
+    created: "2026-06-15T19:45:28.136521499Z"
+    description: HashiCorp Vault secrets management and data protection server
+    digest: f951956cc35fbd556a9f9808effc0b456ebac3f6b968c85a05aefac1e44446da
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - vault
+    - secrets
+    - encryption
+    - security
+    - pki
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: vault
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://www.vaultproject.io
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/vault-0.3.0/vault-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.17.2
     created: "2026-06-15T13:55:55.656309186Z"
     description: HashiCorp Vault secrets management and data protection server
     digest: 3a36e6ee1ca6bb7b59292e75199dfaec438084c9eb8a03303df9c5fb6377b178
@@ -4296,6 +6330,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/vault-0.1.0/vault-0.1.0.tgz
     version: 0.1.0
   vector:
+  - apiVersion: v2
+    appVersion: 0.40.0-debian
+    created: "2026-06-15T19:45:28.347199317Z"
+    description: High performance observability data pipeline for logs and metrics
+    digest: 340cc6e4d79e98e88d7c3b18546bfdeed61b53a61af4fb2d19a8a62d5d4d827e
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - vector
+    - logs
+    - observability
+    - pipeline
+    - telemetry
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: vector
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://vector.dev
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/vector-0.3.0/vector-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 0.40.0-debian
     created: "2026-06-15T13:55:55.891975375Z"
@@ -4345,6 +6402,29 @@ entries:
   velero:
   - apiVersion: v2
     appVersion: v1.14.0
+    created: "2026-06-15T19:45:28.589656698Z"
+    description: Velero server for Kubernetes cluster backup, restore and disaster
+      recovery.
+    digest: 5925207bad7c4877d6b62fd3fecfbae9ca9ed7d66d9dbfd9b91a096fcc816517
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - velero
+    - backup
+    - restore
+    - disaster-recovery
+    - migration
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: velero
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/velero-0.3.0/velero-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v1.14.0
     created: "2026-06-15T13:55:56.119560423Z"
     description: Velero server for Kubernetes cluster backup, restore and disaster
       recovery.
@@ -4392,6 +6472,24 @@ entries:
   vernemq:
   - apiVersion: v2
     appVersion: 2.0.1
+    created: "2026-06-15T19:45:28.798442663Z"
+    description: VerneMQ MQTT broker deployed as a StatefulSet with persistent storage
+    digest: 78926f2b2d08b7adf94997e33745bd71b38adf4029c0e7a460ac4d0af63a7819
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - vernemq
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: vernemq
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/vernemq-0.3.0/vernemq-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 2.0.1
     created: "2026-06-15T13:55:56.381279523Z"
     description: VerneMQ MQTT broker deployed as a StatefulSet with persistent storage
     digest: 3124f0198123f924f78d63afa5ec8afa861288be1c9be7974fad7d790043a854
@@ -4427,6 +6525,30 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/vernemq-0.1.0/vernemq-0.1.0.tgz
     version: 0.1.0
   victoriametrics:
+  - apiVersion: v2
+    appVersion: v1.102.1
+    created: "2026-06-15T19:45:29.013145409Z"
+    description: Fast and cost effective time series database and monitoring solution
+    digest: 2ff565ab424f936093bc157f6b14ce923074706a6cf925c2c3e6d5afb6b30b7a
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - victoriametrics
+    - metrics
+    - monitoring
+    - timeseries
+    - prometheus
+    - tsdb
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: victoriametrics
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://victoriametrics.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/victoriametrics-0.3.0/victoriametrics-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v1.102.1
     created: "2026-06-15T13:55:56.650643561Z"
@@ -4478,6 +6600,30 @@ entries:
   vikunja:
   - apiVersion: v2
     appVersion: 0.24.1
+    created: "2026-06-15T19:45:29.203643753Z"
+    description: Self hosted to-do and project management application with SQLite
+      by default
+    digest: b68a59ac4ad4967947a8ab3ebcedb9d12c3b759699ea47811b157c8a12990885
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - vikunja
+    - todo
+    - tasks
+    - project-management
+    - productivity
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: vikunja
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://kolaente.dev/vikunja/vikunja
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/vikunja-0.3.0/vikunja-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.24.1
     created: "2026-06-15T13:55:56.901739271Z"
     description: Self hosted to-do and project management application with SQLite
       by default
@@ -4527,6 +6673,28 @@ entries:
   weaviate:
   - apiVersion: v2
     appVersion: 1.26.1
+    created: "2026-06-15T19:45:29.407733495Z"
+    description: Weaviate vector database with semantic search
+    digest: 2cecec7a741215031b26e0683f8ea373d9f4d3fc5cb1f8df7b328857895ef6c1
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - weaviate
+    - vector-database
+    - semantic-search
+    - embeddings
+    - ai
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: weaviate
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/weaviate-0.3.0/weaviate-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.26.1
     created: "2026-06-15T13:55:57.139882509Z"
     description: Weaviate vector database with semantic search
     digest: 7ee5f3d26182c008d174f21c0f179c1efda923ffe4976badffe0a8fe2d19f89c
@@ -4570,6 +6738,29 @@ entries:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/weaviate-0.1.0/weaviate-0.1.0.tgz
     version: 0.1.0
   zitadel:
+  - apiVersion: v2
+    appVersion: v2.59.0
+    created: "2026-06-15T19:45:29.641193556Z"
+    description: Cloud native identity and access management platform
+    digest: 865a9549120d1bdfd3eb90bb84a42c4f00bba2c3d3abba1b4e8a9de9433399e3
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - zitadel
+    - identity
+    - oidc
+    - oauth2
+    - sso
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: zitadel
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://zitadel.com
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/zitadel-0.3.0/zitadel-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: v2.59.0
     created: "2026-06-15T13:55:57.382872313Z"
@@ -4619,6 +6810,29 @@ entries:
   zot:
   - apiVersion: v2
     appVersion: v2.1.1
+    created: "2026-06-15T19:45:29.837279397Z"
+    description: OCI native container image registry from Project Zot
+    digest: 5b9b84f7ce6ea6558e8d08dc39e1840ead6e4d609549fa624dcb1d4361ee4aeb
+    home: https://github.com/kymeliodev/kymelio-helm
+    keywords:
+    - zot
+    - registry
+    - oci
+    - container
+    - artifacts
+    maintainers:
+    - email: simon.meier@kymelio.com
+      name: Kymelio
+    name: zot
+    sources:
+    - https://github.com/kymeliodev/kymelio-helm
+    - https://zotregistry.dev
+    type: application
+    urls:
+    - https://github.com/kymeliodev/kymelio-helm/releases/download/zot-0.3.0/zot-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v2.1.1
     created: "2026-06-15T13:55:57.660695997Z"
     description: OCI native container image registry from Project Zot
     digest: 52367efaeff0e796d15ce8391884fb0f046f0657a80aece6d9c5473ec0ca932d
@@ -4663,4 +6877,4 @@ entries:
     urls:
     - https://github.com/kymeliodev/kymelio-helm/releases/download/zot-0.1.0/zot-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-15T13:55:57.660955722Z"
+generated: "2026-06-15T19:45:29.838311701Z"
