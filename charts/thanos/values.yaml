@@ -163,3 +163,19 @@ affinity: {}
 # Image used by the helm test connection check.
 tests:
   image: busybox:1.36
+
+# OpenShift Route exposing the service externally. Disabled by default.
+route:
+  enabled: false
+  host: ""
+  # Target service port name or number. Leave empty for single port services.
+  port: ""
+  annotations: {}
+  # TLS configuration, for example { termination: edge }.
+  tls: {}
+  wildcardPolicy: None
+
+# OpenShift compatibility. When enabled, the explicit runAsUser, runAsGroup and
+# fsGroup are omitted so the restricted SCC assigns them from the namespace range.
+openShift:
+  enabled: false
