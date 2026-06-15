@@ -2,7 +2,7 @@ apiVersion: v2
 name: superset
 description: Apache Superset data exploration and business intelligence platform
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "4.0.2"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
