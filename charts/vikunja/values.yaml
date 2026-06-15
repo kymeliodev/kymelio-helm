@@ -124,6 +124,11 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the built in Vikunja metrics endpoint. This sets
+  # VIKUNJA_SERVICE_ENABLEMETRICS=true and exposes Prometheus metrics on the API
+  # port at /metrics (also reachable at /api/v1/metrics). Enabling metrics with
+  # more than one replica requires a shared Redis keyvalue store.
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
