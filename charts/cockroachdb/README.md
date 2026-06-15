@@ -54,4 +54,55 @@ helm upgrade my-cockroachdb kymelio/cockroachdb
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Publish a metrics Service port targeting the HTTP endpoint |
+| metrics.port | int | `8081` | Service port used for scraping |
+| metrics.path | string | `/_status/vars` | Prometheus endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Start flags applied as `--key=value` to start-single-node |
+| tls.enabled | bool | `false` | Start the node in secure mode with `--certs-dir` |
+| tls.existingSecret | string | `""` | Secret holding ca.crt, node.crt and node.key |
+
+## Configuration
+
+### Metrics
+
+CockroachDB exposes Prometheus metrics natively on the HTTP port at the
+`/_status/vars` path, so no exporter sidecar is needed. Enable the metrics
+Service port and a ServiceMonitor with:
+
+```sh
+helm install my-cockroachdb kymelio/cockroachdb \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+The ServiceMonitor scrapes the `metrics` port at `/_status/vars`.
+
+### Server tuning
+
+Pass native start flags through `parameters`. Each entry becomes a
+`--key=value` argument to `start-single-node`:
+
+```yaml
+parameters:
+  cache: 25%
+  max-sql-memory: 25%
+```
+
+Or with `--set`:
+
+```sh
+helm install my-cockroachdb kymelio/cockroachdb --set parameters.cache=25%
+```
+
+### TLS
+
+Provide a Secret containing the CockroachDB node certificate files
+(`ca.crt`, `node.crt`, `node.key`). When enabled the node starts in secure mode
+with `--certs-dir` instead of `--insecure`:
+
+```sh
+helm install my-cockroachdb kymelio/cockroachdb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=cockroachdb-certs
+```

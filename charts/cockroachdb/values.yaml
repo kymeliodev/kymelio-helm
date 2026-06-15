@@ -89,12 +89,37 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# CockroachDB exposes Prometheus metrics natively on the HTTP port at the
+# /_status/vars path, so no exporter sidecar is required.
 metrics:
+  # Expose a dedicated metrics Service port that targets the HTTP port and
+  # scrape /_status/vars. The HTTP container port is always present, so leaving
+  # this disabled keeps the default render unchanged.
+  enabled: false
+  # Service port published for scraping. It targets the HTTP container port,
+  # where CockroachDB serves the Prometheus endpoint.
+  port: 8081
+  # Path the Prometheus endpoint is served on.
+  path: /_status/vars
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. When enabled the node starts in secure mode with --certs-dir
+# pointing at the mounted Secret instead of --insecure. The Secret must contain
+# the CockroachDB node certificate files (ca.crt, node.crt, node.key).
+tls:
+  enabled: false
+  # Secret containing the certificate directory contents.
+  existingSecret: ""
+  # Directory the certificate files are mounted into and passed to --certs-dir.
+  mountPath: /cockroach/certs
+
+# Start flags applied as --key=value arguments to start-single-node. Use this
+# for native server tuning, for example { max-sql-memory: "25%", cache: "25%" }.
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

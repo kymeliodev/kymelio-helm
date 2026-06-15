@@ -13,5 +13,11 @@ spec:
       protocol: TCP
       name: {{ $p.name }}
     {{- end }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: {{ .Values.service.ports.http.name }}
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "cockroachdb.selectorLabels" . | nindent 4 }}
