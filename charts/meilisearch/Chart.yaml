@@ -2,7 +2,7 @@ apiVersion: v2
 name: meilisearch
 description: Meilisearch fast and relevant full text search engine
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "v1.10"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
