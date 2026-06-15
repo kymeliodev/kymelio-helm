@@ -89,10 +89,15 @@ networkPolicy:
   enabled: false
   ingress: []
 
-# Prometheus integration. Disabled by default.
+# Prometheus integration. Disabled by default. Loki exposes its own metrics
+# at /metrics on the HTTP port (service.port, default 3100).
 metrics:
+  # Expose the built in /metrics endpoint for Prometheus scraping.
+  enabled: false
   serviceMonitor:
     enabled: false
+    # HTTP path scraped by the ServiceMonitor.
+    path: /metrics
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
