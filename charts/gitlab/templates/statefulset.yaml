@@ -76,7 +76,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- with .Values.omnibusConfig }}
+            {{- $omnibus := .Values.omnibusConfig }}
+            {{- if .Values.metrics.enabled }}
+            {{- $allowlist := .Values.metrics.monitoringAllowlist | join "', '" }}
+            {{- $omnibus = printf "%s\ngitlab_rails['prometheus_metrics_enabled'] = true\ngitlab_rails['monitoring_whitelist'] = ['%s']\n" $omnibus $allowlist }}
+            {{- end }}
+            {{- with $omnibus }}
             - name: GITLAB_OMNIBUS_CONFIG
               value: {{ . | quote }}
             {{- end }}
