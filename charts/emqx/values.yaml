@@ -45,7 +45,8 @@ securityContext:
     drop:
       - ALL
 
-# Service exposing the broker. MQTT and the dashboard are published.
+# Service exposing the broker. MQTT and the dashboard are published. When
+# tls.enabled is set the SSL MQTT listener port is published as well.
 service:
   type: ClusterIP
   mqtt:
@@ -54,6 +55,9 @@ service:
   dashboard:
     port: 18083
     portName: dashboard
+  mqttssl:
+    port: 8883
+    portName: mqtt-ssl
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -94,12 +98,41 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# EMQX exposes a native Prometheus endpoint on the dashboard port (18083) at
+# /api/v5/prometheus/stats, so no exporter sidecar is required. Enabling this
+# scrapes that path through the ServiceMonitor. Basic auth on the endpoint is
+# off by default in EMQX, which keeps the scrape unauthenticated.
 metrics:
+  enabled: false
+  # Path the native Prometheus endpoint is served on.
+  path: /api/v5/prometheus/stats
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the MQTT listener. EMQX configures the SSL listener
+# natively through EMQX_LISTENERS__SSL__DEFAULT__* settings. When enabled this
+# chart mounts the certificate Secret, wires those settings and publishes the
+# SSL listener on service.mqttssl.port (8883).
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /opt/emqx/certs
+  # Require and verify client certificates (mutual TLS).
+  verifyPeer: false
+
+# Native EMQX settings applied as EMQX_ environment variables. Keys are the
+# dotted config paths, for example
+# { "mqtt.max_packet_size": "1MB", "node.process_limit": "2097152" }. Dots
+# become double underscores and the key is uppercased.
+emqxConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

@@ -52,6 +52,11 @@ spec:
             - name: {{ .Values.service.mqtt.portName }}
               containerPort: {{ .Values.service.mqtt.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: {{ .Values.service.mqttssl.portName }}
+              containerPort: {{ .Values.service.mqttssl.port }}
+              protocol: TCP
+            {{- end }}
             - name: {{ .Values.service.dashboard.portName }}
               containerPort: {{ .Values.service.dashboard.port }}
               protocol: TCP
@@ -73,9 +78,29 @@ spec:
             failureThreshold: 6
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.extraEnv }}
+          {{- if or .Values.extraEnv .Values.tls.enabled .Values.emqxConf }}
           env:
+            {{- if .Values.tls.enabled }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__BIND
+              value: {{ .Values.service.mqttssl.port | quote }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CACERTFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.caFilename }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CERTFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__KEYFILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__VERIFY
+              value: {{ if .Values.tls.verifyPeer }}verify_peer{{ else }}verify_none{{ end }}
+            - name: EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__FAIL_IF_NO_PEER_CERT
+              value: {{ .Values.tls.verifyPeer | quote }}
+            {{- end }}
+            {{- range $k, $v := .Values.emqxConf }}
+            - name: EMQX_{{ $k | upper | replace "." "__" }}
+              value: {{ $v | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
@@ -84,6 +109,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -109,11 +139,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
