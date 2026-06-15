@@ -41,7 +41,11 @@ spec:
       priorityClassName: {{ . }}
       {{- end }}
       securityContext:
+        {{- if .Values.openShift.enabled }}
+        {{- omit .Values.podSecurityContext "runAsUser" "runAsGroup" "fsGroup" | toYaml | nindent 8 }}
+        {{- else }}
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- with .Values.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
