@@ -91,11 +91,27 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port for the VictoriaMetrics Prometheus
+  # endpoint, served at metrics.path on the http listener (port 8428).
+  enabled: false
+  # Port published on the Service for the metrics endpoint.
+  port: 8428
+  # HTTP path where VictoriaMetrics exposes Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the http listener. VictoriaMetrics serves HTTPS on the
+# httpListenAddr when enabled. Provide a Secret with the certificate and key.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
 
 # Command line flags passed to the VictoriaMetrics binary.
 args:

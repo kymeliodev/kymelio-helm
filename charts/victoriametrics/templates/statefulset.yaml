@@ -44,10 +44,15 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or .Values.args .Values.extraArgs }}
+          {{- if or .Values.args .Values.tls.enabled .Values.extraArgs }}
           args:
             {{- with .Values.args }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - -tls
+            - -tlsCertFile=/etc/victoria-metrics/certs/{{ .Values.tls.certFilename }}
+            - -tlsKeyFile=/etc/victoria-metrics/certs/{{ .Values.tls.keyFilename }}
             {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
@@ -89,6 +94,11 @@ spec:
               subPath: {{ . }}
               {{- end }}
             {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: /etc/victoria-metrics/certs
+              readOnly: true
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -107,7 +117,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
@@ -117,6 +127,12 @@ spec:
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "victoriametrics.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
