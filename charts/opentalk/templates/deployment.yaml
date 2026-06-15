@@ -81,6 +81,10 @@ spec:
               value: {{ .Values.externalKeycloak.issuerUrl | quote }}
             - name: OPENTALK_CTRL_KEYCLOAK_CLIENT_ID
               value: {{ .Values.externalKeycloak.clientId | quote }}
+            {{- if and .Values.metrics.enabled .Values.metrics.allowlist }}
+            - name: OPENTALK_CTRL_METRICS__ALLOWLIST
+              value: {{ toJson .Values.metrics.allowlist | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

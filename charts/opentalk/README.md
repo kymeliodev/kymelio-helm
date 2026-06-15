@@ -46,6 +46,60 @@ helm install my-opentalk kymelio/opentalk \
 helm uninstall my-opentalk
 ```
 
+## Configuration
+
+### Application settings
+
+The controller is configured with a TOML file whose fields can be overridden by
+environment variables prefixed with `OPENTALK_CTRL_`, where nested fields are
+separated by two underscores. The chart already sets the database, Redis,
+Keycloak and HTTP settings this way. Add further overrides through `extraEnv`:
+
+```yaml
+extraEnv:
+  - name: OPENTALK_CTRL_HTTP__CORS__ALLOWED_ORIGIN
+    value: "https://meet.example.com"
+  - name: OPENTALK_CTRL_LOGGING__DEFAULT_DIRECTIVES
+    value: "info"
+```
+
+To supply a full `controller.toml`, render it with `configuration` and mount it
+where the controller reads its config.
+
+### TLS
+
+The controller serves plain HTTP on port 8080 and does not terminate TLS itself.
+Run it behind an ingress controller or reverse proxy that terminates TLS for the
+public host name, and configure `ingress.tls` accordingly.
+
+### Metrics
+
+The OpenTalk controller serves a `/metrics` endpoint in OpenMetrics format on the
+HTTP service port. By default that endpoint refuses every connection; it only
+responds to source addresses listed in the controller `[metrics] allowlist`.
+
+When `metrics.enabled` is set, the chart sets
+`OPENTALK_CTRL_METRICS__ALLOWLIST` to the CIDRs in `metrics.allowlist`, and the
+ServiceMonitor scrapes the HTTP port at `metrics.path` (requires the Prometheus
+Operator CRDs). Set the allowlist to the networks your Prometheus scrapes from,
+for example the pod or node CIDRs:
+
+```yaml
+metrics:
+  enabled: true
+  path: /metrics
+  allowlist:
+    - 10.0.0.0/8
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
+If `metrics.allowlist` is left empty the controller keeps its default and denies
+all scrape requests, so the endpoint returns no data.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -73,7 +127,11 @@ helm uninstall my-opentalk
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Configure the controller metrics allowlist and scrape /metrics |
+| metrics.path | string | `/metrics` | HTTP path of the controller metrics endpoint |
+| metrics.allowlist | list | `[]` | Source CIDRs allowed to scrape /metrics (OPENTALK_CTRL_METRICS__ALLOWLIST) |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor scraping the HTTP port |
+| extraEnv | list | `[]` | Extra environment variables passed to the container |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |

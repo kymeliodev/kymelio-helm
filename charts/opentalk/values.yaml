@@ -125,7 +125,18 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# The OpenTalk controller serves a /metrics endpoint in OpenMetrics format on the
+# HTTP service port. The endpoint refuses every connection until an allowlist is
+# configured. When enabled the chart sets OPENTALK_CTRL_METRICS__ALLOWLIST to the
+# CIDRs in metrics.allowlist and the ServiceMonitor scrapes the HTTP port at
+# metrics.path. See the README.
 metrics:
+  enabled: false
+  # HTTP path of the controller metrics endpoint.
+  path: /metrics
+  # Source networks allowed to scrape /metrics. Set to the Prometheus pod or
+  # node networks. Empty values leave the controller default, which denies all.
+  allowlist: []
   serviceMonitor:
     enabled: false
     interval: 30s
