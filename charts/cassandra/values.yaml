@@ -50,6 +50,8 @@ service:
   type: ClusterIP
   port: 9042
   portName: cql
+  # JMX port used by nodetool and the metrics exporter to read MBeans.
+  jmxPort: 7199
 
 # Ingress configuration. Disabled by default.
 ingress:
@@ -86,12 +88,51 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Cassandra has no built-in Prometheus endpoint, so metrics are exposed through a
+# jmx_exporter sidecar that reads MBeans over the local JMX port and serves them
+# on metrics.port at the /metrics path.
 metrics:
+  enabled: false
+  image:
+    repository: docker.io/sscaling/jmx-prometheus-exporter
+    tag: "0.20.0"
+    pullPolicy: IfNotPresent
+  # Port the exporter sidecar listens on.
+  port: 5556
+  # Exporter configuration rendered into a ConfigMap and passed to the sidecar.
+  # Override to scrape additional MBeans or relabel metrics.
+  config:
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    rules:
+      - pattern: ".*"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for client (CQL) connections. When enabled the settings are
+# rendered into the mounted cassandra.yaml fragment and the certificate Secret is
+# mounted read only. Provide a Secret holding the keystore and truststore.
+tls:
+  enabled: false
+  # Secret containing the keystore and truststore files.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /opt/cassandra/certs
+  keystoreFilename: keystore.jks
+  truststoreFilename: truststore.jks
+  # Passwords for the keystore and truststore.
+  keystorePassword: ""
+  truststorePassword: ""
 
 # Extra environment variables passed to the container.
 extraEnv: []
@@ -145,6 +186,18 @@ cassandra:
   clusterName: cassandra-cluster
   datacenter: datacenter1
   endpointSnitch: GossipingPropertyFileSnitch
+  # Native cassandra.yaml tuning. When set (or when tls.enabled is true) the
+  # fragment is rendered into a ConfigMap and copied over the packaged
+  # cassandra.yaml at startup. Use this for server settings such as
+  # concurrent_reads, compaction throughput or client_encryption_options.
+  # Example: |
+  #   concurrent_reads: 64
+  #   concurrent_writes: 64
+  configFragment: ""
+  # File name used for the rendered cassandra.yaml fragment.
+  configFragmentFileName: cassandra.yaml
+  # Mount path for the rendered cassandra.yaml fragment.
+  configFragmentMountPath: /etc/cassandra-extra
 
 # Persistent storage for the StatefulSet.
 persistence:
