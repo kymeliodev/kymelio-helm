@@ -69,3 +69,67 @@ helm upgrade my-nexus kymelio/nexus --reuse-values
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | resources | object | requests and limits | Container resource requests and limits |
+| metrics.enabled | bool | `false` | Scrape the native Nexus Prometheus endpoint |
+| metrics.path | string | `/service/metrics/prometheus` | Path Nexus serves Prometheus metrics on |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.basicAuthSecret | string | `""` | Secret holding scrape credentials |
+
+## Configuration
+
+### Metrics
+
+Nexus serves Prometheus metrics natively on the HTTP port (`8081`) at
+`/service/metrics/prometheus`. The endpoint requires authentication through the
+`nx-metrics-all` privilege, so the ServiceMonitor references a Secret holding
+the scrape credentials. Create the Secret and enable the ServiceMonitor:
+
+```sh
+kubectl create secret generic nexus-metrics \
+  --from-literal=username=metrics \
+  --from-literal=password=changeme
+
+helm install my-nexus kymelio/nexus \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true \
+  --set metrics.serviceMonitor.basicAuthSecret=nexus-metrics
+```
+
+The Secret keys default to `username` and `password`; override them with
+`metrics.serviceMonitor.usernameKey` and `metrics.serviceMonitor.passwordKey`.
+
+### Native configuration
+
+Pass JVM and Nexus settings through `extraEnv`. For example, set the heap and
+direct memory and supply an admin password file on first boot:
+
+```yaml
+extraEnv:
+  - name: INSTALL4J_ADD_VM_PARAMS
+    value: "-Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m"
+  - name: NEXUS_SECURITY_RANDOMPASSWORD
+    value: "false"
+```
+
+The generic `configuration` surface remains available to mount an inline
+`nexus.properties` through a ConfigMap.
+
+### TLS
+
+Nexus can terminate TLS through its embedded Jetty server, but the common
+pattern is to run it behind an Ingress or reverse proxy that terminates TLS.
+Enable `ingress` and attach a certificate Secret there:
+
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: nexus.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: nexus-tls
+      hosts:
+        - nexus.example.com
+```

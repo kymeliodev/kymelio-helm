@@ -14,6 +14,16 @@ spec:
       {{- include "nexus.selectorLabels" . | nindent 6 }}
   endpoints:
     - port: {{ .Values.service.portName }}
+      path: {{ .Values.metrics.path }}
+      {{- with .Values.metrics.serviceMonitor.basicAuthSecret }}
+      basicAuth:
+        username:
+          name: {{ . }}
+          key: {{ $.Values.metrics.serviceMonitor.usernameKey }}
+        password:
+          name: {{ . }}
+          key: {{ $.Values.metrics.serviceMonitor.passwordKey }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

@@ -91,11 +91,23 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Nexus serves Prometheus metrics natively on the HTTP port at
+  # /service/metrics/prometheus. The endpoint requires authentication, so the
+  # ServiceMonitor below carries a basicAuth reference when this is enabled.
+  enabled: false
+  # Path Nexus serves Prometheus metrics on.
+  path: /service/metrics/prometheus
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Secret holding the credentials used to scrape the metrics endpoint. The
+    # Secret must contain the keys named below. Leave empty for an unauthenticated
+    # scrape, which only works if anonymous access to metrics is allowed.
+    basicAuthSecret: ""
+    usernameKey: username
+    passwordKey: password
 
 # Extra environment variables passed to the container.
 extraEnv: []
