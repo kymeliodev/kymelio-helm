@@ -71,8 +71,71 @@ helm upgrade my-harbor kymelio/harbor --reuse-values
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the harbor-core Prometheus endpoint and publish the metrics port |
+| metrics.port | int | `8001` | Port harbor-core serves metrics on (METRIC_PORT) |
+| metrics.path | string | `/metrics` | Path harbor-core serves metrics on (METRIC_PATH) |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables, used to wire external services |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot, uid 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
+
+## Configuration
+
+### Metrics
+
+harbor-core exposes a built in Prometheus endpoint. Set `metrics.enabled=true`
+to inject `METRIC_ENABLE=true`, `METRIC_PORT=8001` and `METRIC_PATH=/metrics`,
+publish the `metrics` port (`8001`) on the Service and let harbor-core serve
+`/metrics` there. Enable the ServiceMonitor so Prometheus scrapes that port:
+
+```sh
+helm install my-harbor kymelio/harbor \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Native configuration
+
+harbor-core is configured through environment variables. Wire the external
+services and tune the core through `extraEnv`, for example:
+
+```yaml
+extraEnv:
+  - name: POSTGRESQL_HOST
+    value: postgres.db.svc
+  - name: POSTGRESQL_PORT
+    value: "5432"
+  - name: _REDIS_URL_CORE
+    value: redis://redis.cache.svc:6379/0
+  - name: REGISTRY_URL
+    value: http://harbor-registry:5000
+  - name: EXT_ENDPOINT
+    value: https://harbor.example.com
+  - name: LOG_LEVEL
+    value: info
+```
+
+The generic `configuration` surface remains available to mount an inline config
+file through a ConfigMap when a component requires one.
+
+### TLS
+
+harbor-core itself serves plain HTTP. TLS for Harbor is terminated by the Harbor
+portal or by the Ingress in front of the deployment, so enable `ingress` and
+attach a certificate Secret there:
+
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: harbor.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: harbor-tls
+      hosts:
+        - harbor.example.com
+```

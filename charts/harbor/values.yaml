@@ -113,6 +113,13 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the built in Prometheus endpoint of harbor-core. This sets
+  # METRIC_ENABLE=true and publishes the metrics port on the Service.
+  enabled: false
+  # Port harbor-core listens on for metrics (METRIC_PORT).
+  port: 8001
+  # Path harbor-core serves metrics on (METRIC_PATH).
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
