@@ -22,23 +22,38 @@ spec:
         {{- end }}
       labels:
         {{- include "openbao.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "openbao.serviceAccountName" . }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.devMode.enabled }}
+          {{- if or .Values.devMode.enabled .Values.extraArgs }}
           args:
+            {{- if .Values.devMode.enabled }}
             {{- toYaml .Values.devMode.args | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           env:
             {{- if .Values.devMode.enabled }}
@@ -51,6 +66,10 @@ spec:
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
@@ -69,6 +88,22 @@ spec:
             periodSeconds: 20
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumeMounts }}
+          volumeMounts:
+            {{- if or .Values.configuration .Values.existingConfigMap }}
+            - name: config
+              mountPath: {{ .Values.configMountPath }}
+              {{- with .Values.configSubPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        {{- with .Values.sidecars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -80,4 +115,15 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      volumes:
+        {{- if or .Values.configuration .Values.existingConfigMap }}
+        - name: config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "openbao.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
