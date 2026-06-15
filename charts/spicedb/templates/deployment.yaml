@@ -50,6 +50,16 @@ spec:
             - "--grpc-preshared-key"
             - "$(SPICEDB_GRPC_PRESHARED_KEY)"
             - "--http-enabled"
+            {{- if .Values.metrics.enabled }}
+            - "--metrics-addr"
+            - ":{{ .Values.metrics.port }}"
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - "--grpc-tls-cert-path"
+            - "{{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}"
+            - "--grpc-tls-key-path"
+            - "{{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}"
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -60,6 +70,11 @@ spec:
             - name: {{ .Values.service.ports.http.name }}
               containerPort: {{ .Values.service.ports.http.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: SPICEDB_GRPC_PRESHARED_KEY
               valueFrom:
@@ -85,8 +100,13 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumeMounts }}
+          {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumeMounts .Values.tls.enabled }}
           volumeMounts:
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -113,8 +133,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
+        {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
           configMap:

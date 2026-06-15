@@ -99,12 +99,28 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# SpiceDB serves Prometheus metrics on metrics.port at the /metrics path. Enabling
+# this exposes the metrics port on the container and Service.
 metrics:
+  enabled: false
+  # Port the SpiceDB metrics server listens on (--metrics-addr).
+  port: 9090
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# gRPC TLS served by SpiceDB. When enabled the certificate Secret is mounted read
+# only and --grpc-tls-cert-path / --grpc-tls-key-path are passed to serve.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /tls
+  certFilename: tls.crt
+  keyFilename: tls.key
 
 # Extra environment variables passed to the container.
 extraEnv: []
