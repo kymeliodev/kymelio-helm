@@ -2,7 +2,7 @@ apiVersion: v2
 name: zitadel
 description: Cloud native identity and access management platform
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "v2.59.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
