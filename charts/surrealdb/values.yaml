@@ -97,12 +97,31 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# SurrealDB exposes Prometheus metrics on the main HTTP port at the /metrics path
+# when telemetry is enabled. Enabling this sets SURREAL_TELEMETRY_PROVIDER and
+# points the ServiceMonitor at /metrics on the existing service port.
 metrics:
+  enabled: false
+  # Path the metrics are served at on the HTTP port.
+  path: /metrics
+  # Telemetry provider passed to the server (SURREAL_TELEMETRY_PROVIDER).
+  telemetryProvider: otlp
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for client HTTP connections. When enabled the certificate Secret
+# is mounted read only and --web-crt / --web-key are passed to surreal start.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /tls
+  certFilename: tls.crt
+  keyFilename: tls.key
 
 # Extra environment variables passed to the container.
 extraEnv: []

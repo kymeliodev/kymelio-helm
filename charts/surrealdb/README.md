@@ -38,6 +38,48 @@ empty and reuse the release Secret.
 helm upgrade my-surrealdb kymelio/surrealdb
 ```
 
+## Configuration
+
+### Metrics
+
+SurrealDB exposes Prometheus metrics on the main HTTP port at `/metrics` when
+telemetry is enabled. Enabling metrics sets `SURREAL_TELEMETRY_PROVIDER` and points
+the ServiceMonitor at `/metrics` on the existing service port.
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+```
+
+### Config tuning
+
+SurrealDB is configured through `surreal start` flags. Append any flag through
+`extraArgs`:
+
+```yaml
+extraArgs:
+  - --log
+  - debug
+  - --no-banner
+  - --auth-level
+  - record
+```
+
+### TLS
+
+SurrealDB serves HTTP over TLS when given a certificate and key. Provide a Secret and
+enable `tls`; the chart passes `--web-crt` and `--web-key`:
+
+```sh
+helm install my-surrealdb kymelio/surrealdb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=surrealdb-tls
+```
+
+The Secret is mounted read only at `tls.mountPath`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -60,4 +102,8 @@ helm upgrade my-surrealdb kymelio/surrealdb
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable telemetry and expose /metrics on the HTTP port |
+| metrics.path | string | `/metrics` | Path metrics are served at |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| tls.enabled | bool | `false` | Serve HTTP over TLS using --web-crt and --web-key |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
