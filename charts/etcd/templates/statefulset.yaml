@@ -42,9 +42,14 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.extraArgs }}
+          {{- if or .Values.parameters .Values.extraArgs }}
           args:
+            {{- range $k, $v := .Values.parameters }}
+            - --{{ $k }}={{ $v }}
+            {{- end }}
+            {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           ports:
             - name: {{ .Values.service.ports.client.name }}
@@ -53,10 +58,18 @@ spec:
             - name: {{ .Values.service.ports.peer.name }}
               containerPort: {{ .Values.service.ports.peer.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /health
               port: {{ .Values.service.ports.client.name }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 15
             periodSeconds: 20
             timeoutSeconds: 5
@@ -65,6 +78,9 @@ spec:
             httpGet:
               path: /health
               port: {{ .Values.service.ports.client.name }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5
@@ -74,12 +90,33 @@ spec:
           env:
             - name: ETCD_DATA_DIR
               value: {{ .Values.etcd.dataDir | quote }}
+            {{- if .Values.tls.enabled }}
+            - name: ETCD_LISTEN_CLIENT_URLS
+              value: {{ .Values.etcd.listenClientUrls | replace "http://" "https://" | quote }}
+            - name: ETCD_ADVERTISE_CLIENT_URLS
+              value: {{ .Values.etcd.advertiseClientUrls | replace "http://" "https://" | quote }}
+            - name: ETCD_CERT_FILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: ETCD_KEY_FILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            {{- if .Values.tls.caFilename }}
+            - name: ETCD_CLIENT_CERT_AUTH
+              value: "true"
+            - name: ETCD_TRUSTED_CA_FILE
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.caFilename }}
+            {{- end }}
+            {{- else }}
             - name: ETCD_LISTEN_CLIENT_URLS
               value: {{ .Values.etcd.listenClientUrls | quote }}
             - name: ETCD_ADVERTISE_CLIENT_URLS
               value: {{ .Values.etcd.advertiseClientUrls | quote }}
+            {{- end }}
             - name: ETCD_LISTEN_PEER_URLS
               value: {{ .Values.etcd.listenPeerUrls | quote }}
+            {{- if .Values.metrics.enabled }}
+            - name: ETCD_LISTEN_METRICS_URLS
+              value: "http://0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -90,6 +127,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -115,11 +157,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
