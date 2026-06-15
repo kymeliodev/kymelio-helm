@@ -61,6 +61,54 @@ session and storage encryption secrets are supplied through
 `AUTHELIA_JWT_SECRET`, `AUTHELIA_SESSION_SECRET` and
 `AUTHELIA_STORAGE_ENCRYPTION_KEY`.
 
+### Metrics
+
+Authelia exposes a Prometheus metrics endpoint at `/metrics` on a dedicated port
+(9959), enabled through the `telemetry.metrics` section of its configuration.
+Set `metrics.enabled` to true to inject that section and add the port to the
+container and Service, then enable `metrics.serviceMonitor.enabled` to scrape it
+with the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+```
+
+This renders the following into `configuration.yml`:
+
+```yaml
+telemetry:
+  metrics:
+    enabled: true
+    address: 'tcp://0.0.0.0:9959/metrics'
+```
+
+### TLS
+
+Authelia can terminate TLS on its main listener. Add the certificate and key to
+the `authelia.server.tls` section and mount the files through `extraVolumes` and
+`extraVolumeMounts`:
+
+```yaml
+authelia:
+  server:
+    address: tcp://0.0.0.0:9091
+    tls:
+      certificate: /config/tls/tls.crt
+      key: /config/tls/tls.key
+extraVolumes:
+  - name: tls
+    secret:
+      secretName: authelia-tls
+extraVolumeMounts:
+  - name: tls
+    mountPath: /config/tls
+    readOnly: true
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -83,5 +131,8 @@ session and storage encryption secrets are supplied through
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Enable the telemetry metrics exporter on port 9959 |
+| metrics.port | int | `9959` | Port serving the metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | Metrics path scraped by the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
