@@ -14,6 +14,12 @@ spec:
       {{- include "qdrant.selectorLabels" . | nindent 6 }}
   endpoints:
     - port: {{ .Values.service.http.portName }}
+      path: {{ .Values.metrics.path }}
+      {{- if .Values.tls.enabled }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

@@ -18,6 +18,11 @@ spec:
         {{- if .Values.auth.enabled }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.service.http.port | quote }}
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+        {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -58,7 +63,7 @@ spec:
             - name: {{ .Values.service.grpc.portName }}
               containerPort: {{ .Values.service.grpc.port }}
               protocol: TCP
-          {{- if or .Values.auth.enabled .Values.extraEnv }}
+          {{- if or .Values.auth.enabled .Values.tls.enabled .Values.extraEnv }}
           env:
             {{- if .Values.auth.enabled }}
             - name: QDRANT__SERVICE__API_KEY
@@ -66,6 +71,18 @@ spec:
                 secretKeyRef:
                   name: {{ include "qdrant.secretName" . }}
                   key: {{ .Values.auth.secretKeys.apiKeyKey }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: QDRANT__SERVICE__ENABLE_TLS
+              value: "true"
+            - name: QDRANT__TLS__CERT
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.certFilename | quote }}
+            - name: QDRANT__TLS__KEY
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.keyFilename | quote }}
+            {{- if .Values.tls.caFilename }}
+            - name: QDRANT__TLS__CA_CERT
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.caFilename | quote }}
+            {{- end }}
             {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
@@ -79,6 +96,9 @@ spec:
             httpGet:
               path: /readyz
               port: {{ .Values.service.http.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 15
             periodSeconds: 20
             timeoutSeconds: 5
@@ -87,6 +107,9 @@ spec:
             httpGet:
               path: /readyz
               port: {{ .Values.service.http.portName }}
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5
@@ -102,6 +125,11 @@ spec:
               {{- with .Values.configSubPath }}
               subPath: {{ . }}
               {{- end }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
             {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -121,7 +149,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
@@ -131,6 +159,11 @@ spec:
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "qdrant.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}

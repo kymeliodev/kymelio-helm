@@ -114,12 +114,33 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Qdrant serves Prometheus metrics natively at /metrics on the HTTP port
+# (service.http.port, default 6333). No exporter sidecar is required.
 metrics:
+  # Annotate the pod with Prometheus scrape hints for the built in endpoint.
+  enabled: false
+  # Path of the built in Prometheus endpoint on the HTTP port.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the REST and gRPC APIs. When enabled, the chart sets
+# service.enable_tls and the tls cert and key paths in the Qdrant config and
+# mounts the certificate Secret. Provide a Secret holding the certificate,
+# private key and optional CA certificate.
+tls:
+  enabled: false
+  # Secret containing the certificate, key and optional CA certificate.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Optional CA certificate file name inside the Secret. Leave empty to skip.
+  caFilename: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /qdrant/tls
 
 # Extra environment variables passed to the container.
 extraEnv: []
@@ -134,12 +155,13 @@ extraArgs: []
 extraEnvFrom: []
 
 # Inline application configuration. When set it is rendered into a ConfigMap and
-# mounted at configMountPath. Use this for native config files like an app.conf.
+# mounted at configMountPath. Use this for the native Qdrant config.yaml, which
+# Qdrant reads from /qdrant/config. Values here override the image defaults.
 configuration: ""
 # File name for the rendered configuration inside the mount path.
-configFileName: app.conf
-# Mount path for the configuration.
-configMountPath: /config
+configFileName: config.yaml
+# Mount path for the configuration. Qdrant loads config files from /qdrant/config.
+configMountPath: /qdrant/config
 # Mount the configuration as a single file using subPath. Leave empty to mount
 # the whole ConfigMap as a directory.
 configSubPath: ""
