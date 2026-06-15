@@ -57,4 +57,50 @@ helm upgrade my-questdb kymelio/questdb
 | podSecurityContext | object | runAsNonRoot 10001 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Set QDB_METRICS_ENABLED and publish the metrics port |
+| metrics.port | int | `9003` | Native metrics endpoint port |
+| metrics.path | string | `/metrics` | Metrics endpoint path |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| serverConf | string | `""` | Native server.conf content mounted into the config directory |
+| tls.enabled | bool | `false` | Mount a certificate Secret for server.conf TLS references |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+
+## Configuration
+
+### Metrics
+
+QuestDB exposes a native Prometheus endpoint on port `9003` at `/metrics`, which
+must be enabled with `QDB_METRICS_ENABLED`. Enabling metrics sets that variable
+and publishes the port:
+
+```sh
+helm install my-questdb kymelio/questdb \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Server tuning
+
+Provide native `server.conf` settings through `serverConf`. The content is
+rendered into a ConfigMap and mounted as `server.conf` in the QuestDB config
+directory:
+
+```yaml
+serverConf: |
+  shared.worker.count=4
+  cairo.commit.lag=2000
+```
+
+### TLS
+
+In open source QuestDB, native TLS is configured through `server.conf`
+(`http.tls.enabled`, `http.tls.cert.path`, `http.tls.private.key.path`); full
+TLS termination is an Enterprise feature. Enabling `tls` mounts the certificate
+Secret so it can be referenced from `serverConf`:
+
+```sh
+helm install my-questdb kymelio/questdb \
+  --set tls.enabled=true \
+  --set tls.existingSecret=questdb-tls \
+  --set serverConf=$'http.tls.enabled=true\nhttp.tls.cert.path=/etc/questdb/certs/tls.crt\nhttp.tls.private.key.path=/etc/questdb/certs/tls.key'
+```

@@ -13,5 +13,11 @@ spec:
       protocol: TCP
       name: {{ $name }}
     {{- end }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "questdb.selectorLabels" . | nindent 4 }}
