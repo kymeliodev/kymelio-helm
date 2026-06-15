@@ -2,7 +2,7 @@ apiVersion: v2
 name: couchbase
 description: Couchbase distributed NoSQL document database
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "7.6.2"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

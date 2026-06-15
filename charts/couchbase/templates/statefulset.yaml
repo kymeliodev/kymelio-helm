@@ -54,6 +54,14 @@ spec:
             - name: {{ .Values.service.ports.data.name }}
               containerPort: {{ .Values.service.ports.data.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: admin-tls
+              containerPort: {{ .Values.tls.adminSecurePort }}
+              protocol: TCP
+            - name: data-tls
+              containerPort: {{ .Values.tls.dataSecurePort }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.ports.admin.name }}
@@ -79,6 +87,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -104,11 +117,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

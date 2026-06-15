@@ -101,12 +101,33 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Couchbase Server exposes a native Prometheus endpoint on the admin port at the
+# /metrics path. The endpoint requires authentication, so the ServiceMonitor is
+# wired with basicAuth that references the administrator Secret. No extra container
+# port is needed because metrics share the admin port.
 metrics:
+  enabled: false
+  # Path the metrics are served at on the admin port.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. Couchbase serves the management UI, query and data services over
+# TLS on dedicated secure ports (18091 and 11207 by default). When enabled the
+# certificate Secret is mounted read only for the node to load.
+tls:
+  enabled: false
+  # Secret containing the certificate chain and private key.
+  existingSecret: ""
+  # Mount path for the TLS material inside the container.
+  mountPath: /opt/couchbase/var/lib/couchbase/inbox
+  # Secure admin (management) port.
+  adminSecurePort: 18091
+  # Secure data port.
+  dataSecurePort: 11207
 
 # Extra environment variables passed to the container.
 extraEnv: []

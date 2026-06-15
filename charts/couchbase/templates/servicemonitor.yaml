@@ -14,6 +14,16 @@ spec:
       {{- include "couchbase.selectorLabels" . | nindent 6 }}
   endpoints:
     - port: {{ .Values.service.ports.admin.name }}
+      {{- if .Values.metrics.enabled }}
+      path: {{ .Values.metrics.path }}
+      basicAuth:
+        username:
+          name: {{ include "couchbase.secretName" . }}
+          key: username
+        password:
+          name: {{ include "couchbase.secretName" . }}
+          key: {{ .Values.auth.secretKeys.passwordKey }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

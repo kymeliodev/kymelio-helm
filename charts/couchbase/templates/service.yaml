@@ -13,5 +13,15 @@ spec:
       protocol: TCP
       name: {{ $p.name }}
     {{- end }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.tls.adminSecurePort }}
+      targetPort: admin-tls
+      protocol: TCP
+      name: admin-tls
+    - port: {{ .Values.tls.dataSecurePort }}
+      targetPort: data-tls
+      protocol: TCP
+      name: data-tls
+    {{- end }}
   selector:
     {{- include "couchbase.selectorLabels" . | nindent 4 }}
