@@ -96,12 +96,48 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Elasticsearch has no built in Prometheus endpoint, so this runs a community
+# elasticsearch_exporter sidecar that scrapes the local node over HTTP.
 metrics:
+  enabled: false
+  image:
+    repository: quay.io/prometheuscommunity/elasticsearch-exporter
+    tag: v1.7.0
+    pullPolicy: IfNotPresent
+  # Port the exporter listens on and exposes through the Service.
+  port: 9114
+  # URI the exporter uses to reach the local Elasticsearch node.
+  esUri: http://127.0.0.1:9200
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Native Elasticsearch configuration rendered into elasticsearch.yml and mounted
+# at /usr/share/elasticsearch/config/elasticsearch.yml. Use this for settings such
+# as xpack.security.http.ssl.* to enable HTTP TLS. Leave empty to keep defaults.
+elasticsearchConfig: ""
+
+# HTTP layer TLS. When enabled, the named Secret is mounted and the chart wires
+# the certificate and key into the elasticsearch.yml HTTP SSL settings.
+# Provide a complete elasticsearchConfig with the matching xpack settings, or set
+# the file names here and add the xpack.security.http.ssl block via elasticsearchConfig.
+tls:
+  enabled: false
+  # Secret containing the certificate and private key in PEM format.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Mount path for the certificate Secret inside the container.
+  mountPath: /usr/share/elasticsearch/config/certs
 
 # Extra environment variables appended to the container env. The chart already
 # sets discovery.type, xpack.security.enabled and ES_JAVA_OPTS.

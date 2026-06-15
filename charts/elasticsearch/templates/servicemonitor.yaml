@@ -13,7 +13,8 @@ spec:
     matchLabels:
       {{- include "elasticsearch.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.http.portName }}
+    - port: {{ if .Values.metrics.enabled }}metrics{{ else }}{{ .Values.service.http.portName }}{{ end }}
+      path: /metrics
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}
