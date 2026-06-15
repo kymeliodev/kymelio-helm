@@ -80,6 +80,13 @@ spec:
               mountPath: /mosquitto/config/mosquitto.conf
               subPath: mosquitto.conf
               readOnly: true
+            {{- if or .Values.configuration .Values.existingConfigMap }}
+            - name: extra-config
+              mountPath: {{ .Values.configMountPath }}
+              {{- with .Values.configSubPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -102,6 +109,11 @@ spec:
         - name: config
           configMap:
             name: {{ include "mosquitto.fullname" . }}-config
+        {{- if or .Values.configuration .Values.existingConfigMap }}
+        - name: extra-config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "mosquitto.fullname" . }}-app-config{{ end }}
+        {{- end }}
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
