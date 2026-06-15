@@ -64,3 +64,28 @@ helm upgrade my-mysql kymelio/mysql
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (Prometheus mysqld_exporter sidecar):
+
+```sh
+helm install my-mysql kymelio/mysql --set metrics.enabled=true
+```
+
+Tune the server with a custom configuration mounted into `/etc/mysql/conf.d`:
+
+```yaml
+mysqlConfiguration: |
+  [mysqld]
+  max_connections = 200
+  innodb_buffer_pool_size = 256M
+```
+
+Run SQL on first start (executed once on an empty data directory):
+
+```yaml
+initdbScripts:
+  01-init.sql: |
+    CREATE DATABASE IF NOT EXISTS app;
+```
