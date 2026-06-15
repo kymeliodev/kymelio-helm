@@ -109,11 +109,31 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the MinIO Prometheus metrics endpoint at
+  # /minio/v2/metrics/cluster on the API port. Sets
+  # MINIO_PROMETHEUS_AUTH_TYPE so the endpoint can be scraped without a token.
+  enabled: false
+  # Authentication mode for the metrics endpoint. "public" allows unauthenticated
+  # scraping; "jwt" requires a bearer token.
+  authType: public
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS. MinIO serves HTTPS when a certificate and key are mounted in
+# its certs directory. Provide a Secret containing public.crt and private.key.
+tls:
+  enabled: false
+  # Secret containing the certificate and key files.
+  existingSecret: ""
+  certFilename: public.crt
+  keyFilename: private.key
+
+# Server configuration applied as MINIO_<KEY> environment variables.
+# Example: { MINIO_STORAGE_CLASS_STANDARD: "EC:2", MINIO_API_REQUESTS_MAX: "1600" }
+parameters: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []

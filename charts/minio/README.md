@@ -38,6 +38,47 @@ generated root password is preserved across upgrades when you keep
 helm upgrade my-minio kymelio/minio
 ```
 
+## Configuration
+
+### Metrics
+
+Enable the Prometheus metrics endpoint. MinIO exposes cluster metrics at
+`/minio/v2/metrics/cluster` on the API port. Enabling metrics sets
+`MINIO_PROMETHEUS_AUTH_TYPE=public` so the endpoint can be scraped without a
+bearer token, and `metrics.serviceMonitor.enabled` creates a ServiceMonitor that
+scrapes that path.
+
+```sh
+helm install my-minio kymelio/minio \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### TLS
+
+MinIO serves HTTPS when a certificate and key are mounted in its certs
+directory. Provide a Secret containing the certificate and key, which are
+projected to `public.crt` and `private.key` under `/root/.minio/certs`.
+
+```sh
+kubectl create secret tls minio-tls --cert=public.crt --key=private.key
+
+helm install my-minio kymelio/minio \
+  --set tls.enabled=true \
+  --set tls.existingSecret=minio-tls
+```
+
+### Server parameters
+
+Tune the server with `parameters`, which are passed as `MINIO_<KEY>`
+environment variables.
+
+```yaml
+parameters:
+  MINIO_STORAGE_CLASS_STANDARD: "EC:2"
+  MINIO_API_REQUESTS_MAX: "1600"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -64,4 +105,9 @@ helm upgrade my-minio kymelio/minio
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the Prometheus metrics endpoint and set the auth type |
+| metrics.authType | string | `public` | Metrics endpoint auth mode, public or jwt |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| tls.enabled | bool | `false` | Serve HTTPS from a mounted certificate Secret |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+| parameters | object | `{}` | Server configuration applied as MINIO_ environment variables |

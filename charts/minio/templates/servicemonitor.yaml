@@ -14,6 +14,14 @@ spec:
       {{- include "minio.selectorLabels" . | nindent 6 }}
   endpoints:
     - port: {{ .Values.service.api.portName }}
+      {{- if .Values.metrics.enabled }}
+      path: /minio/v2/metrics/cluster
+      scheme: {{ if .Values.tls.enabled }}https{{ else }}http{{ end }}
+      {{- if .Values.tls.enabled }}
+      tlsConfig:
+        insecureSkipVerify: true
+      {{- end }}
+      {{- end }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}
