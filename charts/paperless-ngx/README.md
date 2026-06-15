@@ -94,5 +94,74 @@ helm upgrade my-paperless kymelio/paperless-ngx
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Scrape an external Paperless exporter sidecar instead of the app port |
+| metrics.port | int | `8081` | Container port the exporter sidecar listens on |
+| metrics.path | string | `/metrics` | Path the exporter serves metrics on |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels for the ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the container |
+
+## Configuration
+
+Paperless-ngx is configured entirely through `PAPERLESS_*` environment
+variables. The chart wires the URL, secret key, Redis connection and data path,
+and exposes `extraEnv` for the rest, such as OCR language, consumer behaviour and
+mail settings.
+
+```yaml
+paperless:
+  url: https://paperless.example.com
+extraEnv:
+  - name: PAPERLESS_OCR_LANGUAGE
+    value: eng+deu
+  - name: PAPERLESS_TIME_ZONE
+    value: Europe/Zurich
+  - name: PAPERLESS_CONSUMER_POLLING
+    value: "30"
+  - name: PAPERLESS_TASK_WORKERS
+    value: "2"
+```
+
+### Metrics
+
+Paperless-ngx does not expose a native Prometheus endpoint. To collect metrics,
+run the community exporter
+[prometheus-paperless-exporter](https://github.com/hansmi/prometheus-paperless-exporter),
+which queries the Paperless REST API with an API token and serves `/metrics` on
+its own port (default `8081`). Add it as a sidecar through the `sidecars` value
+so it runs in the same pod:
+
+```yaml
+sidecars:
+  - name: paperless-exporter
+    image: ghcr.io/hansmi/prometheus-paperless-exporter:latest
+    args:
+      - -paperless.url=http://127.0.0.1:8000
+    env:
+      - name: PAPERLESS_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: paperless-exporter-token
+            key: token
+    ports:
+      - name: metrics
+        containerPort: 8081
+metrics:
+  enabled: true
+  port: 8081
+  serviceMonitor:
+    enabled: true
+```
+
+With `metrics.enabled` set, the ServiceMonitor scrapes `metrics.port` on the pod
+at `metrics.path` rather than the application port. The Paperless container
+itself serves no metrics, so the ServiceMonitor produces no data without the
+exporter sidecar. The ServiceMonitor requires the Prometheus Operator CRDs.
+
+### Ingress and TLS
+
+Paperless-ngx serves plain HTTP on port `8000`. Terminate TLS at an ingress
+controller or reverse proxy and set `paperless.url` to the external HTTPS URL
+rather than configuring TLS on the application.

@@ -13,7 +13,14 @@ spec:
     matchLabels:
       {{- include "paperless-ngx.selectorLabels" . | nindent 6 }}
   endpoints:
+    {{- if .Values.metrics.enabled }}
+    - targetPort: {{ .Values.metrics.port }}
+      path: {{ .Values.metrics.path }}
+      interval: {{ .Values.metrics.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+    {{- else }}
     - port: {{ .Values.service.portName }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+    {{- end }}
 {{- end }}
