@@ -114,7 +114,15 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Backstage serves Prometheus metrics on the http port at /metrics, but only
+# when a metrics backend is wired into the backend. Install and register a
+# metrics plugin (for example express-prom-bundle with prom-client, or the
+# OpenTelemetry Prometheus exporter) before enabling this. The endpoint shares
+# the existing http port, so no extra container or Service port is added.
 metrics:
+  enabled: false
+  # Path the metrics endpoint is served on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
