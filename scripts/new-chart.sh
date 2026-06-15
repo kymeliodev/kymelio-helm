@@ -218,6 +218,22 @@ affinity: {}
 # Image used by the helm test connection check.
 tests:
   image: busybox:1.36
+
+# OpenShift Route exposing the service externally. Disabled by default.
+route:
+  enabled: false
+  host: ""
+  # Target service port name or number. Leave empty for single port services.
+  port: ""
+  annotations: {}
+  # TLS configuration, for example { termination: edge }.
+  tls: {}
+  wildcardPolicy: None
+
+# OpenShift compatibility. When enabled, the explicit runAsUser, runAsGroup and
+# fsGroup are omitted so the restricted SCC assigns them from the namespace range.
+openShift:
+  enabled: false
 EOF
 
 if [ "$WORKLOAD" = "statefulset" ]; then
@@ -353,7 +369,11 @@ read -r -d '' POD_SPEC <<'TPL' || true
       priorityClassName: {{ . }}
       {{- end }}
       securityContext:
+        {{- if .Values.openShift.enabled }}
+        {{- omit .Values.podSecurityContext "runAsUser" "runAsGroup" "fsGroup" | toYaml | nindent 8 }}
+        {{- else }}
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- with .Values.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
@@ -750,6 +770,38 @@ spec:
 {{- end }}
 TPL
 
+cat > "${CHART_DIR}/templates/route.yaml" <<'TPL'
+{{- if .Values.route.enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "__NAME__.fullname" . }}
+  labels:
+    {{- include "__NAME__.labels" . | nindent 4 }}
+  {{- with .Values.route.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.route.host }}
+  host: {{ . }}
+  {{- end }}
+  to:
+    kind: Service
+    name: {{ include "__NAME__.fullname" . }}
+    weight: 100
+  {{- with .Values.route.port }}
+  port:
+    targetPort: {{ . }}
+  {{- end }}
+  {{- with .Values.route.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  wildcardPolicy: {{ .Values.route.wildcardPolicy }}
+{{- end }}
+TPL
+
 cat > "${CHART_DIR}/templates/NOTES.txt" <<'TPL'
 {{ .Chart.Name }} has been installed.
 
@@ -783,7 +835,9 @@ spec:
   restartPolicy: Never
   securityContext:
     runAsNonRoot: true
+    {{- if not .Values.openShift.enabled }}
     runAsUser: 65534
+    {{- end }}
     seccompProfile:
       type: RuntimeDefault
   containers:
