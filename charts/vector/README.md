@@ -56,7 +56,89 @@ helm upgrade my-vector kymelio/vector --reuse-values
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
-| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.enabled | bool | `false` | Publish a dedicated metrics Service port for the prometheus_exporter sink |
+| metrics.port | int | `9598` | Port published on the Service and container for the metrics endpoint |
+| metrics.path | string | `/metrics` | HTTP path served by the prometheus_exporter sink |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor (requires metrics.enabled) |
+| metrics.serviceMonitor.interval | string | `30s` | Scrape interval for the ServiceMonitor |
+| metrics.serviceMonitor.scrapeTimeout | string | `10s` | Scrape timeout for the ServiceMonitor |
+| metrics.serviceMonitor.labels | object | `{}` | Extra labels added to the ServiceMonitor |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
+
+## Configuration
+
+### Prometheus metrics
+
+Vector publishes its internal metrics through a `prometheus_exporter` sink. The
+sink is not part of the default pipeline, so enabling metrics requires two
+changes: set `metrics.enabled` to publish the `metrics` Service and container
+port (`9598`), and add an `internal_metrics` source feeding a
+`prometheus_exporter` sink that listens on `0.0.0.0:9598` in the Vector config:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+
+config:
+  vector.yaml: |
+    api:
+      enabled: true
+      address: 0.0.0.0:8686
+    sources:
+      demo:
+        type: demo_logs
+        format: json
+        interval: 1.0
+      internal:
+        type: internal_metrics
+    sinks:
+      console:
+        type: console
+        inputs:
+          - demo
+        encoding:
+          codec: json
+      prometheus:
+        type: prometheus_exporter
+        inputs:
+          - internal
+        address: 0.0.0.0:9598
+```
+
+The `prometheus_exporter` sink serves metrics at `/metrics`. If you do not run
+the Prometheus Operator, leave `serviceMonitor.enabled` at `false` and scrape
+the Service directly:
+
+```
+release-name-vector.<namespace>.svc.cluster.local:9598/metrics
+```
+
+### Pipeline tuning
+
+The Vector pipeline is defined in `config.vector.yaml`, rendered into a
+ConfigMap and mounted at `configMountPath`. Replace it to wire your own sources,
+transforms and sinks. For example, to ship logs to an Elasticsearch cluster:
+
+```yaml
+config:
+  vector.yaml: |
+    sources:
+      app:
+        type: kubernetes_logs
+    sinks:
+      es:
+        type: elasticsearch
+        inputs:
+          - app
+        endpoints:
+          - http://elasticsearch.logging.svc:9200
+        mode: bulk
+```

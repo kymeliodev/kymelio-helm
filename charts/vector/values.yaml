@@ -99,6 +99,14 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port for Vector's internal metrics. The
+  # Vector config must contain a prometheus_exporter sink that listens on
+  # metrics.port and serves metrics at metrics.path (see the chart README).
+  enabled: false
+  # Port published on the Service and the container for the metrics endpoint.
+  port: 9598
+  # HTTP path where the prometheus_exporter sink exposes metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
