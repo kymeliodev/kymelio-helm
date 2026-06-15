@@ -2,7 +2,7 @@ apiVersion: v2
 name: vector
 description: High performance observability data pipeline for logs and metrics
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "0.40.0-debian"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
