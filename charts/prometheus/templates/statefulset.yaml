@@ -76,12 +76,29 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus/prometheus.yml
               subPath: prometheus.yml
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if or .Values.configuration .Values.existingConfigMap }}
+            - name: extra-config
+              mountPath: {{ .Values.configMountPath }}
+              {{- with .Values.configSubPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+        {{- with .Values.sidecars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -98,9 +115,17 @@ spec:
         - name: config
           configMap:
             name: {{ include "prometheus.fullname" . }}
+        {{- if or .Values.configuration .Values.existingConfigMap }}
+        - name: extra-config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "prometheus.fullname" . }}-config{{ end }}
+        {{- end }}
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
