@@ -55,6 +55,11 @@ spec:
             - name: {{ .Values.service.pulsar.portName }}
               containerPort: {{ .Values.service.pulsar.port }}
               protocol: TCP
+            {{- if .Values.tls.enabled }}
+            - name: {{ .Values.tls.tlsPortName }}
+              containerPort: {{ .Values.tls.tlsPort }}
+              protocol: TCP
+            {{- end }}
             - name: {{ .Values.service.http.portName }}
               containerPort: {{ .Values.service.http.port }}
               protocol: TCP
@@ -72,9 +77,29 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.extraEnv }}
+          {{- if or .Values.pulsarConf .Values.tls.enabled .Values.extraEnv }}
           env:
+            {{- range $key, $value := .Values.pulsarConf }}
+            - name: PULSAR_PREFIX_{{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: PULSAR_PREFIX_tlsEnabled
+              value: "true"
+            - name: PULSAR_PREFIX_brokerServicePortTls
+              value: {{ .Values.tls.tlsPort | quote }}
+            - name: PULSAR_PREFIX_tlsCertificateFilePath
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.certFilename | quote }}
+            - name: PULSAR_PREFIX_tlsKeyFilePath
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.keyFilename | quote }}
+            - name: PULSAR_PREFIX_tlsTrustCertsFilePath
+              value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.caFilename | quote }}
+            - name: PULSAR_PREFIX_tlsRequireTrustedClientCertOnConnect
+              value: {{ .Values.tls.requireTrustedClientCertOnConnect | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
@@ -89,6 +114,11 @@ spec:
               {{- with .Values.configSubPath }}
               subPath: {{ . }}
               {{- end }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
             {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -108,7 +138,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.tls.enabled .Values.extraVolumes }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
@@ -118,6 +148,11 @@ spec:
         - name: config
           configMap:
             name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "pulsar.fullname" . }}-config{{ end }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}

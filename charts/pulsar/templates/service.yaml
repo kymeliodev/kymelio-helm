@@ -11,6 +11,12 @@ spec:
       targetPort: {{ .Values.service.pulsar.portName }}
       protocol: TCP
       name: {{ .Values.service.pulsar.portName }}
+    {{- if .Values.tls.enabled }}
+    - port: {{ .Values.tls.tlsPort }}
+      targetPort: {{ .Values.tls.tlsPortName }}
+      protocol: TCP
+      name: {{ .Values.tls.tlsPortName }}
+    {{- end }}
     - port: {{ .Values.service.http.port }}
       targetPort: {{ .Values.service.http.portName }}
       protocol: TCP

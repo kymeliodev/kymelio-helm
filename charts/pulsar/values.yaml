@@ -46,7 +46,8 @@ securityContext:
       - ALL
 
 # Service exposing the broker. The pulsar binary protocol and the HTTP admin
-# and REST API are published.
+# and REST API are published. Pulsar serves Prometheus metrics on the http port,
+# so no extra service port is required when metrics are enabled.
 service:
   type: ClusterIP
   pulsar:
@@ -95,12 +96,44 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Apache Pulsar exposes broker metrics in Prometheus text format on the web
+# service port (8080) under /metrics. No exporter sidecar is required; enabling
+# metrics simply wires the ServiceMonitor to the http port and path.
 metrics:
+  enabled: false
+  # Path the Pulsar web service serves metrics on.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+
+# Server side TLS for the broker and web service. Pulsar enables TLS through its
+# native broker configuration (tlsEnabled and the tls* keys in broker.conf,
+# applied here via PULSAR_PREFIX_ environment variables). When enabled this chart
+# mounts the certificate Secret and sets the matching broker settings so the
+# binary protocol serves pulsar+ssl on tlsPort.
+tls:
+  enabled: false
+  # Secret containing ca.crt, tls.crt and tls.key.
+  existingSecret: ""
+  caFilename: ca.crt
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Directory the certificate files are mounted into.
+  mountPath: /pulsar/certs
+  # Require and verify client certificates (mutual TLS).
+  requireTrustedClientCertOnConnect: false
+  # TLS protocol port published when TLS is enabled.
+  tlsPort: 6651
+  tlsPortName: pulsar-ssl
+
+# Native Pulsar configuration applied to the standalone broker. Each key/value
+# pair is passed as a PULSAR_PREFIX_<key> environment variable, which the image
+# entrypoint writes into the broker configuration before start. Use this for
+# broker tuning, for example { maxMessageSize: "10485760", numIOThreads: "8" }.
+pulsarConf: {}
 
 # Extra environment variables passed to the container.
 extraEnv: []
