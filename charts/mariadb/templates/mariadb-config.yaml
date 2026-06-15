@@ -1,0 +1,11 @@
+{{- if .Values.mariadbConfiguration }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mariadb.fullname" . }}-mariadb-config
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+data:
+  custom.cnf: |
+    {{- .Values.mariadbConfiguration | nindent 4 }}
+{{- end }}
