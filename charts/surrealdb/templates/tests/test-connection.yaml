@@ -11,7 +11,9 @@ spec:
   restartPolicy: Never
   securityContext:
     runAsNonRoot: true
+    {{- if not .Values.openShift.enabled }}
     runAsUser: 1000
+    {{- end }}
     seccompProfile:
       type: RuntimeDefault
   containers:
