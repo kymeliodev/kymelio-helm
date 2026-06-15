@@ -47,6 +47,49 @@ transport port is used for node to node communication.
 | http | 9200 | REST API |
 | transport | 9300 | Node to node transport |
 
+## Configuration
+
+### Metrics
+
+OpenSearch exposes no Prometheus HTTP endpoint in this single-node configuration.
+Setting `metrics.enabled=true` runs a community `elasticsearch_exporter` sidecar,
+which is compatible with OpenSearch, on port 9114 at `/metrics`. The exporter port
+is added to the Service and the ServiceMonitor switches to it when both flags are on.
+
+```sh
+helm install my-opensearch kymelio/opensearch \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Native configuration
+
+Use `opensearchConfig` to supply an `opensearch.yml`, mounted over the image
+default, alongside the generic `configuration` surface.
+
+```yaml
+opensearchConfig: |
+  cluster.name: search-cluster
+  bootstrap.memory_lock: true
+```
+
+### TLS
+
+OpenSearch HTTP TLS is provided by the security plugin and configured through
+`plugins.security.ssl.http.*` in `opensearch.yml`. Set `tls.enabled=true` to mount
+a certificate Secret, then enable the security plugin and reference the files from
+`opensearchConfig`.
+
+```yaml
+tls:
+  enabled: true
+  existingSecret: opensearch-http-tls
+opensearchConfig: |
+  plugins.security.ssl.http.enabled: true
+  plugins.security.ssl.http.pemcert_filepath: certs/tls.crt
+  plugins.security.ssl.http.pemkey_filepath: certs/tls.key
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -70,4 +113,14 @@ transport port is used for node to node communication.
 | extraEnv | list | `[]` | Extra environment variables appended to the container |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Run an elasticsearch_exporter sidecar exposing metrics |
+| metrics.image.repository | string | `quay.io/prometheuscommunity/elasticsearch-exporter` | Exporter image repository |
+| metrics.image.tag | string | `v1.7.0` | Exporter image tag |
+| metrics.port | int | `9114` | Exporter listen and Service port |
+| metrics.esUri | string | `http://127.0.0.1:9200` | URI the exporter scrapes |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| opensearchConfig | string | `""` | Native opensearch.yml contents, mounted over the default |
+| tls.enabled | bool | `false` | Mount a certificate Secret for HTTP TLS |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
+| tls.certFilename | string | `tls.crt` | Certificate file name in the Secret |
+| tls.keyFilename | string | `tls.key` | Private key file name in the Secret |
