@@ -2,7 +2,7 @@ apiVersion: v2
 name: openbao
 description: OpenBao secrets management and data protection server
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "2.0.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
