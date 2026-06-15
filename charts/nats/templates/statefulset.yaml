@@ -44,14 +44,20 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.extraArgs }}
+          {{- if or .Values.extraArgs .Values.tls.enabled .Values.natsConf }}
           args:
             - "-js"
             - "-sd"
             - "/data"
             - "-m"
             - "8222"
-            {{- toYaml .Values.extraArgs | nindent 12 }}
+            {{- if or .Values.tls.enabled .Values.natsConf }}
+            - "-c"
+            - "/etc/nats/nats-server.conf"
+            {{- end }}
+            {{- with .Values.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- else }}
           args: ["-js", "-sd", "/data", "-m", "8222"]
           {{- end }}
@@ -87,6 +93,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if or .Values.tls.enabled .Values.natsConf }}
+            - name: server-conf
+              mountPath: /etc/nats/nats-server.conf
+              subPath: nats-server.conf
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -97,6 +113,24 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          args:
+            {{- toYaml .Values.metrics.collectors | nindent 12 }}
+            - "-port"
+            - {{ .Values.service.metrics.port | quote }}
+            - "http://127.0.0.1:{{ .Values.service.http.port }}"
+          ports:
+            - name: {{ .Values.service.metrics.portName }}
+              containerPort: {{ .Values.service.metrics.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- with .Values.sidecars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -112,11 +146,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled .Values.natsConf }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if or .Values.tls.enabled .Values.natsConf }}
+        - name: server-conf
+          configMap:
+            name: {{ include "nats.fullname" . }}-server-conf
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config

@@ -13,7 +13,8 @@ spec:
     matchLabels:
       {{- include "nats.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: {{ .Values.service.http.portName }}
+    - port: {{ .Values.service.metrics.portName }}
+      path: {{ .Values.metrics.path }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
 {{- end }}

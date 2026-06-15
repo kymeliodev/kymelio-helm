@@ -1,0 +1,21 @@
+{{- if or .Values.tls.enabled .Values.natsConf -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nats.fullname" . }}-server-conf
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+data:
+  nats-server.conf: |
+    {{- range $k, $v := .Values.natsConf }}
+    {{ $k }}: {{ $v }}
+    {{- end }}
+    {{- if .Values.tls.enabled }}
+    tls {
+      cert_file: "{{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}"
+      key_file: "{{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}"
+      ca_file: "{{ .Values.tls.mountPath }}/{{ .Values.tls.caFilename }}"
+      verify: {{ .Values.tls.verify }}
+    }
+    {{- end }}
+{{- end }}
