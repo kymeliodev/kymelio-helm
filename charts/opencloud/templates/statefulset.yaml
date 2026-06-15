@@ -53,11 +53,20 @@ spec:
             - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: OC_INSECURE
               value: {{ .Values.insecure | quote }}
             - name: PROXY_HTTP_ADDR
               value: "0.0.0.0:{{ .Values.service.port }}"
+            {{- if .Values.metrics.enabled }}
+            - name: PROXY_DEBUG_ADDR
+              value: "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
             - name: OC_URL
               value: "https://{{ (index .Values.ingress.hosts 0).host }}"
             - name: IDM_ADMIN_PASSWORD

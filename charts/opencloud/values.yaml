@@ -106,7 +106,17 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# OpenCloud (oCIS) exposes Prometheus metrics on a debug endpoint that defaults
+# to 127.0.0.1:9205 and is therefore not reachable from outside the pod. When
+# enabled the chart binds the proxy debug endpoint to 0.0.0.0 via
+# PROXY_DEBUG_ADDR, publishes it as the named metrics port and scrapes it at
+# metrics.path. See the README.
 metrics:
+  enabled: false
+  # Container port the debug/metrics endpoint binds to when enabled.
+  port: 9205
+  # HTTP path of the Prometheus metrics endpoint on the debug port.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
