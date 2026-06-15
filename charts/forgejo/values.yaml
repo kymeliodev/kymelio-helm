@@ -111,11 +111,19 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Expose the built in Prometheus endpoint on the HTTP port at /metrics. This
+  # sets FORGEJO__metrics__ENABLED=true so Forgejo serves /metrics itself.
+  enabled: false
+  # Restrict /metrics to clients presenting this bearer token. Empty leaves the
+  # endpoint open to anyone able to reach the HTTP port.
+  token: ""
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
     labels: {}
+    # Path scraped by Prometheus. Forgejo serves metrics at /metrics.
+    path: /metrics
 
 # Extra environment variables passed to the container. The defaults configure
 # the embedded SQLite database and the public domain. Override the database

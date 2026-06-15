@@ -81,3 +81,75 @@ helm upgrade my-forgejo kymelio/forgejo --reuse-values
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsNonRoot, uid 1000 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
+| metrics.enabled | bool | `false` | Enable the built in Prometheus endpoint on the HTTP port |
+| metrics.token | string | `""` | Bearer token required to scrape /metrics |
+| metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | Path scraped by Prometheus |
+
+## Configuration
+
+### Metrics
+
+Forgejo exposes a built in Prometheus endpoint at `/metrics` on the HTTP port
+(`3000`). Set `metrics.enabled=true` to inject `FORGEJO__metrics__ENABLED=true`
+and let Forgejo serve the endpoint. Enable the ServiceMonitor to have Prometheus
+scrape it:
+
+```sh
+helm install my-forgejo kymelio/forgejo \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+Restrict the endpoint to authorized scrapers by setting a token, which renders
+`FORGEJO__metrics__TOKEN`:
+
+```sh
+helm install my-forgejo kymelio/forgejo \
+  --set metrics.enabled=true \
+  --set metrics.token=changeme
+```
+
+### Native configuration
+
+Forgejo reads its configuration from `FORGEJO__<section>__<KEY>` environment
+variables. Tune any section through `extraEnv`, for example to use an external
+PostgreSQL server and set the public domain:
+
+```yaml
+extraEnv:
+  - name: FORGEJO__database__DB_TYPE
+    value: postgres
+  - name: FORGEJO__database__HOST
+    value: postgres.db.svc:5432
+  - name: FORGEJO__database__NAME
+    value: forgejo
+  - name: FORGEJO__server__DOMAIN
+    value: git.example.com
+  - name: FORGEJO__server__ROOT_URL
+    value: https://git.example.com/
+```
+
+The generic `configuration` surface remains available to mount an inline
+`app.ini` through a ConfigMap when you prefer a file over environment variables.
+
+### TLS
+
+Forgejo is normally fronted by an Ingress or a reverse proxy that terminates
+TLS, so the chart does not serve TLS from the container. Enable `ingress` and
+attach a certificate Secret there:
+
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: git.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: forgejo-tls
+      hosts:
+        - git.example.com
+```
