@@ -71,6 +71,10 @@ spec:
               value: sqlite
             - name: N8N_USER_FOLDER
               value: {{ .Values.persistence.mountPath }}
+            {{- if .Values.metrics.enabled }}
+            - name: N8N_METRICS
+              value: "true"
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
