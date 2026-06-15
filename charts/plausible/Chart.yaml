@@ -2,7 +2,7 @@ apiVersion: v2
 name: plausible
 description: Privacy friendly web analytics backed by PostgreSQL and ClickHouse
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "v2.1.4"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
