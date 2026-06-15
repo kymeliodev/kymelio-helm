@@ -90,6 +90,14 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Enable the built in Mattermost performance monitoring endpoint. This sets
+  # MM_METRICSSETTINGS_ENABLE=true and exposes Prometheus metrics on a dedicated
+  # metrics port. Scraping /metrics over HTTP requires a Mattermost Enterprise
+  # license; the Team Edition image shipped here exposes the listener but the
+  # endpoint stays gated by the license.
+  enabled: false
+  # Container and Service port for the metrics listener (MM_METRICSSETTINGS_LISTENADDRESS).
+  port: 8067
   serviceMonitor:
     enabled: false
     interval: 30s

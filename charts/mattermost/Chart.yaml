@@ -2,7 +2,7 @@ apiVersion: v2
 name: mattermost
 description: Mattermost self hosted team collaboration and messaging
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "9.10"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
