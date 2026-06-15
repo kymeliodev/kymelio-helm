@@ -75,9 +75,19 @@ spec:
             failureThreshold: 6
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.extraEnv }}
+          {{- if or .Values.extraEnv .Values.metrics.enabled }}
           env:
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: GITEA__metrics__ENABLED
+              value: "true"
+            {{- with .Values.metrics.token }}
+            - name: GITEA__metrics__TOKEN
+              value: {{ . | quote }}
+            {{- end }}
+            {{- end }}
           {{- end }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
