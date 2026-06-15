@@ -62,7 +62,7 @@ spec:
               command:
                 - sh
                 - -c
-                - exec mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+                - exec mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
             initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 5
@@ -72,7 +72,7 @@ spec:
               command:
                 - sh
                 - -c
-                - exec mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+                - exec mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
             initialDelaySeconds: 30
             periodSeconds: 20
             timeoutSeconds: 5
@@ -82,7 +82,7 @@ spec:
               command:
                 - sh
                 - -c
-                - exec mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+                - exec mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5
