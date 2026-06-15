@@ -11,7 +11,7 @@ spec:
   restartPolicy: Never
   securityContext:
     runAsNonRoot: true
-    runAsUser: 999
+    runAsUser: 65534
     seccompProfile:
       type: RuntimeDefault
   containers:
@@ -23,18 +23,10 @@ spec:
         capabilities:
           drop:
             - ALL
-      env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: {{ .Values.auth.username | quote }}
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "mongodb.secretName" . }}
-              key: {{ .Values.auth.secretKeys.passwordKey }}
       command:
         - sh
         - -c
-        - exec mongosh --host {{ include "mongodb.fullname" . }} --quiet --eval "db.adminCommand('ping').ok" -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin
+        - nc -z -w5 {{ include "mongodb.fullname" . }} {{ .Values.service.port }}
       resources:
         requests:
           cpu: 10m
