@@ -2,7 +2,7 @@ apiVersion: v2
 name: seaweedfs
 description: SeaweedFS distributed object and file storage running master, volume and filer in one server.
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "3.71"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
