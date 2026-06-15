@@ -48,6 +48,9 @@ spec:
             - server
             - --listen
             - 0.0.0.0:{{ .Values.service.port }}
+            {{- if .Values.metrics.enabled }}
+            - --metrics
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
