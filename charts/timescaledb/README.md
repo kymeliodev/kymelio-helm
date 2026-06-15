@@ -62,3 +62,34 @@ helm upgrade my-timescaledb kymelio/timescaledb
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+
+## Configuration examples
+
+Enable the metrics exporter (Prometheus postgres_exporter sidecar):
+
+```sh
+helm install my-timescaledb kymelio/timescaledb --set metrics.enabled=true
+```
+
+Tune PostgreSQL parameters (applied with -c on startup):
+
+```yaml
+parameters:
+  max_connections: "200"
+  shared_buffers: "256MB"
+```
+
+Enable TLS using a Secret that holds tls.crt and tls.key:
+
+```sh
+helm install my-timescaledb kymelio/timescaledb \
+  --set tls.enabled=true --set tls.existingSecret=timescaledb-tls
+```
+
+Run SQL on first start:
+
+```yaml
+initdbScripts:
+  01-init.sql: |
+    CREATE EXTENSION IF NOT EXISTS timescaledb;
+```
