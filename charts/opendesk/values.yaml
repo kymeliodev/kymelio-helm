@@ -90,7 +90,14 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# openDesk is a suite of independent services, each with its own monitoring. This
+# chart only deploys an nginx portal placeholder, which has no Prometheus
+# endpoint. Setting metrics.enabled is a marker only. Enabling serviceMonitor
+# creates a ServiceMonitor scraping the HTTP service port, which is useful once
+# you replace the placeholder with a component that exposes metrics on that port.
+# See the README.
 metrics:
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
