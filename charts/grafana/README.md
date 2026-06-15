@@ -40,6 +40,47 @@ When `auth.adminPassword` is empty a random password is generated on first insta
 kubectl get secret my-grafana -o jsonpath="{.data.admin-password}" | base64 -d
 ```
 
+## Configuration
+
+Grafana settings are provided through environment variables (`extraEnv`) or a native `grafana.ini` mounted through `configuration`. The chart renders `configuration` into a ConfigMap and mounts it at `configMountPath`; a change to it updates a checksum annotation on the pod so it is rolled automatically.
+
+```yaml
+configuration: |
+  [auth.anonymous]
+  enabled = true
+  org_role = Viewer
+configFileName: grafana.ini
+configMountPath: /etc/grafana
+configSubPath: grafana.ini
+```
+
+### Monitoring
+
+Grafana exposes its own Prometheus metrics at `/metrics` on the HTTP port (`service.port`, default 3000). Set `metrics.enabled` to advertise the endpoint and create a ServiceMonitor for the Prometheus Operator:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### TLS
+
+Grafana can serve HTTPS on its own HTTP server. Provide a Secret holding the certificate and key, then enable `tls`. The chart sets `GF_SERVER_PROTOCOL=https` and points Grafana at the mounted files:
+
+```yaml
+tls:
+  enabled: true
+  existingSecret: grafana-tls
+  certFilename: tls.crt
+  keyFilename: tls.key
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -58,7 +99,11 @@ kubectl get secret my-grafana -o jsonpath="{.data.admin-password}" | base64 -d
 | persistence.mountPath | string | `/var/lib/grafana` | Data directory mount path |
 | ingress.enabled | bool | `false` | Enable an Ingress resource |
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
+| metrics.enabled | bool | `false` | Advertise the built in /metrics endpoint on the HTTP port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| metrics.serviceMonitor.path | string | `/metrics` | HTTP path scraped by the ServiceMonitor |
+| tls.enabled | bool | `false` | Serve HTTPS from Grafana's own HTTP server |
+| tls.existingSecret | string | `""` | Secret holding the certificate and key |
 | resources | object | requests and limits | Container resource requests and limits |
 | podSecurityContext | object | runAsUser 472 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
