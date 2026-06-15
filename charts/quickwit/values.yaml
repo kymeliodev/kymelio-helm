@@ -95,12 +95,35 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Quickwit exposes a built in Prometheus endpoint at /metrics on the REST port.
+# The endpoint is always served by the node; this flag only switches the
+# ServiceMonitor scrape onto the /metrics path.
 metrics:
+  enabled: false
   serviceMonitor:
     enabled: false
     interval: 30s
     scrapeTimeout: 10s
+    # Path the built in endpoint is served on.
+    path: /metrics
     labels: {}
+
+# Native Quickwit node configuration rendered into quickwit.yaml and wired through
+# the QW_CONFIG environment variable. Use this for the REST, storage and indexing
+# sections. Leave empty to keep the image defaults.
+quickwitConfig: ""
+
+# TLS for the REST API. Quickwit does not terminate TLS on its REST endpoint, so
+# front it with an ingress or proxy that does. When enabled, the named Secret is
+# mounted so a sidecar proxy or quickwitConfig referencing the files can use it.
+tls:
+  enabled: false
+  # Secret containing the certificate and private key in PEM format.
+  existingSecret: ""
+  certFilename: tls.crt
+  keyFilename: tls.key
+  # Mount path for the certificate Secret inside the container.
+  mountPath: /quickwit/certs
 
 # Extra environment variables passed to the container.
 extraEnv: []

@@ -2,7 +2,7 @@ apiVersion: v2
 name: quickwit
 description: Quickwit search engine for logs and traces
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v0.8.2"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
