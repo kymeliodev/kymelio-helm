@@ -2,7 +2,7 @@ apiVersion: v2
 name: gitlab
 description: All in one GitLab Community Edition DevOps platform
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "17.2.1-ce.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
