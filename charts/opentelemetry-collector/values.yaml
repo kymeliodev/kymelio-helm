@@ -118,6 +118,15 @@ networkPolicy:
 
 # Prometheus integration. Disabled by default.
 metrics:
+  # Publish a dedicated metrics Service port for the collector's own internal
+  # telemetry endpoint, served at metrics.path. The collector config must expose
+  # the Prometheus reader on metrics.port, bound to 0.0.0.0, under
+  # service.telemetry.metrics (see the chart README).
+  enabled: false
+  # Port published on the Service and the container for the metrics endpoint.
+  port: 8888
+  # HTTP path where the collector exposes its internal Prometheus metrics.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s

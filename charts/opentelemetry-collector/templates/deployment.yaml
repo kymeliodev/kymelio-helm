@@ -67,6 +67,11 @@ spec:
               containerPort: {{ .containerPort }}
               protocol: TCP
             {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
