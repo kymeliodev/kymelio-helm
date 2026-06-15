@@ -56,6 +56,39 @@ The controller is started with `--cluster-resource-namespace=$(POD_NAMESPACE)`
 and `--leader-election-namespace=kube-system`. `POD_NAMESPACE` is provided from
 the pod metadata through the downward API.
 
+## Configuration
+
+### Metrics
+
+The cert-manager controller serves Prometheus metrics on container port `9402`
+at `/metrics`. Set `metrics.enabled=true` to publish a dedicated `metrics` port
+on the Service, and `metrics.serviceMonitor.enabled=true` to create a
+ServiceMonitor for the Prometheus Operator.
+
+```yaml
+metrics:
+  enabled: true
+  port: 9402
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+```
+
+### Controller flags
+
+Controller behaviour is tuned with command line flags. The default flags are set
+in `args`. Append additional flags with `extraArgs`, for example to raise the log
+verbosity or set the DNS recursive nameservers:
+
+```yaml
+extraArgs:
+  - --dns01-recursive-nameservers=1.1.1.1:53
+  - --dns01-recursive-nameservers-only
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -75,5 +108,7 @@ the pod metadata through the downward API.
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Publish a dedicated metrics port on the Service |
+| metrics.port | int | `9402` | Service port for the metrics endpoint |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
 | extraEnv | list | `[]` | Extra environment variables passed to the controller |
