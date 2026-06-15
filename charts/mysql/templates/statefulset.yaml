@@ -57,6 +57,16 @@ spec:
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - exec mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
           livenessProbe:
             exec:
               command:
