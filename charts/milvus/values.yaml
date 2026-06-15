@@ -104,7 +104,13 @@ networkPolicy:
   ingress: []
 
 # Prometheus integration. Disabled by default.
+# Milvus exposes Prometheus metrics natively at /metrics on the HTTP port
+# (service.http.port, default 9091). No exporter sidecar is required.
 metrics:
+  # Annotate the pod with Prometheus scrape hints for the built in endpoint.
+  enabled: false
+  # Path of the built in Prometheus endpoint on the HTTP port.
+  path: /metrics
   serviceMonitor:
     enabled: false
     interval: 30s
@@ -124,15 +130,17 @@ extraArgs: []
 extraEnvFrom: []
 
 # Inline application configuration. When set it is rendered into a ConfigMap and
-# mounted at configMountPath. Use this for native config files like an app.conf.
+# mounted as a single file at configMountPath/configSubPath. Use this for the
+# native milvus.yaml. Milvus reads user.yaml from /milvus/configs to override
+# the packaged defaults without replacing the whole file.
 configuration: ""
 # File name for the rendered configuration inside the mount path.
-configFileName: app.conf
-# Mount path for the configuration.
-configMountPath: /config
-# Mount the configuration as a single file using subPath. Leave empty to mount
-# the whole ConfigMap as a directory.
-configSubPath: ""
+configFileName: user.yaml
+# Mount path for the configuration. Milvus loads config files from /milvus/configs.
+configMountPath: /milvus/configs
+# Mount the configuration as a single file using subPath so the packaged
+# milvus.yaml in the same directory is preserved.
+configSubPath: user.yaml
 # Use an existing ConfigMap for the configuration instead of rendering one.
 existingConfigMap: ""
 

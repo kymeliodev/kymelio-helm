@@ -49,6 +49,51 @@ Review the chart version change and your overridden values before upgrading.
 helm upgrade my-milvus kymelio/milvus
 ```
 
+## Configuration
+
+### Metrics
+
+Milvus exposes Prometheus metrics natively at `/metrics` on the HTTP port
+(`9091`). No exporter sidecar is required. Set `metrics.enabled=true` to add
+Prometheus scrape annotations to the pod, and
+`metrics.serviceMonitor.enabled=true` to create a ServiceMonitor for the
+Prometheus Operator scraping the http port.
+
+```sh
+helm install my-milvus kymelio/milvus \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+The scrape path is controlled by `metrics.path` (default `/metrics`).
+
+### Native configuration
+
+Milvus loads configuration files from `/milvus/configs`. The packaged image
+ships a full `milvus.yaml`, and Milvus reads an optional `user.yaml` from the
+same directory to override individual settings. Provide those overrides through
+the `configuration` value. It is rendered into a ConfigMap and mounted as a
+single file at `/milvus/configs/user.yaml`, leaving the packaged `milvus.yaml`
+in place.
+
+```yaml
+configuration: |
+  log:
+    level: info
+  proxy:
+    maxNameLength: 255
+  dataCoord:
+    segment:
+      maxSize: 1024
+  quotaAndLimits:
+    enabled: true
+```
+
+Use the generic `config` map for free form ConfigMap entries, or
+`existingConfigMap` to mount a ConfigMap you manage outside the chart. Set
+`configSubPath` to an empty string to mount the whole ConfigMap as a directory
+instead of a single file.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -75,4 +120,7 @@ helm upgrade my-milvus kymelio/milvus
 | autoscaling.enabled | bool | `false` | Enable a HorizontalPodAutoscaler |
 | podDisruptionBudget.enabled | bool | `false` | Enable a PodDisruptionBudget |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Add Prometheus scrape annotations for the built in `/metrics` endpoint |
+| metrics.path | string | `/metrics` | Path of the built in Prometheus endpoint on the http port |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor scraping the http port |
+| configuration | string | `""` | Native Milvus overrides rendered into a ConfigMap and mounted at `/milvus/configs/user.yaml` |
