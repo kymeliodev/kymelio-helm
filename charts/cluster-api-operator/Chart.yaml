@@ -2,7 +2,7 @@ apiVersion: v2
 name: cluster-api-operator
 description: Cluster API Operator that manages Cluster API providers lifecycle
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v0.12.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
