@@ -44,6 +44,30 @@ Review the chart version change and your overridden values before upgrading:
 helm upgrade my-rook-ceph kymelio/rook-ceph --reuse-values
 ```
 
+## Configuration
+
+### Metrics
+
+The operator exposes controller-runtime Prometheus metrics at `/metrics`.
+Enabling metrics sets `ROOK_OPERATOR_METRICS_BIND_ADDRESS=:8080`, exposes a
+`metrics` port on the container and Service, and the ServiceMonitor scrapes it.
+
+```sh
+helm install my-rook-ceph kymelio/rook-ceph \
+  --set metrics.enabled=true \
+  --set metrics.serviceMonitor.enabled=true
+```
+
+### Operator configuration
+
+Tune the operator with `parameters`, applied as environment variables.
+
+```yaml
+parameters:
+  ROOK_LOG_LEVEL: "DEBUG"
+  ROOK_ENABLE_DISCOVERY_DAEMON: "true"
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -60,4 +84,7 @@ helm upgrade my-rook-ceph kymelio/rook-ceph --reuse-values
 | podSecurityContext | object | runAsNonRoot 2016 | Pod security context |
 | securityContext | object | drop ALL | Container security context |
 | networkPolicy.enabled | bool | `false` | Enable a NetworkPolicy |
+| metrics.enabled | bool | `false` | Expose the operator /metrics endpoint and ServiceMonitor |
+| metrics.port | int | `8080` | Port the operator binds its metrics endpoint to |
 | metrics.serviceMonitor.enabled | bool | `false` | Create a Prometheus ServiceMonitor |
+| parameters | object | `{}` | Operator configuration applied as environment variables |
