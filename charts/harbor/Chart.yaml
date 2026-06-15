@@ -2,7 +2,7 @@ apiVersion: v2
 name: harbor
 description: Core service of the Harbor cloud native container registry
 type: application
-version: 0.4.0
+version: 0.5.0
 appVersion: "v2.11.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
