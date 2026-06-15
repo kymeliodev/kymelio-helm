@@ -61,6 +61,16 @@ spec:
                   key: {{ .Values.auth.secretKeys.masterKeyKey }}
             - name: MEILI_ENV
               value: {{ .Values.meiliEnv | quote }}
+            {{- if .Values.metrics.enabled }}
+            - name: MEILI_EXPERIMENTAL_ENABLE_METRICS
+              value: "true"
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: MEILI_SSL_CERT_PATH
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.certFilename }}
+            - name: MEILI_SSL_KEY_PATH
+              value: {{ .Values.tls.mountPath }}/{{ .Values.tls.keyFilename }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -89,6 +99,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+            {{- end }}
             {{- if or .Values.configuration .Values.existingConfigMap }}
             - name: config
               mountPath: {{ .Values.configMountPath }}
@@ -114,11 +129,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes }}
+      {{- if or (not .Values.persistence.enabled) .Values.configuration .Values.existingConfigMap .Values.extraVolumes .Values.tls.enabled }}
       volumes:
         {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.existingSecret }}
+            defaultMode: 0400
         {{- end }}
         {{- if or .Values.configuration .Values.existingConfigMap }}
         - name: config
