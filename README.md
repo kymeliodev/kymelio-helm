@@ -60,3 +60,18 @@ scaffolding generator, and the local validation workflow.
 ## License
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
+
+## Licensing and trademarks
+
+The charts in this repository are independent works licensed under the Apache
+License, Version 2.0. They do not bundle or redistribute application binaries.
+Each chart references upstream container images that are pulled at install time
+and are governed by their own licenses, which may differ from the license of
+this repository and may be non permissive (for example AGPLv3 or SSPL). You are
+responsible for reviewing and complying with the license of every image you
+deploy, in particular when offering the software as a hosted service.
+
+All product names, logos and trademarks are the property of their respective
+owners. Their use here is nominative and only describes the software a chart
+deploys. Kymelio is not affiliated with, endorsed by or sponsored by any of the
+upstream projects.
