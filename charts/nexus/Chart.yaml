@@ -2,7 +2,7 @@ apiVersion: v2
 name: nexus
 description: Sonatype Nexus Repository 3 universal artifact manager
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "3.70.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

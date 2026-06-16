@@ -2,7 +2,7 @@ apiVersion: v2
 name: longhorn
 description: Longhorn manager control plane for cloud native distributed block storage on Kubernetes.
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "v1.7.0"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

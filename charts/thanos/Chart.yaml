@@ -2,7 +2,7 @@ apiVersion: v2
 name: thanos
 description: Thanos Querier providing a unified query view across Prometheus stores
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "v0.36.1"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

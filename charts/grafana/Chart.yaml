@@ -2,7 +2,7 @@ apiVersion: v2
 name: grafana
 description: Grafana observability platform for metrics, logs and traces dashboards
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "11.1.4"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

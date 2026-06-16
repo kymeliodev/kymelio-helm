@@ -2,7 +2,7 @@ apiVersion: v2
 name: minio
 description: High performance S3 compatible object storage
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "RELEASE.2024-08-17T01-24-54Z"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:

@@ -2,7 +2,7 @@ apiVersion: v2
 name: influxdb
 description: InfluxDB time series database
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "2.7"
 home: https://github.com/kymeliodev/kymelio-helm
 sources:
