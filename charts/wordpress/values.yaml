@@ -1,0 +1,217 @@
+# Number of replicas. Ignored when autoscaling is enabled. WordPress stores
+# uploads on the local volume, so keep a single replica unless persistence uses
+# a ReadWriteMany storage class shared across pods.
+replicaCount: 1
+
+# Container image configuration.
+image:
+  repository: docker.io/library/wordpress
+  pullPolicy: IfNotPresent
+  # Defaults to the chart appVersion when empty. Never use a floating tag.
+  tag: ""
+
+# Image pull secrets for private registries.
+imagePullSecrets: []
+
+# Override the chart name used in resource names.
+nameOverride: ""
+# Override the fully qualified resource name.
+fullnameOverride: ""
+
+# External MySQL or MariaDB database. WordPress requires one and this chart does
+# not bundle a database. Deploy the kymelio mariadb or mysql chart, or point at
+# any reachable instance, and supply the connection details below. The password
+# is sourced from a Secret managed by this chart or referenced through
+# externalDatabase.existingSecret.
+externalDatabase:
+  host: ""
+  port: 3306
+  user: wordpress
+  database: wordpress
+  # Database password. A random password is generated when left empty.
+  password: ""
+  # Use an existing Secret instead of managing the password in this chart.
+  existingSecret: ""
+  secretKeys:
+    # Key inside the Secret that holds the database password.
+    passwordKey: db-password
+  # Table name prefix used by WordPress.
+  tablePrefix: wp_
+
+# Service account used by the workload.
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+# Annotations added to the pod.
+podAnnotations: {}
+
+# Pod level security context. Matches the www-data user in the official image.
+# Apache is reconfigured to listen on an unprivileged port so the container runs
+# as a non-root user. See apache.rootless below.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 33
+  runAsGroup: 33
+  fsGroup: 33
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container level security context.
+securityContext:
+  allowPrivilegeEscalation: false
+  # WordPress writes plugins, themes and uploads under the document root, which
+  # is backed by the persistent volume, so the root filesystem stays writable.
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service exposing the workload. The port matches the unprivileged Apache port.
+service:
+  type: ClusterIP
+  port: 8080
+  portName: http
+
+# Reconfigure the official Apache image to listen on an unprivileged port so the
+# pod can run as a non-root user. When enabled a ConfigMap with ports.conf, a
+# virtual host and envvars is mounted over the Apache configuration and the
+# runtime directories are redirected to a writable path. Disable only when you
+# provide your own configuration through extraVolumes.
+apache:
+  rootless:
+    enabled: true
+    # Unprivileged port Apache binds. Keep it equal to service.port.
+    port: 8080
+
+# Ingress configuration. Disabled by default.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resource requests and limits.
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+# Horizontal pod autoscaler. Disabled by default. Enable only with shared
+# ReadWriteMany persistence so all replicas serve the same content.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget. Disabled by default.
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Network policy. Disabled by default.
+networkPolicy:
+  enabled: false
+  ingress: []
+
+# Prometheus integration. Disabled by default.
+# The official WordPress image has no built in Prometheus endpoint. Install a
+# metrics plugin such as a Prometheus exporter that exposes a /metrics route on
+# the HTTP port (service.port), then enable metrics here to create a
+# ServiceMonitor that scrapes service.port at the path below. See the README.
+metrics:
+  enabled: false
+  # HTTP path exposed by the metrics plugin.
+  path: /metrics
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Extra environment variables passed to the container. Use these for additional
+# WORDPRESS_* settings, for example WORDPRESS_CONFIG_EXTRA or the authentication
+# keys and salts.
+extraEnv: []
+# Extra command line arguments appended to the container entrypoint.
+extraArgs: []
+
+# Extra environment variables sourced from ConfigMaps or Secrets (envFrom).
+extraEnvFrom: []
+
+# Inline application configuration. When set it is rendered into a ConfigMap and
+# mounted at configMountPath. Use this for native config files like an app.conf.
+configuration: ""
+# File name for the rendered configuration inside the mount path.
+configFileName: app.conf
+# Mount path for the configuration.
+configMountPath: /config
+# Mount the configuration as a single file using subPath. Leave empty to mount
+# the whole ConfigMap as a directory.
+configSubPath: ""
+# Use an existing ConfigMap for the configuration instead of rendering one.
+existingConfigMap: ""
+
+# Additional volumes and mounts for the workload.
+extraVolumes: []
+extraVolumeMounts: []
+
+# Additional init containers and sidecar containers.
+initContainers: []
+sidecars: []
+
+# Extra labels added to the pod template.
+podLabels: {}
+# Pod priority class.
+priorityClassName: ""
+
+# Free form configuration rendered into a ConfigMap when not empty.
+config: {}
+
+# Node scheduling controls.
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Image used by the helm test connection check.
+tests:
+  image: busybox:1.36
+
+# Persistent storage for the WordPress document root (/var/www/html), which
+# holds the WordPress core, plugins, themes and uploads.
+persistence:
+  enabled: true
+  # Leave empty to use the cluster default StorageClass.
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  mountPath: /var/www/html
+
+# OpenShift Route exposing the service externally. Disabled by default.
+route:
+  enabled: false
+  host: ""
+  # Target service port name or number. Leave empty for single port services.
+  port: ""
+  annotations: {}
+  # TLS configuration, for example { termination: edge }.
+  tls: {}
+  wildcardPolicy: None
+
+# OpenShift compatibility. When enabled, the explicit runAsUser, runAsGroup and
+# fsGroup are omitted so the restricted SCC assigns them from the namespace range.
+openShift:
+  enabled: false

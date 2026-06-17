@@ -1,0 +1,33 @@
+WordPress has been installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Reach the service from inside the cluster at:
+
+  {{ include "wordpress.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward to your workstation:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "wordpress.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open WordPress at:
+
+  http://127.0.0.1:{{ .Values.service.port }}/
+
+WordPress requires an external MySQL or MariaDB database. Confirm the instance
+at {{ .Values.externalDatabase.host | default "the configured host" }} is
+reachable and that the database {{ .Values.externalDatabase.database | quote }}
+exists and is owned by {{ .Values.externalDatabase.user | quote }}.
+
+{{- if not .Values.externalDatabase.existingSecret }}
+
+Retrieve the database password with:
+
+  kubectl --namespace {{ .Release.Namespace }} get secret {{ include "wordpress.fullname" . }} \
+    -o jsonpath="{.data.{{ .Values.externalDatabase.secretKeys.passwordKey }}}" | base64 -d
+{{- end }}
+
+Run the bundled connection test with:
+
+  helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

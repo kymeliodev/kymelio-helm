@@ -1,0 +1,19 @@
+apiVersion: v2
+name: wordpress
+description: WordPress content management system and website platform
+type: application
+version: 0.1.0
+appVersion: "6.8.3"
+home: https://github.com/kymeliodev/kymelio-helm
+sources:
+  - https://github.com/kymeliodev/kymelio-helm
+  - https://wordpress.org
+keywords:
+  - wordpress
+  - cms
+  - blog
+  - website
+  - php
+maintainers:
+  - name: Kymelio
+    email: simon.meier@kymelio.com

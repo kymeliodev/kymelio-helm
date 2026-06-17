@@ -60,4 +60,4 @@ MinIO, Longhorn, Velero, Rook Ceph, SeaweedFS.
 ### SaaS and collaboration
 
 Nextcloud, OpenCloud, OpenTalk, openDesk, Odoo, Apache Superset, Mattermost,
-Outline, Vikunja, Paperless-ngx, n8n, Plausible, Documenso.
+Outline, Vikunja, Paperless-ngx, n8n, Plausible, Documenso, WordPress.

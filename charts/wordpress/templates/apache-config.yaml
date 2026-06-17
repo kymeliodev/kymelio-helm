@@ -1,0 +1,24 @@
+{{- if .Values.apache.rootless.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "wordpress.fullname" . }}-apache
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
+data:
+  ports.conf: |
+    Listen {{ .Values.apache.rootless.port }}
+  000-default.conf: |
+    <VirtualHost *:{{ .Values.apache.rootless.port }}>
+        DocumentRoot /var/www/html
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+  envvars: |
+    export APACHE_RUN_USER=www-data
+    export APACHE_RUN_GROUP=www-data
+    export APACHE_PID_FILE=/tmp/apache2.pid
+    export APACHE_RUN_DIR=/tmp
+    export APACHE_LOCK_DIR=/tmp
+    export APACHE_LOG_DIR=/tmp
+{{- end }}
